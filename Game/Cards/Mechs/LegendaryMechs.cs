@@ -30,8 +30,18 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Legendary;
             this.name = "Cheap Filler Legendary";
-            this.cardText = "This card is for testing purposes only";
+            this.cardText = "Binary. Too lazy to write the buff (it exists tho dw). This card is for testing purposes only";
             this.creatureData = new CreatureData(5, 5, 5);
+            this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            for (int i=0; i<gameHandler.players[curPlayer].shop.options.Count(); i++)
+            {
+                gameHandler.players[curPlayer].shop.options[i].creatureData.attack++;
+                gameHandler.players[curPlayer].shop.options[i].creatureData.health++;
+            }
         }
     }
 }

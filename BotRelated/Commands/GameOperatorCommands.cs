@@ -18,7 +18,7 @@ namespace ScrapScramble.BotRelated.Commands
         [RequireGuild]
         public async Task StartGame(CommandContext ctx)
         {
-            const int minPlayers = 0;
+            const int minPlayers = 1;
             DiscordEmbedBuilder responseMessage;
 
             if (BotInfoHandler.gameHandler.players.Count() < minPlayers) //amount to be changed

@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game.Cards
 {
-    public abstract class Mech : Card, IComparable<Mech>
+    [Serializable]
+    public class Mech : Card, IComparable<Mech>
     {
         public CreatureData creatureData;
         public Rarity rarity;
@@ -87,6 +88,16 @@ namespace ScrapScramble.Game.Cards
             else if (this.rarity < other.rarity) return 1;
 
             return this.name.CompareTo(other.name);
+        }
+
+        public Mech DeepCopy()
+        {
+            Mech ret = new Mech();
+            ret.name = this.name;
+            ret.rarity = this.rarity;
+            ret.cardText = this.cardText;
+            ret.creatureData = this.creatureData.DeepCopy();
+            return ret;
         }
     }
 }

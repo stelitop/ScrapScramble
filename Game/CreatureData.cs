@@ -17,7 +17,7 @@ namespace ScrapScramble.Game
             {
                 this.staticKeywords.Add(keyword, 0);
             }            
-        }
+        }      
 
         public CreatureData()
         {
@@ -33,6 +33,13 @@ namespace ScrapScramble.Game
             this.cost = cost;
             this.staticKeywords = new Dictionary<StaticKeyword, int>();
             this.InitStaticKeywordsDictionary();
+        }
+
+        public CreatureData DeepCopy()
+        {
+            CreatureData ret = new CreatureData(this.cost, this.attack, this.health);
+            ret.staticKeywords = new Dictionary<StaticKeyword, int>(this.staticKeywords);
+            return ret;
         }
 
         public static CreatureData operator +(CreatureData a, CreatureData b)

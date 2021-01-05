@@ -45,7 +45,7 @@ namespace ScrapScramble.Game
             {                
                 this.players[i] = new Player(this.players[i].name);                
 
-                this.players[i].shop.Refresh(ref this.pool, this.maxMana);
+                this.players[i].shop.Refresh(this.pool, this.maxMana);
                 this.players[i].curMana = this.maxMana;
             }
 

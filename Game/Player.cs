@@ -66,13 +66,13 @@ namespace ScrapScramble.Game
 
         public void AttachMech(Mech mech, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            this.attachedMechs.Add(mech);
+            this.attachedMechs.Add(mech.DeepCopy());
             
             if (mech.creatureData.staticKeywords[StaticKeyword.Binary] > 0)
             {
                 mech.creatureData.staticKeywords[StaticKeyword.Binary]--;
                 mech.cardText += " (No Binary)";
-                gameHandler.players[curPlayer].hand.cards.Add(mech);
+                gameHandler.players[curPlayer].hand.cards.Add(mech.DeepCopy());
             }
             mech.creatureData.staticKeywords[StaticKeyword.Binary] = 0;
 

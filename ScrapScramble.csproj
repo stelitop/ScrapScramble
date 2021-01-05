@@ -171,6 +171,7 @@
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\StaticKeyword.cs" />
     <Compile Include="GeneralFunctions.cs" />
+    <Compile Include="ObjectCopier.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
