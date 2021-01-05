@@ -85,5 +85,23 @@ namespace ScrapScramble.BotRelated.Commands
 
             await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
         }
+
+        [Command("cancelgame")]
+        [RequireGuild]
+        [RequireIngame]
+        public async Task CancelGame(CommandContext ctx)
+        {
+            BotInfoHandler.gameHandler = new Game.GameHandler();
+            BotInfoHandler.inGame = false;
+            BotInfoHandler.currentRound = 1;
+            BotInfoHandler.participantsDiscordIds.Clear();
+            BotInfoHandler.shopsSent = false;
+            BotInfoHandler.UIMessages.Clear();
+
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder{
+                Title = "Game Cancelled Successfully",
+                Color = DiscordColor.Green
+            }).ConfigureAwait(false);
+        }
     }
 }

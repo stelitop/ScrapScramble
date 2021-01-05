@@ -315,8 +315,6 @@ namespace ScrapScramble.BotRelated.Commands
 
                 await this.UpdateBrowseMenuAsync(ctx, menuMessage, upgradesPerPage, page, totalPages);
                 await menuMessage.DeleteReactionAsync(foundEmoji, ctx.User).ConfigureAwait(false);                
-
-                Console.WriteLine(page);
             }
         }
     }

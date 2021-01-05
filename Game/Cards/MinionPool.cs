@@ -17,6 +17,7 @@ namespace ScrapScramble.Game
         public MinionPool()
         {
             this.mechs = new List<Mech>();
+            this.FillGenericMinionPool();
         }        
 
         public void GenericMinionPollSort()

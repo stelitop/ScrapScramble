@@ -15,8 +15,6 @@ namespace ScrapScramble
     {
         static void Main(string[] args)
         {
-            BotInfoHandler.gameHandler.pool.FillGenericMinionPool();
-
             var bot = new Bot();
             bot.RunAsync().GetAwaiter().GetResult();                        
 

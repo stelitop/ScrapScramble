@@ -33,16 +33,6 @@ namespace ScrapScramble.BotRelated
         {
             if (UIMessages[index] != null) { await UIMessages[index].DeleteAsync().ConfigureAwait(false); UIMessages[index] = null; }
 
-            //DiscordEmbedBuilder msg = new DiscordEmbedBuilder
-            //{
-            //    Title = $"{gameHandler.players[index].name}'s Information",
-            //    Color = DiscordColor.Brown
-            //};
-
-            //msg.AddField("[Mech Info>]", gameHandler.players[index].PrintInfo(ref BotInfoHandler.gameHandler));
-            //msg.AddField($"[Round {currentRound} Shop]", gameHandler.players[index].shop.GetShopInfo());
-            //msg.AddField("<[our Hand]", gameHandler.players[index].hand.GetHandInfo());           
-
             if (!ctx.Channel.IsPrivate) 
             {
                 var member = await ctx.Guild.GetMemberAsync(participantsDiscordIds[index]).ConfigureAwait(false);
