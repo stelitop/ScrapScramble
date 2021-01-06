@@ -92,7 +92,8 @@ namespace ScrapScramble.Game.Cards
 
         public Mech DeepCopy()
         {
-            Mech ret = new Mech();
+            Console.WriteLine(this.GetType());
+            Mech ret = (Mech)Activator.CreateInstance(this.GetType());            
             ret.name = this.name;
             ret.rarity = this.rarity;
             ret.cardText = this.cardText;

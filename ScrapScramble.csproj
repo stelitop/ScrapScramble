@@ -162,6 +162,7 @@
     <Compile Include="Game\Cards\Mechs\LegendaryMechs.cs" />
     <Compile Include="Game\Cards\Mechs\RareMechs.cs" />
     <Compile Include="Game\Cards\Rarity.cs" />
+    <Compile Include="Game\CombatOutputCollector.cs" />
     <Compile Include="Game\CreatureData.cs" />
     <Compile Include="Game\Hand.cs" />
     <Compile Include="Game\Cards\MinionPool.cs" />
@@ -171,7 +172,6 @@
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\StaticKeyword.cs" />
     <Compile Include="GeneralFunctions.cs" />
-    <Compile Include="ObjectCopier.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

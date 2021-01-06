@@ -247,8 +247,7 @@ namespace ScrapScramble.BotRelated.Commands
             DiscordEmbedBuilder newMenuPage = new DiscordEmbedBuilder
             {
                 Title = "List of Upgrades",
-                Color = DiscordColor.Azure,
-                Footer = new DiscordEmbedBuilder.EmbedFooter { Text = "Type >help to see what commands are available. Commands related to your mech can only be used in DMs." }
+                Color = DiscordColor.Azure                
             };
             
             string pageInfo = string.Empty;

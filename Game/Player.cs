@@ -72,7 +72,10 @@ namespace ScrapScramble.Game
             {
                 mech.creatureData.staticKeywords[StaticKeyword.Binary]--;
                 mech.cardText += " (No Binary)";
+
+                //the copy should have basic stats
                 gameHandler.players[curPlayer].hand.cards.Add(mech.DeepCopy());
+                
             }
             mech.creatureData.staticKeywords[StaticKeyword.Binary] = 0;
 
@@ -105,11 +108,12 @@ namespace ScrapScramble.Game
 
         public int AttackMech(ref GameHandler gameHandler, int attacker, int defender)
         {
+            string msg = $"{this.name} attacks for {this.creatureData.attack} damage, ";
             int damage = this.creatureData.attack;
             if (this.creatureData.staticKeywords[StaticKeyword.Spikes] > 0)
             {
                 damage += this.creatureData.staticKeywords[StaticKeyword.Spikes];
-                //add a msg
+                msg += $"increased to {damage} by Spikes, ";
             }
             
             if (gameHandler.players[defender].creatureData.staticKeywords[StaticKeyword.Shields] > 0)
@@ -117,28 +121,39 @@ namespace ScrapScramble.Game
                 damage -= gameHandler.players[defender].creatureData.staticKeywords[StaticKeyword.Shields];
                 if (damage < 0) damage = 0;
                 gameHandler.players[defender].creatureData.staticKeywords[StaticKeyword.Shields] = 0;
-
-                //add a msg depending on whether or not spikes were applied before that
+                
+                if (this.creatureData.staticKeywords[StaticKeyword.Spikes] > 0)
+                {
+                    msg = $"{this.name} attacks for {this.creatureData.attack} damage, adjusted to {damage} by Spikes and Shields, ";
+                }
+                else
+                {
+                    msg += $"reduced to {damage} by Shields, ";
+                }
             }
 
             this.creatureData.staticKeywords[StaticKeyword.Spikes] = 0;
 
-            return gameHandler.players[defender].TakeDamage(damage, ref gameHandler, attacker, defender);
+            return gameHandler.players[defender].TakeDamage(damage, ref gameHandler, attacker, defender, msg);
         }
 
-        public int TakeDamage(int damage, ref GameHandler gameHandler, int attacker, int defender)
+        public int TakeDamage(int damage, ref GameHandler gameHandler, int attacker, int defender, string msg)
         {
             this.creatureData.health -= damage;
 
             if (this.creatureData.health > 0)
             {
-                //output a msg with dmg taken
+                msg += $"reducing {this.name} to {this.creatureData.health} Health.";
             }
             else
             {
                 this.destroyed = true;
+                msg += $"destroying {this.name}.";
                 //output a msg about getting destroyed
             }
+
+            Console.WriteLine("Called: " + msg);
+            gameHandler.combatOutputCollector.combatHeader.Add(msg);
 
             if (damage > 0)
             {
@@ -150,9 +165,9 @@ namespace ScrapScramble.Game
 
         public bool IsAlive()
         {
-            if (this.destroyed) return true;
-            if (this.creatureData.health <= 0) return true;
-            return false;
+            if (this.destroyed) return false;
+            if (this.creatureData.health <= 0) return false;
+            return true;
         }
     }    
 }

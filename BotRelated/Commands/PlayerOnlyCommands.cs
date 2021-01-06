@@ -54,7 +54,7 @@ namespace ScrapScramble.BotRelated.Commands
                 //invalid shop position
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
             }
-            else if (!BotInfoHandler.gameHandler.players[index].BuyCard(shopPos, ref BotInfoHandler.gameHandler, index, index))
+            else if (!BotInfoHandler.gameHandler.players[index].BuyCard(shopPos, ref BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.opponents[index]))
             {
                 //upgrade is too expensive
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
@@ -79,7 +79,7 @@ namespace ScrapScramble.BotRelated.Commands
                 //invalid hand position
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
             }
-            else if (!BotInfoHandler.gameHandler.players[index].PlayCard(handPos, ref BotInfoHandler.gameHandler, index, index))
+            else if (!BotInfoHandler.gameHandler.players[index].PlayCard(handPos, ref BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.opponents[index]))
             {
                 //upgrade is too expensive
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);

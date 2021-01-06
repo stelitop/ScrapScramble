@@ -20,6 +20,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
+            Console.WriteLine("1");
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush] += 2;
         }
     }
@@ -37,8 +38,9 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
+            Console.WriteLine("1");
             if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
-            
+            Console.WriteLine("2");
             int shop = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
             gameHandler.players[curPlayer].shop.options[shop].creatureData.cost -= 4;
             if (gameHandler.players[curPlayer].shop.options[shop].creatureData.cost < 0) gameHandler.players[curPlayer].shop.options[shop].creatureData.cost = 0;   
@@ -58,6 +60,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
+            Console.WriteLine("1");
             for (int i=0; i<6; i++)
             {
                 if (gameHandler.players[curPlayer].shop.options.Count() == 0) break;                
@@ -81,8 +84,11 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
+            Console.WriteLine("1");
+
             if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
-            
+            Console.WriteLine("2");
+
             int shop = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
             gameHandler.players[curPlayer].shop.options[shop] = new Investrotron();
             gameHandler.players[curPlayer].creatureData.attack += 4;

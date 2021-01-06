@@ -11,8 +11,9 @@ namespace ScrapScramble.Game
         public int attack, health, cost;
         public Dictionary<StaticKeyword, int> staticKeywords;
 
-        private void InitStaticKeywordsDictionary()
+        public void InitStaticKeywordsDictionary()
         {
+            this.staticKeywords.Clear();
             foreach (StaticKeyword keyword in Enum.GetValues(typeof(StaticKeyword)))
             {
                 this.staticKeywords.Add(keyword, 0);

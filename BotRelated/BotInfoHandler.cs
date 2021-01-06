@@ -58,7 +58,8 @@ namespace ScrapScramble.BotRelated
             DiscordEmbedBuilder msg = new DiscordEmbedBuilder
             {
                 Title = $"{gameHandler.players[index].name}'s Information",
-                Color = DiscordColor.Brown
+                Color = DiscordColor.Brown,
+                Footer = new DiscordEmbedBuilder.EmbedFooter { Text = "Type >help to see what commands are available. Commands related to your mech can only be used in DMs." }
             };
 
             msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfo(ref BotInfoHandler.gameHandler));
