@@ -35,6 +35,10 @@ namespace ScrapScramble.Game
             this.staticKeywords = new Dictionary<StaticKeyword, int>();
             this.InitStaticKeywordsDictionary();
         }
+        public string Stats()
+        {
+            return $"{this.attack}/{this.health}";
+        }
 
         public CreatureData DeepCopy()
         {

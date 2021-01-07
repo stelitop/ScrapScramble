@@ -66,7 +66,7 @@ namespace ScrapScramble.Game
             //check for any exceptions
             
             if (Math.Max(mech1, mech2) >= gameHandler.players.Count()) return;
-            if (mech1 == mech2) { Console.WriteLine($"{gameHandler.players[mech1].name} tried to fight itself."); return; }
+            //if (mech1 == mech2) { Console.WriteLine($"{gameHandler.players[mech1].name} tried to fight itself."); return; }
 
             gameHandler.combatOutputCollector.Clear();
             
@@ -75,17 +75,15 @@ namespace ScrapScramble.Game
 
            
             //-introductionHeader output
-            gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech1].name} vs {gameHandler.players[mech2].name}");
+            gameHandler.combatOutputCollector.introductionHeader.Add($"[{gameHandler.players[mech1].name} vs {gameHandler.players[mech2].name}]");
             gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech1].name} upgraded with:");
             
             for (int i=0; i<gameHandler.players[mech1].attachedMechs.Count(); i++)
             {
                 gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech1].attachedMechs[i].name}");
-            }
-            
-            gameHandler.combatOutputCollector.introductionHeader.Add("\n");
+            }            
 
-            gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech2].name} upgraded with:");
+            gameHandler.combatOutputCollector.introductionHeader.Add($"\n{gameHandler.players[mech2].name} upgraded with:");
             for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count(); i++)
             {
                 gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech2].attachedMechs[i].name}");
@@ -95,7 +93,11 @@ namespace ScrapScramble.Game
             //save the data so it reverts after combat
             CreatureData crData1 = gameHandler.players[mech1].creatureData.DeepCopy();
             CreatureData crData2 = gameHandler.players[mech2].creatureData.DeepCopy();
-            
+
+            gameHandler.players[mech1].GetInfoForCombat(ref gameHandler);
+            gameHandler.combatOutputCollector.statsHeader.Add(string.Empty);
+            gameHandler.players[mech2].GetInfoForCombat(ref gameHandler);            
+
             int prStat1 = crData1.staticKeywords[StaticKeyword.Rush] - crData1.staticKeywords[StaticKeyword.Taunt];
             int prStat2 = crData2.staticKeywords[StaticKeyword.Rush] - crData2.staticKeywords[StaticKeyword.Taunt];
             
@@ -130,9 +132,10 @@ namespace ScrapScramble.Game
            
             //output attack priority somewhere, somehow :)
 
-            //-preCombat header            
-            if (!coinflip) gameHandler.combatOutputCollector.preCombatHeader.Add($"{gameHandler.players[mech1].name} has Attack Priority");
-            else gameHandler.combatOutputCollector.preCombatHeader.Add($"{gameHandler.players[mech1].name} wins the coinflip for Attack Priority");
+            //-preCombat header                
+
+            if (!coinflip) gameHandler.combatOutputCollector.preCombatHeader.Add($"{gameHandler.players[mech1].name} has Attack Priority.");
+            else gameHandler.combatOutputCollector.preCombatHeader.Add($"{gameHandler.players[mech1].name} wins the coinflip for Attack Priority.");
             
             //trigger Start of Combat effects
             for (int i = 0; i < gameHandler.players[mech1].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
@@ -146,7 +149,7 @@ namespace ScrapScramble.Game
             //-preCombat header
 
             //-combat header
-            //the fighting
+                //the fighting
             for (int curAttacker = 0; gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); curAttacker++)
             {
                 int attacker, defender;
@@ -167,10 +170,11 @@ namespace ScrapScramble.Game
 
                 //add an AfterThisAttacks
             }
-            //-combat header
 
-            if (gameHandler.players[mech1].IsAlive()) Console.WriteLine($"{gameHandler.players[mech1].name} has won!");
-            else Console.WriteLine($"{gameHandler.players[mech2].name} has won!");
+            if (gameHandler.players[mech1].IsAlive()) gameHandler.combatOutputCollector.combatHeader.Add($"{gameHandler.players[mech1].name} has won!");
+            else gameHandler.combatOutputCollector.combatHeader.Add($"{gameHandler.players[mech2].name} has won!");
+
+            //-combat header
 
             //revert to before the fight
             gameHandler.players[mech1].creatureData = crData1.DeepCopy();

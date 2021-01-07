@@ -40,7 +40,7 @@ namespace ScrapScramble.Game
             this.attachedMechs = new List<Mech>();
             this.curMana = 10;
             this.destroyed = false;
-        }      
+        }
 
         public string PrintInfo(ref GameHandler gameHandler)
         {
@@ -55,6 +55,12 @@ namespace ScrapScramble.Game
             {
                 if (kw.Value != 0) ret += $"{kw.Key}: {kw.Value}\n";
             }
+            ret += $"\nPlayer Effects:\n"; 
+            for (int i=0; i<this.attachedMechs.Count(); i++)
+            {
+                if (!this.attachedMechs[i].writtenEffect.Equals(string.Empty)) ret += $"{this.attachedMechs[i].writtenEffect}\n";
+            }
+
             ret += $"\nPlayer Upgrades:\n";
             foreach (var upgrade in this.attachedMechs)
             {
@@ -67,7 +73,7 @@ namespace ScrapScramble.Game
         public void AttachMech(Mech mech, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             this.attachedMechs.Add(mech.DeepCopy());
-            
+
             if (mech.creatureData.staticKeywords[StaticKeyword.Binary] > 0)
             {
                 mech.creatureData.staticKeywords[StaticKeyword.Binary]--;
@@ -75,7 +81,7 @@ namespace ScrapScramble.Game
 
                 //the copy should have basic stats
                 gameHandler.players[curPlayer].hand.cards.Add(mech.DeepCopy());
-                
+
             }
             mech.creatureData.staticKeywords[StaticKeyword.Binary] = 0;
 
@@ -87,7 +93,7 @@ namespace ScrapScramble.Game
         public bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             bool result = this.shop.options[shopPos].BuyCard(shopPos, ref gameHandler, curPlayer, enemy);
-            
+
             if (result)
             {
                 this.shop.options.RemoveAt(shopPos);
@@ -101,7 +107,7 @@ namespace ScrapScramble.Game
 
             if (result)
             {
-                this.hand.cards.RemoveAt(handPos);                    
+                this.hand.cards.RemoveAt(handPos);
             }
             return result;
         }
@@ -115,13 +121,13 @@ namespace ScrapScramble.Game
                 damage += this.creatureData.staticKeywords[StaticKeyword.Spikes];
                 msg += $"increased to {damage} by Spikes, ";
             }
-            
+
             if (gameHandler.players[defender].creatureData.staticKeywords[StaticKeyword.Shields] > 0)
             {
                 damage -= gameHandler.players[defender].creatureData.staticKeywords[StaticKeyword.Shields];
                 if (damage < 0) damage = 0;
                 gameHandler.players[defender].creatureData.staticKeywords[StaticKeyword.Shields] = 0;
-                
+
                 if (this.creatureData.staticKeywords[StaticKeyword.Spikes] > 0)
                 {
                     msg = $"{this.name} attacks for {this.creatureData.attack} damage, adjusted to {damage} by Spikes and Shields, ";
@@ -152,7 +158,7 @@ namespace ScrapScramble.Game
                 //output a msg about getting destroyed
             }
 
-            Console.WriteLine("Called: " + msg);
+            //Console.WriteLine("Called: " + msg);
             gameHandler.combatOutputCollector.combatHeader.Add(msg);
 
             if (damage > 0)
@@ -168,6 +174,35 @@ namespace ScrapScramble.Game
             if (this.destroyed) return false;
             if (this.creatureData.health <= 0) return false;
             return true;
+        }
+
+        public void GetInfoForCombat(ref GameHandler gameHandler)
+        {
+            bool isVanilla = true;
+            foreach (var kw in this.creatureData.staticKeywords)
+            {
+                if (kw.Value > 0)
+                {
+                    isVanilla = false;
+                    break;
+                }
+            }
+
+            if (isVanilla)
+            {
+                gameHandler.combatOutputCollector.statsHeader.Add($"{this.name} is a {this.creatureData.attack}/{this.creatureData.health} vanilla.");
+            }
+            else
+            {
+                gameHandler.combatOutputCollector.statsHeader.Add($"{this.name} is a {this.creatureData.attack}/{this.creatureData.health} with:");
+                foreach (var kw in this.creatureData.staticKeywords)
+                {
+                    if (kw.Value == 0) continue;
+                    if (kw.Key == StaticKeyword.Overload) continue;
+                    gameHandler.combatOutputCollector.statsHeader.Add($"{kw.Key}: {kw.Value}");
+                }
+                //should show writtenEffects
+            }
         }
     }    
 }

@@ -15,6 +15,7 @@ namespace ScrapScramble.Game.Cards
 
         public string name;
         public string cardText;
+        public string writtenEffect;
 
         public Mech()
         {
@@ -22,6 +23,7 @@ namespace ScrapScramble.Game.Cards
             this.rarity = Rarity.NO_RARITY;
             this.name = string.Empty;
             this.cardText = string.Empty;
+            this.writtenEffect = string.Empty;
         }
         public Mech(string name, string cardText, int cost, int attack, int health, Rarity rarity)
         {
@@ -29,7 +31,7 @@ namespace ScrapScramble.Game.Cards
             this.rarity = rarity;
             this.name = name;
             this.cardText = cardText;
-        }
+        }        
 
         public override string GetInfo()
         {
@@ -92,7 +94,6 @@ namespace ScrapScramble.Game.Cards
 
         public Mech DeepCopy()
         {
-            Console.WriteLine(this.GetType());
             Mech ret = (Mech)Activator.CreateInstance(this.GetType());            
             ret.name = this.name;
             ret.rarity = this.rarity;

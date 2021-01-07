@@ -194,42 +194,45 @@ namespace ScrapScramble.BotRelated.Commands
         {
             if (pl1 < 1 || pl1 > BotInfoHandler.participantsDiscordIds.Count()) return;
             if (pl2 < 1 || pl2 > BotInfoHandler.participantsDiscordIds.Count()) return;
-            if (pl1 == pl2) return;
+            //if (pl1 == pl2) return;
             pl1--;
             pl2--;
-
-            Console.WriteLine(1);
+            
             GameHandlerMethods.StartBattle(ref BotInfoHandler.gameHandler, pl1, pl2);
-            Console.WriteLine(2);
+            
             var fightMessage = new DiscordEmbedBuilder{
                 Title = "Combat!",
                 Color = DiscordColor.Gold
             };
-            Console.WriteLine(3);
+            
             string msg = string.Empty;
             for (int i = 0; i < BotInfoHandler.gameHandler.combatOutputCollector.introductionHeader.Count(); i++)
             {
                 msg = msg + BotInfoHandler.gameHandler.combatOutputCollector.introductionHeader[i] + "\n";
-            }
-            Console.WriteLine(4);
-            fightMessage.AddField("Introduction Header", msg);
-            Console.WriteLine(5);
+            }            
+            fightMessage.AddField("[The Fighters]", msg);
+            
+            msg = string.Empty;            
+            for (int i = 0; i < BotInfoHandler.gameHandler.combatOutputCollector.statsHeader.Count(); i++)
+            {
+                msg = msg + BotInfoHandler.gameHandler.combatOutputCollector.statsHeader[i] + "\n";
+            }            
+            fightMessage.AddField("[Stats]", msg);
+
             msg = string.Empty;
-            Console.WriteLine(6);
             for (int i = 0; i < BotInfoHandler.gameHandler.combatOutputCollector.preCombatHeader.Count(); i++)
             {
                 msg = msg + BotInfoHandler.gameHandler.combatOutputCollector.preCombatHeader[i] + "\n";
             }
-            Console.WriteLine(7);
-            fightMessage.AddField("Pre-Combat Header", msg);
-            Console.WriteLine(8);
+            fightMessage.AddField("[Pre-Combat]", msg);
+
             msg = string.Empty;
             for (int i = 0; i < BotInfoHandler.gameHandler.combatOutputCollector.combatHeader.Count(); i++)
             {
                 msg = msg + BotInfoHandler.gameHandler.combatOutputCollector.combatHeader[i] + "\n";
             }
-            fightMessage.AddField("Combat Header", msg);            
-            Console.WriteLine(9);
+            fightMessage.AddField("[Combat]", msg);            
+            
             await ctx.RespondAsync(embed: fightMessage).ConfigureAwait(false);
         }
     }

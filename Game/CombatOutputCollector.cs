@@ -9,6 +9,7 @@ namespace ScrapScramble.Game
     public class CombatOutputCollector
     {
         public List<string> introductionHeader;
+        public List<string> statsHeader;
         //priority, startofcombat
         public List<string> preCombatHeader;
         public List<string> combatHeader;
@@ -18,6 +19,7 @@ namespace ScrapScramble.Game
             this.introductionHeader = new List<string>();
             this.preCombatHeader = new List<string>();
             this.combatHeader = new List<string>();
+            this.statsHeader = new List<string>();
         }
 
         public void Clear()
@@ -25,6 +27,7 @@ namespace ScrapScramble.Game
             this.introductionHeader.Clear();
             this.preCombatHeader.Clear();
             this.combatHeader.Clear();
+            this.statsHeader.Clear();
         }
     }
 }

@@ -99,13 +99,15 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Common;
             this.name = "Healthbox";
-            this.cardText = "Start of Combat: Give the enemy Mech +8 Health.";
+            this.cardText = this.writtenEffect = "Start of Combat: Give the enemy Mech +8 Health.";
             this.creatureData = new CreatureData(0, 0, 8);
         }
 
         public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[enemy].creatureData.health += 8;
+            gameHandler.combatOutputCollector.preCombatHeader.Add(
+                $"{gameHandler.players[curPlayer].name}'s Healthbox gives {gameHandler.players[enemy].name} +8 Health, leaving it with {gameHandler.players[enemy].creatureData.health} Health.");
         }
     }
 
@@ -130,6 +132,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Oilmental";
             this.cardText = "Aftermath: Give a random Upgrade in your shop +2/+2. Overload: (3)";
+            this.writtenEffect = "Aftermath: Give a random Upgrade in your shop +2/+2.";
             this.creatureData = new CreatureData(1, 2, 2);
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
@@ -235,6 +238,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    [MechAttribute]
     public class TrafficCone : Mech
     {
         public TrafficCone()
@@ -357,13 +361,17 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Malfunctioning Puncher";
             this.cardText = "Start of Combat: Your Mech loses -4 Attack. Overload: (1)";
+            this.writtenEffect = "Start of Combat: Your Mech loses -4 Attack.";
             this.creatureData = new CreatureData(4, 4, 8);
         }
 
         public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack -= 4;
-            if (gameHandler.players[curPlayer].creatureData.attack < 1) gameHandler.players[curPlayer].creatureData.attack = 1; 
+            if (gameHandler.players[curPlayer].creatureData.attack < 1) gameHandler.players[curPlayer].creatureData.attack = 1;
+
+            gameHandler.combatOutputCollector.preCombatHeader.Add(
+                $"{gameHandler.players[curPlayer].name}'s Malfunctioning Puncher reduces its Attack by 4, leaving it with {gameHandler.players[curPlayer].creatureData.attack} Attack.");
         }
     }
 
@@ -394,6 +402,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Shieldbot Clanker";
             this.cardText = "Battlecry and Aftermath: Gain +8 Shields.";
+            this.writtenEffect = "Aftermath: Gain +8 Shields.";
             this.creatureData = new CreatureData(5, 2, 3);
         }
 
@@ -415,6 +424,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Spikebot Shanker";
             this.cardText = "Battlecry and Aftermath: Gain +8 Spikes.";
+            this.writtenEffect = "Aftermath: Gain +8 Spikes.";
             this.creatureData = new CreatureData(5, 3, 2);
         }
 
@@ -462,13 +472,15 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Common;
             this.name = "One Hit Wonder";
-            this.cardText = "Start of Combat: Gain +8 Attack.";
+            this.cardText = this.writtenEffect = "Start of Combat: Gain +8 Attack.";
             this.creatureData = new CreatureData(7, 1, 5);
         }
 
         public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += 8;
+            gameHandler.combatOutputCollector.preCombatHeader.Add(
+                $"{gameHandler.players[curPlayer].name}'s One Hit Wonder gives it +8 Attack, leaving it with {gameHandler.players[curPlayer].creatureData.attack} Attack.");
         }
     }
 
@@ -479,7 +491,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Common;
             this.name = "Steamfunk";
-            this.cardText = "Aftermath: Give a random Upgrade in your shop +2/+2.";
+            this.cardText = this.writtenEffect = "Aftermath: Give a random Upgrade in your shop +2/+2.";
             this.creatureData = new CreatureData(7, 7, 7);
         }
 
@@ -498,13 +510,15 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Common;
             this.name = "Prismatic Barrier";
-            this.cardText = "Start of Combat: Gain +10 Shields.";
+            this.cardText = this.writtenEffect = "Start of Combat: Gain +10 Shields.";
             this.creatureData = new CreatureData(8, 5, 6);
         }
 
         public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 10;
+            gameHandler.combatOutputCollector.preCombatHeader.Add(
+                $"{gameHandler.players[curPlayer].name}'s Prismatic Barrier gives it +10 Shields, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields]} Shields.");
         }
     }
 

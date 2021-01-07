@@ -13,7 +13,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Legendary;
             this.name = "Lady in Byte";
-            this.cardText = "Aftermath: Set your Mech's Attack equal to its Health.";
+            this.cardText = this.writtenEffect = "Aftermath: Set your Mech's Attack equal to its Health.";
             this.creatureData = new CreatureData(6, 5, 5);
         }
 
