@@ -22,6 +22,8 @@ namespace ScrapScramble.Game.Cards.Mechs
         public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush] += 2;
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                "Your Naptron gives you Rush x2.");
         }
     }
 
@@ -42,7 +44,9 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             int shop = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
             gameHandler.players[curPlayer].shop.options[shop].creatureData.cost -= 4;
-            if (gameHandler.players[curPlayer].shop.options[shop].creatureData.cost < 0) gameHandler.players[curPlayer].shop.options[shop].creatureData.cost = 0;   
+            if (gameHandler.players[curPlayer].shop.options[shop].creatureData.cost < 0) gameHandler.players[curPlayer].shop.options[shop].creatureData.cost = 0;
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Highroller reduces the cost of {gameHandler.players[curPlayer].shop.options[shop].name} in your shop by (4).");
         }
     }
 
@@ -67,6 +71,8 @@ namespace ScrapScramble.Game.Cards.Mechs
                 int shop = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
                 gameHandler.players[curPlayer].shop.options.RemoveAt(shop);
             }
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                "Your Fallen Reaver destroys 6 random Upgrades in your shop.");
         }
     }
 
@@ -83,15 +89,15 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-;
-
             if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
-
 
             int shop = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
             gameHandler.players[curPlayer].shop.options[shop] = new Investrotron();
             gameHandler.players[curPlayer].creatureData.attack += 4;
             gameHandler.players[curPlayer].creatureData.health += 4;
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Investotron transforms a random Upgrade in your shop into an Investotron and gives you +4/+4, leaving you as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
         }
     }
 }

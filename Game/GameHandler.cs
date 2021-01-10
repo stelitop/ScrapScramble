@@ -53,6 +53,8 @@ namespace ScrapScramble.Game
 
                 this.players[i].shop.Refresh(this.pool, this.maxMana);
                 this.players[i].curMana = this.maxMana;
+
+                this.players[i].submitted = false;
             }
 
             //do other stuff like matching later
@@ -127,7 +129,7 @@ namespace ScrapScramble.Game
                 GeneralFunctions.Swap<int>(ref mech1, ref mech2);
                 CreatureData midCrData = crData1.DeepCopy();
                 crData1 = crData2.DeepCopy();
-                crData1 = midCrData.DeepCopy();
+                crData2 = midCrData.DeepCopy();
             }
            
             //output attack priority somewhere, somehow :)
@@ -193,10 +195,14 @@ namespace ScrapScramble.Game
             {
                 //add to history
 
+                gameHandler.players[i].aftermathMessages.Clear();
+
                 gameHandler.players[i].shop.Refresh(gameHandler.pool, gameHandler.maxMana);
 
-                gameHandler.players[i].curMana = gameHandler.maxMana;
-                //apply overload
+                gameHandler.players[i].overloaded = gameHandler.players[i].creatureData.staticKeywords[StaticKeyword.Overload];
+                gameHandler.players[i].curMana = gameHandler.maxMana - gameHandler.players[i].overloaded;
+
+                gameHandler.players[i].submitted = false;
 
                 gameHandler.players[i].creatureData.InitStaticKeywordsDictionary();
                 

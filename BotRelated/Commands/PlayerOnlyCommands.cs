@@ -15,7 +15,7 @@ namespace ScrapScramble.BotRelated.Commands
     [RequireDirectMessage]
     class PlayerOnlyCommands : BaseCommandModule
     {
-        [Command("mechinfo")]
+        //[Command("mechinfo")]
         public async Task MechInfo(CommandContext ctx)
         {
             int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
@@ -29,7 +29,8 @@ namespace ScrapScramble.BotRelated.Commands
 
             await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
         }
-        [Command("shop")]
+
+        //[Command("shop")]
         public async Task ResentShop(CommandContext ctx)
         {
             int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
@@ -43,8 +44,10 @@ namespace ScrapScramble.BotRelated.Commands
 
             await ctx.RespondAsync(embed: shopEmbed).ConfigureAwait(false);
         }
+
         [Command("buy")]
-        public async Task BuyUpgrade(CommandContext ctx, int shopPos)
+        [Description("Buys an Upgrade in your shop and attaches it to your Mech.")]
+        public async Task BuyUpgrade(CommandContext ctx, [Description("Index of the Upgrade in your shop")]int shopPos)
         {
             shopPos--;
             int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
@@ -62,19 +65,23 @@ namespace ScrapScramble.BotRelated.Commands
             else
             {
                 //valid pos
-                await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":+1:")).ConfigureAwait(false);                
-                
+                await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":+1:")).ConfigureAwait(false);
+
+                BotInfoHandler.gameHandler.players[index].submitted = false;
+                BotInfoHandler.RefreshPlayerList(ctx);
+
                 await BotInfoHandler.RefreshUI(ctx, index);
             }            
         }
 
         [Command("play")]
-        public async Task PlayCard(CommandContext ctx, int handPos)
+        [Description("Plays an Upgrade from your hand and attaches it to your Mech.")]
+        public async Task PlayCard(CommandContext ctx, [Description("Index of the Upgrade in your hand")]int handPos)
         {
             handPos--;
             int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
 
-            if (handPos >= BotInfoHandler.gameHandler.players[index].shop.options.Count() || handPos < 0)
+            if (handPos >= BotInfoHandler.gameHandler.players[index].hand.cards.Count() || handPos < 0)
             {
                 //invalid hand position
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
@@ -89,16 +96,51 @@ namespace ScrapScramble.BotRelated.Commands
                 //valid pos
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":+1:")).ConfigureAwait(false);
 
+                BotInfoHandler.gameHandler.players[index].submitted = false;
+                BotInfoHandler.RefreshPlayerList(ctx);
+
                 await BotInfoHandler.RefreshUI(ctx, index);
             }
         }
 
         [Command("refreshui")]
+        [Description("Sends a new UI that displays your Mech's information and deletes the old one (if possible).")]
         public async Task NewUI(CommandContext ctx)
         {
             int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
 
             await BotInfoHandler.SendNewUI(ctx, index);
+        }
+
+        [Command("submit")]
+        [Description("Submits the things you've done this round.")]
+        public async Task SubmitRound(CommandContext ctx)
+        {
+            int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
+
+            DiscordEmbedBuilder responseMessage;
+
+            if (BotInfoHandler.gameHandler.players[index].submitted)
+            {
+                responseMessage = new DiscordEmbedBuilder
+                {
+                    Title = "You Have Already Submitted",
+                    Color = DiscordColor.Red
+                };
+            }
+            else
+            {
+                responseMessage = new DiscordEmbedBuilder
+                {
+                    Title = "You Have Submitted Successfully",
+                    Description = "You can still make changes to your Mech but you will need to resubmit.",
+                    Color = DiscordColor.Green
+                };
+                BotInfoHandler.gameHandler.players[index].submitted = true;
+                BotInfoHandler.RefreshPlayerList(ctx);
+            }
+
+            await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using ScrapScramble.Game.Cards;
+﻿using ScrapScramble.BotRelated;
+using ScrapScramble.Game.Cards;
 using ScrapScramble.Game.Effects;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,17 @@ namespace ScrapScramble.Game
         public Shop shop;
         public Hand hand;
         public int curMana;
+        public int overloaded;
 
         public string name;
 
         public List<Mech> attachedMechs;
 
         public bool destroyed;
+
+        public List<string> aftermathMessages;
+
+        public bool submitted;
 
         public Player()
         {
@@ -30,6 +36,9 @@ namespace ScrapScramble.Game
             this.attachedMechs = new List<Mech>();
             this.curMana = 10;
             this.destroyed = false;
+            this.aftermathMessages = new List<string>();
+            this.overloaded = 0;
+            this.submitted = false;
         }
         public Player(string name)
         {
@@ -40,6 +49,8 @@ namespace ScrapScramble.Game
             this.attachedMechs = new List<Mech>();
             this.curMana = 10;
             this.destroyed = false;
+            this.aftermathMessages = new List<string>();
+            this.submitted = false;
         }
 
         public string PrintInfo(ref GameHandler gameHandler)
@@ -47,9 +58,10 @@ namespace ScrapScramble.Game
             string ret = string.Empty;
 
             ret += $"**{this.creatureData.attack}/{this.creatureData.health}**\n";
-            ret += $"Mana: {this.curMana}/{gameHandler.maxMana}\n";
-            //add an Overload clause            
-            //add an Aftermath clause
+            ret += $"Mana: {this.curMana}/{gameHandler.maxMana}";
+            if (this.overloaded > 0) ret += $" ({this.overloaded} Overloaded)";
+            ret += "\n";
+
             ret += $"\nKeywords:\n";
             foreach (var kw in this.creatureData.staticKeywords)
             {
@@ -179,7 +191,18 @@ namespace ScrapScramble.Game
         public void GetInfoForCombat(ref GameHandler gameHandler)
         {
             bool isVanilla = true;
-            foreach (var kw in this.creatureData.staticKeywords)
+
+            string preCombatEffects = string.Empty;
+            for (int i=0; i<this.attachedMechs.Count(); i++)
+            {
+                if (this.attachedMechs[i].writtenEffect.StartsWith("Aftermath:")) continue;
+
+                if (isVanilla) preCombatEffects = this.attachedMechs[i].writtenEffect;
+                else preCombatEffects = preCombatEffects + $"\n{this.attachedMechs[i].writtenEffect}";
+                isVanilla = false;
+            }
+
+            if (isVanilla) foreach (var kw in this.creatureData.staticKeywords)
             {
                 if (kw.Value > 0)
                 {
@@ -187,6 +210,8 @@ namespace ScrapScramble.Game
                     break;
                 }
             }
+            
+
 
             if (isVanilla)
             {
@@ -203,6 +228,14 @@ namespace ScrapScramble.Game
                 }
                 //should show writtenEffects
             }
+
+            if (!preCombatEffects.Equals(string.Empty)) gameHandler.combatOutputCollector.statsHeader.Add(preCombatEffects);
+        }
+        public string GetAftermathMessages()
+        {
+            string ret = string.Empty;
+            for (int i = 0; i < this.aftermathMessages.Count(); i++) ret = ret + this.aftermathMessages[i] + "\n";
+            return ret;
         }
     }    
 }

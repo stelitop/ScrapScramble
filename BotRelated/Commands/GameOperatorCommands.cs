@@ -16,6 +16,7 @@ namespace ScrapScramble.BotRelated.Commands
     public class GameOperatorCommands : BaseCommandModule
     {
         [Command("startgame")]
+        [Description("Starts a new game.")]
         [RequireGuild]
         public async Task StartGame(CommandContext ctx)
         {
@@ -31,6 +32,18 @@ namespace ScrapScramble.BotRelated.Commands
                     Description = $"You need at least {minPlayers} players to start a game.",
                     Color = DiscordColor.Red
                 };
+                await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+            }
+            else if (BotInfoHandler.inGame)
+            {
+                //already in game
+                responseMessage = new DiscordEmbedBuilder
+                {
+                    Title = "A game is already in the process.",
+                    Description = "Cancel the current game to start another.",
+                    Color = DiscordColor.Red
+                };
+
                 await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
             }
             else
@@ -102,6 +115,7 @@ namespace ScrapScramble.BotRelated.Commands
         }
 
         [Command("cancelgame")]
+        [Description("Cancels the currently running game.")]
         [RequireGuild]
         [RequireIngame]
         public async Task CancelGame(CommandContext ctx)
@@ -120,6 +134,7 @@ namespace ScrapScramble.BotRelated.Commands
         }
 
         [Command("nextround")]
+        [Description("Proceeds to the next round of the game. Also sends each player their shop.")]
         [RequireGuild]
         [RequireIngame]
         public async Task NextRound(CommandContext ctx)
@@ -132,8 +147,6 @@ namespace ScrapScramble.BotRelated.Commands
             }
             GameHandlerMethods.NextRound(ref BotInfoHandler.gameHandler);
 
-            Console.WriteLine("ee");
-
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
                 Title = "New Round Started",
@@ -144,6 +157,7 @@ namespace ScrapScramble.BotRelated.Commands
         }
 
         [Command("pairslist")]
+        [Description("Displays all pairs of players that will fight in the next round.")]
         [RequireIngame]
         public async Task GetPairsList(CommandContext ctx)
         {            
@@ -166,8 +180,9 @@ namespace ScrapScramble.BotRelated.Commands
         }
 
         [Command("pair")]
+        [Description("Pairs two players together to fight each other in the next round.")]
         [RequireIngame]
-        public async Task PairPlayers(CommandContext ctx, int pl1, int pl2)
+        public async Task PairPlayers(CommandContext ctx, [Description("Player 1")]int pl1, [Description("Player 2")]int pl2)
         {
             if (pl1 < 1 || pl1 > BotInfoHandler.participantsDiscordIds.Count()) return;
             if (pl2 < 1 || pl2 > BotInfoHandler.participantsDiscordIds.Count()) return;
@@ -188,9 +203,10 @@ namespace ScrapScramble.BotRelated.Commands
         }
 
         [Command("fight")]
+        [Description("Makes two players fight each other.")]
         [RequireIngame]
         [RequireGuild]
-        public async Task Fight(CommandContext ctx, int pl1, int pl2)
+        public async Task Fight(CommandContext ctx, [Description("Player 1")]int pl1, [Description("Player 2")]int pl2)
         {
             if (pl1 < 1 || pl1 > BotInfoHandler.participantsDiscordIds.Count()) return;
             if (pl2 < 1 || pl2 > BotInfoHandler.participantsDiscordIds.Count()) return;
@@ -234,6 +250,14 @@ namespace ScrapScramble.BotRelated.Commands
             fightMessage.AddField("[Combat]", msg);            
             
             await ctx.RespondAsync(embed: fightMessage).ConfigureAwait(false);
+        }
+
+        [Command("interactiveplayerlist")]
+        [RequireIngame]
+        [RequireGuild]
+        public async Task CreateInteractivePlayerlist(CommandContext ctx)
+        {
+            await BotInfoHandler.SendNewPlayerList(ctx);
         }
     }
 }

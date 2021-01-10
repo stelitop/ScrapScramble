@@ -142,6 +142,8 @@ namespace ScrapScramble.Game.Cards.Mechs
             int pos = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
             gameHandler.players[curPlayer].shop.options[pos].creatureData.attack += 2;
             gameHandler.players[curPlayer].shop.options[pos].creatureData.health += 2;
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Oilmental gives the {gameHandler.players[curPlayer].shop.options[pos].name} in your shop +2/+2.");
         }
     }
 
@@ -413,6 +415,8 @@ namespace ScrapScramble.Game.Cards.Mechs
         public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 8;
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Shieldbot Clanker gives you +8 Shields.");
         }
     }
 
@@ -435,6 +439,8 @@ namespace ScrapScramble.Game.Cards.Mechs
         public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 8;
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Spikebot Shanker gives you +8 Spikes.");
         }
     }
 
@@ -500,6 +506,8 @@ namespace ScrapScramble.Game.Cards.Mechs
             int pos = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
             gameHandler.players[curPlayer].shop.options[pos].creatureData.attack += 2;
             gameHandler.players[curPlayer].shop.options[pos].creatureData.health += 2;
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Steamfunk gives the {gameHandler.players[curPlayer].shop.options[pos].name} in your shop +2/+2.");
         }
     }
 

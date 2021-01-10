@@ -142,6 +142,8 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             gameHandler.players[enemy].creatureData.health -= 5;
             if (gameHandler.players[enemy].creatureData.health < 1) gameHandler.players[enemy].creatureData.health = 1;
+            gameHandler.players[enemy].aftermathMessages.Add(
+                $"{gameHandler.players[curPlayer].name}'s Homing Missile reduced your Mech's Health to {gameHandler.players[enemy].creatureData.health}.");
         }
     }
 
@@ -160,6 +162,43 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].hand.cards.Count();
             gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].hand.cards.Count();
+        }
+    }
+
+    [MechAttribute]
+    public class OffbrandShoe : Mech
+    {
+        public OffbrandShoe()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Offbrand Shoe";
+            this.cardText = this.writtenEffect = "Aftermath: Deal 6 damage to your Mech.";
+            this.creatureData = new CreatureData(1, 0, 6);
+        }
+
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.health -= 6;
+            gameHandler.players[curPlayer].aftermathMessages.Add("Your Offbrand Shoe deals 6 damage to you.");
+        }
+    }
+
+    [MechAttribute]
+    public class Hypnodrone : Mech
+    {
+        public Hypnodrone()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Hypnodrone";
+            this.cardText = this.writtenEffect = "Aftermath: Reduce the Attack of your opponent's Mech by 5 (but not below 1).";
+            this.creatureData = new CreatureData(7, 6, 6);
+        }
+
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[enemy].creatureData.attack -= 5;
+            if (gameHandler.players[enemy].creatureData.attack < 1) gameHandler.players[enemy].creatureData.attack = 1;
+            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name} reduced your Mech's Attack by 5, leaving it with {gameHandler.players[enemy].creatureData.attack} Attack.");
         }
     }
 }

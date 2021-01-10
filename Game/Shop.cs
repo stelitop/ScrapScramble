@@ -59,12 +59,14 @@ namespace ScrapScramble.Game.Effects
         public string GetShopInfo()
         {
             if (this.options.Count() == 0) return "Your shop is empty.";
+            Console.WriteLine(1);
             string ret = string.Empty;
             for (int i = 0; i < this.options.Count(); i++)
             {
                 ret += $"{i+1}) " + this.options[i].GetInfo();
                 if (i != this.options.Count() - 1) ret += '\n';
             }
+            Console.WriteLine(ret);
             return ret;
         }
     }
