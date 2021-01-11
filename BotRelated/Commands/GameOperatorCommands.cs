@@ -58,7 +58,7 @@ namespace ScrapScramble.BotRelated.Commands
                 BotInfoHandler.inGame = true;
                 BotInfoHandler.shopsSent = false;
                 BotInfoHandler.gameHandler.StartNewGame();
-                BotInfoHandler.currentRound = 1;
+                BotInfoHandler.gameHandler.currentRound = 1;
                 await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
 
                 await SendShops(ctx);
@@ -122,7 +122,7 @@ namespace ScrapScramble.BotRelated.Commands
         {
             BotInfoHandler.gameHandler = new Game.GameHandler();
             BotInfoHandler.inGame = false;
-            BotInfoHandler.currentRound = 1;
+            BotInfoHandler.gameHandler.currentRound = 1;
             BotInfoHandler.participantsDiscordIds.Clear();
             BotInfoHandler.shopsSent = false;
             BotInfoHandler.UIMessages.Clear();
@@ -139,7 +139,7 @@ namespace ScrapScramble.BotRelated.Commands
         [RequireIngame]
         public async Task NextRound(CommandContext ctx)
         {
-            BotInfoHandler.currentRound++;
+            BotInfoHandler.gameHandler.currentRound++;
             BotInfoHandler.shopsSent = false;
             for (int i = 0; i < BotInfoHandler.UIMessages.Count(); i++)
             {
@@ -153,6 +153,8 @@ namespace ScrapScramble.BotRelated.Commands
                 Color = DiscordColor.Green
             }).ConfigureAwait(false);
 
+
+            await BotInfoHandler.RefreshPlayerList(ctx);
             await SendShops(ctx);
         }
 
@@ -164,7 +166,7 @@ namespace ScrapScramble.BotRelated.Commands
             string msg = string.Empty;
             for (int i=0; i<BotInfoHandler.gameHandler.opponents.Count(); i++)
             {
-                if (i < BotInfoHandler.gameHandler.opponents[i]) msg += $"{BotInfoHandler.gameHandler.players[i].name} vs {BotInfoHandler.gameHandler.players[BotInfoHandler.gameHandler.opponents[i]].name}\n";
+                if (i < BotInfoHandler.gameHandler.opponents[i]) msg += $"{i}) {BotInfoHandler.gameHandler.players[i].name} vs {BotInfoHandler.gameHandler.opponents[i]}) {BotInfoHandler.gameHandler.players[BotInfoHandler.gameHandler.opponents[i]].name}\n";
             }
             if (msg.Equals(string.Empty)) msg = "No pairs have been assigned yet.";
             else msg.Trim();
@@ -258,6 +260,20 @@ namespace ScrapScramble.BotRelated.Commands
         public async Task CreateInteractivePlayerlist(CommandContext ctx)
         {
             await BotInfoHandler.SendNewPlayerList(ctx);
+        }
+
+        [Command("setstartinglives")]
+        public async Task SetStartingLives(CommandContext ctx, int num)
+        {
+            if (num < 1) num = 1;
+            BotInfoHandler.gameHandler.currentRound = num;
+
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = "Startings Lives Changed Successfully",
+                Description = $"Players will now start games with {num} lives.",
+                Color = DiscordColor.Green
+            }).ConfigureAwait(false);
         }
     }
 }

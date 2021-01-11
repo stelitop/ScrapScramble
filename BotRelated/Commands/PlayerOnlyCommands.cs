@@ -37,7 +37,7 @@ namespace ScrapScramble.BotRelated.Commands
 
             var shopEmbed = new DiscordEmbedBuilder
             {
-                Title = $"Round {BotInfoHandler.currentRound} Shop",
+                Title = $"Round {BotInfoHandler.gameHandler.currentRound} Shop",
                 Description = BotInfoHandler.gameHandler.players[index].shop.GetShopInfo(),
                 Color = DiscordColor.Azure
             };

@@ -17,6 +17,9 @@ namespace ScrapScramble.Game
 
         public CombatOutputCollector combatOutputCollector;
 
+        public int currentRound = 1;
+        public int startingLives = 3;
+
         public GameHandler()
         {
             this.players = new List<Player>();

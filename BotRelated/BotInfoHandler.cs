@@ -15,7 +15,6 @@ namespace ScrapScramble.BotRelated
         public static List<ulong> participantsDiscordIds = new List<ulong>();
         public static bool inGame = false;
         public static bool shopsSent = false;
-        public static int currentRound = 1;
         public static List<DiscordMessage> UIMessages = new List<DiscordMessage>();
         public static DiscordMessage interactivePlayerList = null;
 
@@ -81,13 +80,20 @@ namespace ScrapScramble.BotRelated
             };
             
             string aftermathMsg = gameHandler.players[index].GetAftermathMessages();            
-            if (!aftermathMsg.Equals(string.Empty)) msg.AddField("[Aftermath]", aftermathMsg);            
+            if (!aftermathMsg.Equals(string.Empty)) msg.AddField("[Aftermath]", aftermathMsg);
 
-            msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfo(ref BotInfoHandler.gameHandler));            
+            Console.WriteLine(1);
+            msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfo(ref BotInfoHandler.gameHandler));
+            Console.WriteLine(2);
             // BREAKS BECAUSE OF THE NEXT LINE
-            msg.AddField($"[Round {currentRound} Shop]", gameHandler.players[index].shop.GetShopInfo());            
-            msg.AddField("[Your Hand]", gameHandler.players[index].hand.GetHandInfo());            
-         
+            string shopValue = gameHandler.players[index].shop.GetShopInfo();
+            Console.WriteLine($"{shopValue}, {shopValue.Length}");
+            Console.WriteLine(3);
+            msg.AddField($"[Round {BotInfoHandler.gameHandler.currentRound} Shop]", shopValue);
+            Console.WriteLine(4);
+            msg.AddField("[Your Hand]", gameHandler.players[index].hand.GetHandInfo());
+            Console.WriteLine(5);
+
             await UIMessages[index].ModifyAsync(embed: msg.Build()).ConfigureAwait(false);  
         }
 
@@ -104,7 +110,7 @@ namespace ScrapScramble.BotRelated
 
             var responseMessage = new DiscordEmbedBuilder
             {
-                Title = "List of participants",
+                Title = "Interactive List of Participants",
                 Color = DiscordColor.Azure,
                 Description = string.Empty
             };
@@ -119,7 +125,7 @@ namespace ScrapScramble.BotRelated
                     if (BotInfoHandler.gameHandler.players[i].submitted) responseMessage.Description += ":green_square: ";
                     else responseMessage.Description += ":red_square: ";
                 }
-                responseMessage.Description += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} - {user.Username}";
+                responseMessage.Description += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} ({user.Username})";
                 if (i != BotInfoHandler.gameHandler.players.Count()) responseMessage.Description += '\n';
             }
 

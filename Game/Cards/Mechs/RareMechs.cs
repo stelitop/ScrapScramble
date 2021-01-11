@@ -140,6 +140,8 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
+            if (curPlayer == enemy) return;
+
             gameHandler.players[enemy].creatureData.health -= 5;
             if (gameHandler.players[enemy].creatureData.health < 1) gameHandler.players[enemy].creatureData.health = 1;
             gameHandler.players[enemy].aftermathMessages.Add(
@@ -196,11 +198,142 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
+            if (curPlayer == enemy) return;
+
             gameHandler.players[enemy].creatureData.attack -= 5;
             if (gameHandler.players[enemy].creatureData.attack < 1) gameHandler.players[enemy].creatureData.attack = 1;
-            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name} reduced your Mech's Attack by 5, leaving it with {gameHandler.players[enemy].creatureData.attack} Attack.");
+            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Hypnodrone reduced your Mech's Attack by 5, leaving it with {gameHandler.players[enemy].creatureData.attack} Attack.");
         }
     }
+
+    [MechAttribute]
+    public class MkIVSuperCobra : Mech
+    {
+        public MkIVSuperCobra()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Mk. IV Super Cobra";
+            this.cardText = "Rush. Aftermath: Destroy a random Upgrade in your opponent's shop.";
+            this.writtenEffect = "Aftermath: Destroy a random Upgrade in your opponent's shop.";
+            this.creatureData = new CreatureData(6, 5, 2);
+            this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
+        }
+
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (curPlayer == enemy) return;
+
+            if (gameHandler.players[enemy].shop.options.Count() == 0) return;
+            int shop = GameHandler.randomGenerator.Next(0, gameHandler.players[enemy].shop.options.Count());
+            gameHandler.players[enemy].shop.options.RemoveAt(shop);
+            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Mk. IV Super Cobra destroyed a random upgarde in your shop.");
+        }
+    }
+
+    [MechAttribute]
+    public class LivewireBramble : Mech
+    {
+        public LivewireBramble()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Livewire Bramble";
+            this.cardText = this.writtenEffect = "Aftermath: Replace two random Upgrades in your shop with Livewire Brambles.";
+            this.creatureData = new CreatureData(0, 2, 1);
+        }
+
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].shop.options.Count() <= 2)
+            {
+                for (int i=0; i<gameHandler.players[curPlayer].shop.options.Count(); i++)
+                {
+                    gameHandler.players[curPlayer].shop.options[i] = new LivewireBramble();
+                }
+            }
+            else
+            {
+                int pos1, pos2;
+                pos1 = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count());
+                pos2 = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count()-1);
+                if (pos2 >= pos1) pos2++;
+
+                gameHandler.players[curPlayer].shop.options[pos1] = new LivewireBramble();
+                gameHandler.players[curPlayer].shop.options[pos2] = new LivewireBramble();
+            }
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                "Your Livewire Bramble replace two Upgrades in your shop with Livewire Brambles.");
+        }
+    }
+
+    [MechAttribute]
+    public class PeekABot : Mech
+    {
+        public PeekABot()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Peek-a-Bot";
+            this.cardText = this.writtenEffect = "Aftermath: You are told the most expensive Upgrade in your opponent's shop.";
+            this.creatureData = new CreatureData(1, 1, 1);
+        }
+
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (curPlayer == enemy) return;
+
+            List<int> highestCosts = new List<int>();
+            int maxCost = -1;
+            for (int i=0; i<gameHandler.players[enemy].shop.options.Count(); i++)
+            {
+                if (maxCost < gameHandler.players[enemy].shop.options[i].creatureData.cost) maxCost = gameHandler.players[enemy].shop.options[i].creatureData.cost;
+            }
+
+            for (int i=0; i<gameHandler.players[enemy].shop.options.Count(); i++)
+            {
+                if (gameHandler.players[enemy].shop.options[i].creatureData.cost == maxCost) highestCosts.Add(i);
+            }
+
+            int pos = GameHandler.randomGenerator.Next(0, highestCosts.Count());
+
+            gameHandler.players[curPlayer].aftermathMessages.Add($"Your Peek-a-Bot tells you the most expensive Upgrade in your opponent's shop is {gameHandler.players[enemy].shop.options[pos].name}");
+        }
+    }
+
+    [MechAttribute]
+    public class LightningWeasel : Mech
+    {
+        public LightningWeasel()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Lightning Weasel";
+            this.cardText = this.writtenEffect = "Aftermath: Replace the highest-Cost Upgrade in your opponent's shop with a Lightning Weasel.";
+            this.creatureData = new CreatureData(2, 1, 1);
+        }
+
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (curPlayer == enemy) return;
+
+            List<int> highestCosts = new List<int>();
+            int maxCost = -1;
+            for (int i = 0; i < gameHandler.players[enemy].shop.options.Count(); i++)
+            {
+                if (maxCost < gameHandler.players[enemy].shop.options[i].creatureData.cost) maxCost = gameHandler.players[enemy].shop.options[i].creatureData.cost;
+            }
+
+            for (int i = 0; i < gameHandler.players[enemy].shop.options.Count(); i++)
+            {
+                if (gameHandler.players[enemy].shop.options[i].creatureData.cost == maxCost) highestCosts.Add(i);
+            }
+
+            int pos = GameHandler.randomGenerator.Next(0, highestCosts.Count());
+
+            gameHandler.players[enemy].shop.options[pos] = new LightningWeasel();
+            gameHandler.players[enemy].aftermathMessages.Add(
+                $"{gameHandler.players[curPlayer].name}'s Lightning Weasel replaced your highest-Cost Upgrade with a Lightning Weasel.");
+        }
+    }
+
 }
 
 /*

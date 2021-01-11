@@ -25,19 +25,19 @@ namespace ScrapScramble.Game.Cards
             this.cardText = string.Empty;
             this.writtenEffect = string.Empty;
         }
-        public Mech(string name, string cardText, int cost, int attack, int health, Rarity rarity)
-        {
-            this.creatureData = new CreatureData(cost, attack, health);            
-            this.rarity = rarity;
-            this.name = name;
-            this.cardText = cardText;
-        }        
+        //public Mech(string name, string cardText, int cost, int attack, int health, Rarity rarity)
+        //{
+        //    this.creatureData = new CreatureData(cost, attack, health);            
+        //    this.rarity = rarity;
+        //    this.name = name;
+        //    this.cardText = cardText;
+        //    this.writtenEffect = string.Empty;
+        //}        
 
         public override string GetInfo()
         {
             return $"{this.name} - {this.rarity} Mech - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
         }
-
 
         //public Mech(MechJsonTemplate mechJson)
         //{

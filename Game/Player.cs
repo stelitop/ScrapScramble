@@ -195,6 +195,7 @@ namespace ScrapScramble.Game
             string preCombatEffects = string.Empty;
             for (int i=0; i<this.attachedMechs.Count(); i++)
             {
+                if (this.attachedMechs[i].writtenEffect.Equals(string.Empty)) continue;
                 if (this.attachedMechs[i].writtenEffect.StartsWith("Aftermath:")) continue;
 
                 if (isVanilla) preCombatEffects = this.attachedMechs[i].writtenEffect;

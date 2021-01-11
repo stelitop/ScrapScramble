@@ -211,7 +211,7 @@ namespace ScrapScramble.BotRelated.Commands
         {
             var responseMessage = new DiscordEmbedBuilder
             {
-                Title = "List of participants",
+                Title = "List of Participants",
                 Color = DiscordColor.Azure,
                 Description = string.Empty
             };
@@ -226,7 +226,7 @@ namespace ScrapScramble.BotRelated.Commands
                     if (BotInfoHandler.gameHandler.players[i-1].submitted) responseMessage.Description += ":green_square: ";
                     else responseMessage.Description += ":red_square: ";
                 }
-                responseMessage.Description += $"{i}) {BotInfoHandler.gameHandler.players[i-1].name} - {user.Username}";
+                responseMessage.Description += $"{i}) {BotInfoHandler.gameHandler.players[i-1].name} ({user.Username})";
                 if (i != BotInfoHandler.gameHandler.players.Count()) responseMessage.Description += '\n';
             }
 
@@ -256,7 +256,7 @@ namespace ScrapScramble.BotRelated.Commands
 
             for (int i=0; i<BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
             {
-                if (name.Equals(BotInfoHandler.gameHandler.pool.mechs[i].name, StringComparison.OrdinalIgnoreCase))
+                if (BotInfoHandler.gameHandler.pool.mechs[i].name.StartsWith(name, StringComparison.OrdinalIgnoreCase))
                 {
                     Mech mech = BotInfoHandler.gameHandler.pool.mechs[i];
                     responseMessage = new DiscordEmbedBuilder
