@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
@@ -36,14 +37,14 @@ namespace ScrapScramble
                 Token = configJson.Token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
-                MinimumLogLevel = LogLevel.Debug
+                MinimumLogLevel = LogLevel.Debug                
                 //UseInternalLoggingHandler = true
             };
 
-            Client = new DiscordClient(config);
+            Client = new DiscordClient(config);           
 
             //listens to events
-            Client.Ready += OnClientReady;
+            Client.Ready += OnClientReady;           
 
             Client.UseInteractivity(new InteractivityConfiguration
             {
@@ -55,23 +56,29 @@ namespace ScrapScramble
                 StringPrefixes = new string[] { configJson.Prefix },
                 EnableMentionPrefix = true,
                 EnableDms = true
-            };            
+            };
 
             Commands = Client.UseCommandsNext(commandsConfig);
 
             Commands.RegisterCommands<FunCommands>();
             Commands.RegisterCommands<GameCommands>();
             Commands.RegisterCommands<GameOperatorCommands>();
-            Commands.RegisterCommands<PlayerOnlyCommands>();
+            Commands.RegisterCommands<PlayerOnlyCommands>();            
 
-            await Client.ConnectAsync();
+            await Client.ConnectAsync();            
 
             await Task.Delay(-1);
         }
 
-        private Task OnClientReady(DiscordClient client, ReadyEventArgs e)
+        private async Task OnClientReady(DiscordClient client, ReadyEventArgs e)
         {
-            return null;
+            await Client.UpdateStatusAsync(new DiscordActivity
+            {
+                Name = "Scrap Scramble. >help",
+                ActivityType = ActivityType.Playing
+            });
+
+            return;
         }
     }
 }

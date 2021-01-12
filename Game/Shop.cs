@@ -56,16 +56,32 @@ namespace ScrapScramble.Game.Effects
             }
         }
 
-        public string GetShopInfo()
+        public List<string> GetShopInfo()
         {
-            if (this.options.Count() == 0) return "Your shop is empty.";            
+            List<string> retList = new List<string>();
+
+            if (this.options.Count() == 0)
+            {
+                retList.Add("Your shop is empty.");
+                return retList;
+            }
+
             string ret = string.Empty;
             for (int i = 0; i < this.options.Count(); i++)
             {
-                ret += $"{i+1}) " + this.options[i].GetInfo();
+                string newBit = $"{i + 1}) " + this.options[i].GetInfo();
+                //ret += $"{i+1}) " + this.options[i].GetInfo();
+                if (ret.Length + newBit.Length > 1020)
+                {
+                    retList.Add(ret);
+                    ret = string.Empty;
+                }
+
+                ret += newBit;
                 if (i != this.options.Count() - 1) ret += '\n';
             }
-            return ret;
+            retList.Add(ret);
+            return retList;
         }
     }
 }

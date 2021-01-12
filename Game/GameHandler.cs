@@ -28,14 +28,14 @@ namespace ScrapScramble.Game
             this.combatOutputCollector = new CombatOutputCollector();
         }
 
-        public void AddMech(string name)
+        public void AddPlayer(string name)
         {
             this.players.Add(new Player(name));
             this.opponents.Add(this.players.Count() - 1);
 
             //do some other stuff later
         }
-        public void RemoveMech(int index)
+        public void RemovePlayer(int index)
         {
             if (index >= this.players.Count()) return;
 
@@ -56,6 +56,7 @@ namespace ScrapScramble.Game
 
                 this.players[i].shop.Refresh(this.pool, this.maxMana);
                 this.players[i].curMana = this.maxMana;
+                this.players[i].lives = this.startingLives;
 
                 this.players[i].submitted = false;
             }
@@ -176,8 +177,16 @@ namespace ScrapScramble.Game
                 //add an AfterThisAttacks
             }
 
-            if (gameHandler.players[mech1].IsAlive()) gameHandler.combatOutputCollector.combatHeader.Add($"{gameHandler.players[mech1].name} has won!");
-            else gameHandler.combatOutputCollector.combatHeader.Add($"{gameHandler.players[mech2].name} has won!");
+            if (gameHandler.players[mech1].IsAlive())
+            {
+                gameHandler.combatOutputCollector.combatHeader.Add($"{gameHandler.players[mech1].name} has won!");
+                gameHandler.players[mech2].lives--;
+            }
+            else
+            {
+                gameHandler.combatOutputCollector.combatHeader.Add($"{gameHandler.players[mech2].name} has won!");
+                gameHandler.players[mech1].lives--;
+            }
 
             //-combat header
 

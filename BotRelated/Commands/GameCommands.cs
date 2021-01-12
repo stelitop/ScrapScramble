@@ -131,7 +131,7 @@ namespace ScrapScramble.BotRelated.Commands
                 };
 
                 BotInfoHandler.participantsDiscordIds.RemoveAt(mechIndex);
-                BotInfoHandler.gameHandler.RemoveMech(mechIndex);
+                BotInfoHandler.gameHandler.RemovePlayer(mechIndex);
             }
 
             await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
@@ -218,16 +218,18 @@ namespace ScrapScramble.BotRelated.Commands
 
             if (BotInfoHandler.gameHandler.players.Count() == 0) responseMessage.Description = "Nobody has signed up yet.";
 
-            for (int i=1; i<=BotInfoHandler.gameHandler.players.Count(); i++)
+            for (int i=0; i<BotInfoHandler.gameHandler.players.Count(); i++)
             {
-                DiscordUser user = await ctx.Client.GetUserAsync(BotInfoHandler.participantsDiscordIds[i-1]);
+                DiscordUser user = await ctx.Client.GetUserAsync(BotInfoHandler.participantsDiscordIds[i]);
                 if (BotInfoHandler.inGame)
                 {
-                    if (BotInfoHandler.gameHandler.players[i-1].submitted) responseMessage.Description += ":green_square: ";
+                    if (BotInfoHandler.gameHandler.players[i].submitted) responseMessage.Description += ":green_square: ";
                     else responseMessage.Description += ":red_square: ";
                 }
-                responseMessage.Description += $"{i}) {BotInfoHandler.gameHandler.players[i-1].name} ({user.Username})";
-                if (i != BotInfoHandler.gameHandler.players.Count()) responseMessage.Description += '\n';
+                responseMessage.Description += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} ({user.Username})";
+                if (BotInfoHandler.inGame) responseMessage.Description += $" - Lives: {BotInfoHandler.gameHandler.players[i].lives}";
+
+                if (i != BotInfoHandler.gameHandler.players.Count()-1) responseMessage.Description += '\n';
             }
 
             await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);

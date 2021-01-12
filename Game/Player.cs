@@ -27,6 +27,8 @@ namespace ScrapScramble.Game
 
         public bool submitted;
 
+        public int lives;
+
         public Player()
         {
             this.creatureData = new CreatureData();
@@ -39,22 +41,15 @@ namespace ScrapScramble.Game
             this.aftermathMessages = new List<string>();
             this.overloaded = 0;
             this.submitted = false;
+            this.lives = 0;
         }
-        public Player(string name)
+        public Player(string name) : this()
         {
-            this.creatureData = new CreatureData();
-            this.shop = new Shop();
-            this.hand = new Hand();
             this.name = name;
-            this.attachedMechs = new List<Mech>();
-            this.curMana = 10;
-            this.destroyed = false;
-            this.aftermathMessages = new List<string>();
-            this.submitted = false;
         }
 
         public string PrintInfo(ref GameHandler gameHandler)
-        {
+        {   
             string ret = string.Empty;
 
             ret += $"**{this.creatureData.attack}/{this.creatureData.health}**\n";

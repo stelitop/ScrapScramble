@@ -275,5 +275,26 @@ namespace ScrapScramble.BotRelated.Commands
                 Color = DiscordColor.Green
             }).ConfigureAwait(false);
         }
+
+        [Command("removedead")]
+        [RequireIngame]
+        public async Task RemoveDeadPlayers(CommandContext ctx)
+        {
+            string deadNames = string.Empty;
+            for (int i=0; i<BotInfoHandler.gameHandler.players.Count(); i++)
+            {
+                if (BotInfoHandler.gameHandler.players[i].lives <= 0)
+                {
+                    deadNames = $"{deadNames}{BotInfoHandler.gameHandler.players[i].name} ";
+                    BotInfoHandler.RemovePlayer(i);
+                    i--;
+                }
+            }
+
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder{
+                Title = $"{deadNames}Have Been Eliminated",
+                Color = DiscordColor.Aquamarine
+            }).ConfigureAwait(false);
+        }
     }
 }

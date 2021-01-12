@@ -15,8 +15,11 @@ namespace ScrapScramble.BotRelated
         public static List<ulong> participantsDiscordIds = new List<ulong>();
         public static bool inGame = false;
         public static bool shopsSent = false;
+
         public static List<DiscordMessage> UIMessages = new List<DiscordMessage>();
+
         public static DiscordMessage interactivePlayerList = null;
+        public static DiscordUser interactivePlayerListCaller = null;
 
         public BotInfoHandler()
         {
@@ -26,7 +29,7 @@ namespace ScrapScramble.BotRelated
         public static void AddPlayer(CommandContext ctx, string name)
         {
             BotInfoHandler.participantsDiscordIds.Add(ctx.User.Id);
-            BotInfoHandler.gameHandler.AddMech(name);
+            BotInfoHandler.gameHandler.AddPlayer(name);
             BotInfoHandler.UIMessages.Add(null);
         }
         public static void RemovePlayer(int index)
@@ -82,17 +85,18 @@ namespace ScrapScramble.BotRelated
             string aftermathMsg = gameHandler.players[index].GetAftermathMessages();            
             if (!aftermathMsg.Equals(string.Empty)) msg.AddField("[Aftermath]", aftermathMsg);
 
-            Console.WriteLine(1);
+            
             msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfo(ref BotInfoHandler.gameHandler));
-            Console.WriteLine(2);
-            // BREAKS BECAUSE OF THE NEXT LINE
-            string shopValue = gameHandler.players[index].shop.GetShopInfo();
-            Console.WriteLine($"{shopValue}, {shopValue.Length}");
-            Console.WriteLine(3);
-            msg.AddField($"[Round {BotInfoHandler.gameHandler.currentRound} Shop]", shopValue);
-            Console.WriteLine(4);
+            
+            List<string> shopValue = gameHandler.players[index].shop.GetShopInfo();
+
+            for (int i=0; i<shopValue.Count(); i++)
+            {
+                msg.AddField($"[Round {BotInfoHandler.gameHandler.currentRound} Shop]", shopValue[i]);
+            }
+
             msg.AddField("[Your Hand]", gameHandler.players[index].hand.GetHandInfo());
-            Console.WriteLine(5);
+
 
             await UIMessages[index].ModifyAsync(embed: msg.Build()).ConfigureAwait(false);  
         }
@@ -100,6 +104,7 @@ namespace ScrapScramble.BotRelated
         public static async Task SendNewPlayerList(CommandContext ctx)
         {
             interactivePlayerList = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { Color = DiscordColor.Aquamarine}).ConfigureAwait(false);
+            interactivePlayerListCaller = ctx.User;
 
             await RefreshPlayerList(ctx);
         }
@@ -115,21 +120,34 @@ namespace ScrapScramble.BotRelated
                 Description = string.Empty
             };
 
-            if (BotInfoHandler.gameHandler.players.Count() == 0) responseMessage.Description = "Nobody has signed up yet.";            
+            if (BotInfoHandler.gameHandler.players.Count() == 0) responseMessage.Description = "Nobody has signed up yet.";
+
+            int readyNum = 0;
 
             for (int i = 0; i < BotInfoHandler.gameHandler.players.Count(); i++)
             {
                 DiscordUser user = await ctx.Client.GetUserAsync(BotInfoHandler.participantsDiscordIds[i]);
                 if (BotInfoHandler.inGame)
                 {
-                    if (BotInfoHandler.gameHandler.players[i].submitted) responseMessage.Description += ":green_square: ";
+                    if (BotInfoHandler.gameHandler.players[i].submitted)
+                    {
+                        readyNum++;
+                        responseMessage.Description += ":green_square: ";
+                    }
                     else responseMessage.Description += ":red_square: ";
                 }
                 responseMessage.Description += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} ({user.Username})";
-                if (i != BotInfoHandler.gameHandler.players.Count()) responseMessage.Description += '\n';
+                if (BotInfoHandler.inGame) responseMessage.Description += $" - Lives: {BotInfoHandler.gameHandler.players[i].lives}";
+
+                if (i != BotInfoHandler.gameHandler.players.Count()-1) responseMessage.Description += '\n';
             }
 
             await interactivePlayerList.ModifyAsync(embed: responseMessage.Build()).ConfigureAwait(false);
+
+            if (readyNum == BotInfoHandler.gameHandler.players.Count())
+            {
+                await interactivePlayerList.Channel.SendMessageAsync($"Hey {interactivePlayerListCaller.Mention}, all players have submitted!").ConfigureAwait(false);
+            }
         }
     }
 }

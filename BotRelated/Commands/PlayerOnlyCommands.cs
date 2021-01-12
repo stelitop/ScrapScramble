@@ -30,17 +30,21 @@ namespace ScrapScramble.BotRelated.Commands
             await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
         }
 
-        //[Command("shop")]
+        [Command("shop")]
         public async Task ResentShop(CommandContext ctx)
         {
             int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
 
             var shopEmbed = new DiscordEmbedBuilder
             {
-                Title = $"Round {BotInfoHandler.gameHandler.currentRound} Shop",
-                Description = BotInfoHandler.gameHandler.players[index].shop.GetShopInfo(),
+                Title = $"Round {BotInfoHandler.gameHandler.currentRound} Shop",               
                 Color = DiscordColor.Azure
             };
+            List<string> shopList = BotInfoHandler.gameHandler.players[index].shop.GetShopInfo();
+            for (int i=0; i<shopList.Count(); i++)
+            {
+                shopEmbed.AddField("Shop", shopList[i]);
+            }
 
             await ctx.RespondAsync(embed: shopEmbed).ConfigureAwait(false);
         }
