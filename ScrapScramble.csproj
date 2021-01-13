@@ -155,6 +155,7 @@
     <Compile Include="BotRelated\Commands\PlayerOnlyCommands.cs" />
     <Compile Include="ConfigJson.cs" />
     <Compile Include="Game\Cards\Card.cs" />
+    <Compile Include="Game\Cards\CardsFilter.cs" />
     <Compile Include="Game\Cards\Mech.cs" />
     <Compile Include="Game\Cards\MechJsonTemplate.cs" />
     <Compile Include="Game\Cards\Mechs\CommonMechs.cs" />

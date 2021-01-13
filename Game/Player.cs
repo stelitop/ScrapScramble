@@ -79,7 +79,7 @@ namespace ScrapScramble.Game
 
         public void AttachMech(Mech mech, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            this.attachedMechs.Add(mech.DeepCopy());
+            this.attachedMechs.Add((Mech)mech.DeepCopy());
 
             if (mech.creatureData.staticKeywords[StaticKeyword.Binary] > 0)
             {
@@ -189,8 +189,9 @@ namespace ScrapScramble.Game
 
             string preCombatEffects = string.Empty;
             for (int i=0; i<this.attachedMechs.Count(); i++)
-            {
+            {                
                 if (this.attachedMechs[i].writtenEffect.Equals(string.Empty)) continue;
+                if (!this.attachedMechs[i].printEffectInCombat) continue;
                 if (this.attachedMechs[i].writtenEffect.StartsWith("Aftermath:")) continue;
 
                 if (isVanilla) preCombatEffects = this.attachedMechs[i].writtenEffect;
@@ -222,7 +223,6 @@ namespace ScrapScramble.Game
                     if (kw.Key == StaticKeyword.Overload) continue;
                     gameHandler.combatOutputCollector.statsHeader.Add($"{kw.Key}: {kw.Value}");
                 }
-                //should show writtenEffects
             }
 
             if (!preCombatEffects.Equals(string.Empty)) gameHandler.combatOutputCollector.statsHeader.Add(preCombatEffects);

@@ -85,7 +85,6 @@ namespace ScrapScramble.BotRelated
             string aftermathMsg = gameHandler.players[index].GetAftermathMessages();            
             if (!aftermathMsg.Equals(string.Empty)) msg.AddField("[Aftermath]", aftermathMsg);
 
-            
             msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfo(ref BotInfoHandler.gameHandler));
             
             List<string> shopValue = gameHandler.players[index].shop.GetShopInfo();
@@ -95,8 +94,12 @@ namespace ScrapScramble.BotRelated
                 msg.AddField($"[Round {BotInfoHandler.gameHandler.currentRound} Shop]", shopValue[i]);
             }
 
-            msg.AddField("[Your Hand]", gameHandler.players[index].hand.GetHandInfo());
+            List<string> handValue = gameHandler.players[index].hand.GetHandInfo();
 
+            for (int i=0; i<handValue.Count(); i++)
+            {
+                msg.AddField("[Your Hand]", handValue[i]);
+            }
 
             await UIMessages[index].ModifyAsync(embed: msg.Build()).ConfigureAwait(false);  
         }

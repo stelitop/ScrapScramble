@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game.Cards
 {
-    public class Card
-    { 
-        public virtual bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy) { return false; }
-        public virtual bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy) { return false; }
-        public virtual string GetInfo() { return string.Empty; }
+    public abstract class Card
+    {
+        public abstract bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy);
+        public abstract bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy);
+        public abstract string GetInfo();
+        public abstract Card DeepCopy();
     }
 }

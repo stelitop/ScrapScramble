@@ -334,6 +334,103 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    [MechAttribute]
+    public class SocietyProgressor : Mech
+    {
+        public SocietyProgressor()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Society Progressor";
+            this.cardText = this.writtenEffect = "Aftermath: Remove Binary from all Upgrades in your opponent's shop.";
+            this.creatureData = new CreatureData(4, 1, 6);
+        }
+
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (curPlayer == enemy) return;
+
+            for (int i=0; i<gameHandler.players[enemy].shop.options.Count(); i++)
+            {
+                if (gameHandler.players[enemy].shop.options[i].creatureData.staticKeywords[StaticKeyword.Binary] > 0)
+                {
+                    gameHandler.players[enemy].shop.options[i].creatureData.staticKeywords[StaticKeyword.Binary] = 0;
+                    gameHandler.players[enemy].shop.options[i].cardText += "(No Binary)";
+                }
+            }
+
+            gameHandler.players[enemy].aftermathMessages.Add(
+                $"{gameHandler.players[curPlayer].name}'s Society Progressor removed Binary from all Upgrades in your shop.");
+        }
+    }
+
+    [MechAttribute]
+    public class SiliconGrenadeBelt : Mech
+    {
+        public SiliconGrenadeBelt()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Silicon Grenade Belt";
+            this.cardText = this.writtenEffect = "Start of Combat: Deal 1 damage to the enemy Mech, twice.";
+            this.creatureData = new CreatureData(4, 4, 2);
+        }
+
+        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[enemy].TakeDamage(1, ref gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Silicon Grenade Belt deals 1 damage, ");
+            gameHandler.players[enemy].TakeDamage(1, ref gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Silicon Grenade Belt deals 1 damage, ");
+        }
+    }
+
+    [MechAttribute]
+    public class ScrapStacker : Mech
+    {
+        public ScrapStacker()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Scrap Stacker";
+            this.cardText = this.writtenEffect = "After you buy another Upgrade, gain +2/+2.";
+            this.printEffectInCombat = false;
+            this.creatureData = new CreatureData(0, 0, 0);
+        }
+
+        public override void OnBuyingAMech(Mech m, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.attack += 2;
+            gameHandler.players[curPlayer].creatureData.health += 2;
+        }
+    }
+
+    [MechAttribute]
+    public class PacifisticRecruitomatic : Mech
+    {
+        public PacifisticRecruitomatic()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Pacifistic Recruitomatic";
+            this.cardText = this.writtenEffect = "Aftermath: Add 3 random 0-Attack Upgrades to your shop.";
+            this.creatureData = new CreatureData(2, 0, 3);
+        }
+
+        private bool Criteria(Mech m)
+        {
+            if (m.creatureData.attack == 0) return true;
+            return false;
+        }
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
+
+            for (int i = 0; i < 3; i++)
+            {
+                int pos = GameHandler.randomGenerator.Next(0, list.Count());
+                gameHandler.players[curPlayer].shop.options.Add((Mech)list[pos].DeepCopy());
+            }
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                "Your Pacifistic Recruitomatic adds 3 random 0-Attack Upgrades to your shop.");
+        }
+    }
+
 }
 
 /*

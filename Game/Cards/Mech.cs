@@ -9,12 +9,14 @@ namespace ScrapScramble.Game.Cards
 {
     [Serializable]
     public class Mech : Card, IComparable<Mech>
-    {
+    {       
         public CreatureData creatureData;
         public Rarity rarity;
 
         public string name;
         public string cardText;
+
+        public bool printEffectInCombat = true;
         public string writtenEffect;
 
         public Mech()
@@ -69,7 +71,10 @@ namespace ScrapScramble.Game.Cards
 
             //TODO: add this to memory
 
-            //TODO: OnBuyingMech condition
+            for (int i=0; i<gameHandler.players[curPlayer].attachedMechs.Count(); i++)
+            {                
+                gameHandler.players[curPlayer].attachedMechs[i].OnBuyingAMech(this, ref gameHandler, curPlayer, enemy);
+            }
 
             gameHandler.players[curPlayer].AttachMech(this, ref gameHandler, curPlayer, enemy);
             return true;
@@ -83,6 +88,7 @@ namespace ScrapScramble.Game.Cards
         public virtual void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void OnBuyingAMech(Mech m, ref GameHandler gameHandler, int curPlayer, int enemy) { }
 
         public int CompareTo(Mech other)
         {
@@ -92,9 +98,9 @@ namespace ScrapScramble.Game.Cards
             return this.name.CompareTo(other.name);
         }
 
-        public Mech DeepCopy()
+        public override Card DeepCopy()
         {
-            Mech ret = (Mech)Activator.CreateInstance(this.GetType());            
+            Mech ret = (Mech)Activator.CreateInstance(this.GetType());
             ret.name = this.name;
             ret.rarity = this.rarity;
             ret.cardText = this.cardText;

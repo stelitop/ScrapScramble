@@ -100,6 +100,32 @@ namespace ScrapScramble.Game.Cards.Mechs
                 $"Your Investotron transforms a random Upgrade in your shop into an Investotron and gives you +4/+4, leaving you as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
         }
     }
+
+    [MechAttribute]
+    public class MassAccelerator : Mech
+    {
+        public MassAccelerator()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Mass Accelerator";
+            this.cardText = "Start of Combat: If you're Overloaded, deal 5 damage to the enemy Mech.";
+            this.creatureData = new CreatureData(6, 5, 5);
+        }
+
+        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload] > 0 || gameHandler.players[curPlayer].overloaded > 0)
+            {
+                gameHandler.players[enemy].TakeDamage(5, ref gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Mass Accelerator triggers and deals 5 damage, ");
+            }
+            else
+            {
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Mass Accelerator fails to trigger.");
+            }
+        }
+    }
+
 }
 
 /*

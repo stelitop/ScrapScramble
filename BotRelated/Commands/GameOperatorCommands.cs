@@ -61,6 +61,12 @@ namespace ScrapScramble.BotRelated.Commands
                 BotInfoHandler.gameHandler.currentRound = 1;
                 await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
 
+                await ctx.Client.UpdateStatusAsync(new DiscordActivity
+                {
+                    Name = "Scrap Scramble | >help",
+                    ActivityType = ActivityType.Playing
+                });
+
                 await SendShops(ctx);
             }
 
@@ -126,6 +132,12 @@ namespace ScrapScramble.BotRelated.Commands
             BotInfoHandler.participantsDiscordIds.Clear();
             BotInfoHandler.shopsSent = false;
             BotInfoHandler.UIMessages.Clear();
+
+            await ctx.Client.UpdateStatusAsync(new DiscordActivity
+            {
+                Name = $"({BotInfoHandler.participantsDiscordIds.Count()}) Waiting to >signup",
+                ActivityType = ActivityType.Playing
+            });
 
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder{
                 Title = "Game Cancelled Successfully",

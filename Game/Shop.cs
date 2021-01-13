@@ -28,7 +28,7 @@ namespace ScrapScramble.Game.Effects
             for (int i = 0; i < legendaries; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
-                this.options.Add(m.DeepCopy());
+                this.options.Add((Mech)m.DeepCopy());
             }
 
             subList.Clear();
@@ -36,7 +36,7 @@ namespace ScrapScramble.Game.Effects
             for (int i = 0; i < epics; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];                
-                this.options.Add(m.DeepCopy());
+                this.options.Add((Mech)m.DeepCopy());
             }
 
             subList.Clear();
@@ -44,7 +44,7 @@ namespace ScrapScramble.Game.Effects
             for (int i = 0; i < rares; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
-                this.options.Add(m.DeepCopy());
+                this.options.Add((Mech)m.DeepCopy());
             }
 
             subList.Clear();
@@ -52,7 +52,7 @@ namespace ScrapScramble.Game.Effects
             for (int i = 0; i < commons; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
-                this.options.Add(m.DeepCopy());
+                this.options.Add((Mech)m.DeepCopy());
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScrapScramble.BotRelated;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -567,6 +568,131 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(30, 30, 30);            
         }
     }
+
+    [MechAttribute]
+    public class BronzeBruiser : Mech
+    {
+        public BronzeBruiser()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Bronze Bruiser";
+            this.cardText = this.writtenEffect = "Aftermath: Add 4 random Common Upgrades to your shop.";
+            this.creatureData = new CreatureData(2, 1, 2);
+        }
+
+        private bool Criteria(Mech m)
+        {
+            if (m.rarity == Rarity.Common) return true;
+            return false;
+        }
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
+
+            for (int i=0; i<4; i++)
+            {
+                int pos = GameHandler.randomGenerator.Next(0, list.Count());
+                gameHandler.players[curPlayer].shop.options.Add((Mech)list[pos].DeepCopy());
+            }
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                "Your Bronze Bruiser adds 4 random Common Upgrades to your shop.");
+        }
+    }
+
+    [MechAttribute]
+    public class SilverShogun : Mech
+    {
+        public SilverShogun()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Silver Shogun";
+            this.cardText = this.writtenEffect = "Aftermath: Add 3 random Rare Upgrades to your shop.";
+            this.creatureData = new CreatureData(3, 2, 3);
+        }
+
+        private bool Criteria(Mech m)
+        {
+            if (m.rarity == Rarity.Rare) return true;
+            return false;
+        }
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
+
+            for (int i = 0; i < 3; i++)
+            {
+                int pos = GameHandler.randomGenerator.Next(0, list.Count());
+                gameHandler.players[curPlayer].shop.options.Add((Mech)list[pos].DeepCopy());
+            }
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                "Your Silver Shogun adds 3 random Rare Upgrades to your shop.");
+        }
+    }
+
+    [MechAttribute]
+    public class GoldenGunner : Mech
+    {
+        public GoldenGunner()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Golden Gunner";
+            this.cardText = this.writtenEffect = "Aftermath: Add 2 random Epic Upgrades to your shop.";
+            this.creatureData = new CreatureData(4, 3, 4);
+        }
+
+        private bool Criteria(Mech m)
+        {
+            if (m.rarity == Rarity.Epic) return true;
+            return false;
+        }
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
+
+            for (int i = 0; i < 2; i++)
+            {
+                int pos = GameHandler.randomGenerator.Next(0, list.Count());
+                gameHandler.players[curPlayer].shop.options.Add((Mech)list[pos].DeepCopy());
+            }
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                "Your Golden Gunner adds 2 random Epic Upgrades to your shop.");
+        }
+    }
+
+    [MechAttribute]
+    public class PlatinumParagon : Mech
+    {
+        public PlatinumParagon()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Platinum Paragon";
+            this.cardText = this.writtenEffect = "Aftermath: Add 1 random Legendary Upgrade to your shop.";
+            this.creatureData = new CreatureData(5, 4, 5);
+        }
+
+        private bool Criteria(Mech m)
+        {
+            if (m.rarity == Rarity.Legendary) return true;
+            return false;
+        }
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
+
+            for (int i = 0; i < 1; i++)
+            {
+                int pos = GameHandler.randomGenerator.Next(0, list.Count());
+                gameHandler.players[curPlayer].shop.options.Add((Mech)list[pos].DeepCopy());
+            }
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                "Your Platinum Paragon adds 1 random Legendary Upgrade to your shop.");
+        }
+    }
+
 }
 
 /*

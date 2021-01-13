@@ -16,16 +16,32 @@ namespace ScrapScramble.Game
             this.cards = new List<Card>();
         }
 
-        public string GetHandInfo()
+        public List<string> GetHandInfo()
         {
-            if (this.cards.Count() == 0) return "Your hand is empty.";
-            string ret = string.Empty;
-            for (int i=0; i<this.cards.Count(); i++)
+            List<string> retList = new List<string>();
+
+            if (this.cards.Count() == 0)
             {
-                ret += $"{i+1}) " + this.cards[i].GetInfo();
+                retList.Add("Your hand is empty.");
+                return retList;
+            }
+
+            string ret = string.Empty;
+            for (int i = 0; i < this.cards.Count(); i++)
+            {
+                string newBit = $"{i + 1}) " + this.cards[i].GetInfo();
+                //ret += $"{i+1}) " + this.cards[i].GetInfo();
+                if (ret.Length + newBit.Length > 1020)
+                {
+                    retList.Add(ret);
+                    ret = string.Empty;
+                }
+
+                ret += newBit;
                 if (i != this.cards.Count() - 1) ret += '\n';
             }
-            return ret;
+            retList.Add(ret);
+            return retList;
         }
     }
 }

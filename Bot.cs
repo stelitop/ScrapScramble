@@ -6,6 +6,7 @@ using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using ScrapScramble.BotRelated;
 using ScrapScramble.BotRelated.Commands;
 using System;
 using System.Collections.Generic;
@@ -74,7 +75,7 @@ namespace ScrapScramble
         {
             await Client.UpdateStatusAsync(new DiscordActivity
             {
-                Name = "Scrap Scramble. >help",
+                Name = $"({BotInfoHandler.participantsDiscordIds.Count()}) Waiting to >signup",
                 ActivityType = ActivityType.Playing
             });
 

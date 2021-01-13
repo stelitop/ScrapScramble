@@ -76,8 +76,8 @@ namespace ScrapScramble.BotRelated.Commands
                 }
                 else
                 {
-                    //everything epic
-                    BotInfoHandler.AddPlayer(ctx, name);
+                    //everything's correct
+                    BotInfoHandler.AddPlayer(ctx, name);                    
 
                     responseMessage = new DiscordEmbedBuilder
                     {
@@ -85,6 +85,12 @@ namespace ScrapScramble.BotRelated.Commands
                         Description = $"Your Mech is called \"{name}\"",
                         Color = DiscordColor.Green
                     };
+
+                    await ctx.Client.UpdateStatusAsync(new DiscordActivity
+                    {
+                        Name = $"({BotInfoHandler.participantsDiscordIds.Count()}) Waiting to >signup",
+                        ActivityType = ActivityType.Playing
+                    });
                 }
             }
 
@@ -132,6 +138,12 @@ namespace ScrapScramble.BotRelated.Commands
 
                 BotInfoHandler.participantsDiscordIds.RemoveAt(mechIndex);
                 BotInfoHandler.gameHandler.RemovePlayer(mechIndex);
+
+                await ctx.Client.UpdateStatusAsync(new DiscordActivity
+                {
+                    Name = $"({BotInfoHandler.participantsDiscordIds.Count()}) Waiting to >signup",
+                    ActivityType = ActivityType.Playing
+                });
             }
 
             await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
