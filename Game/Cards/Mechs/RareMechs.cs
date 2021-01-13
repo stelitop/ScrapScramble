@@ -390,7 +390,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.name = "Scrap Stacker";
             this.cardText = this.writtenEffect = "After you buy another Upgrade, gain +2/+2.";
             this.printEffectInCombat = false;
-            this.creatureData = new CreatureData(0, 0, 0);
+            this.creatureData = new CreatureData(8, 4, 4);
         }
 
         public override void OnBuyingAMech(Mech m, ref GameHandler gameHandler, int curPlayer, int enemy)
@@ -428,6 +428,31 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
                 "Your Pacifistic Recruitomatic adds 3 random 0-Attack Upgrades to your shop.");
+        }
+    }
+
+    [MechAttribute]
+    public class ElectricBoogaloo : Mech
+    {
+        public ElectricBoogaloo()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Electric Boogaloo";
+            this.cardText = "Echo. Aftermath: Give a random Upgrade in your shop +4 Attack.";
+            this.writtenEffect = "Aftermath: Give a random Upgrade in your shop +4 Attack.";
+            this.creatureData = new CreatureData(3, 1, 4);
+            this.creatureData.staticKeywords[StaticKeyword.Echo] = 1;
+        }
+
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
+
+            int shop = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count());
+            gameHandler.players[curPlayer].shop.options[shop].creatureData.attack += 4;
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Electric Boogaloo gave the {gameHandler.players[curPlayer].shop.options[shop].name} in your shop +4 Attack.");
         }
     }
 

@@ -14,7 +14,7 @@ namespace ScrapScramble.Game
         Binary,
         Shields,
         Spikes,
-        Overload
-
+        Overload,
+        Echo
     }
 }

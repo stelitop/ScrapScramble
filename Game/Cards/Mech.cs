@@ -107,5 +107,9 @@ namespace ScrapScramble.Game.Cards
             ret.creatureData = this.creatureData.DeepCopy();
             return ret;
         }
+        public Mech BasicCopy()
+        {
+            return (Mech)Activator.CreateInstance(this.GetType());
+        }
     }
 }

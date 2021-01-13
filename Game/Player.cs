@@ -81,13 +81,20 @@ namespace ScrapScramble.Game
         {
             this.attachedMechs.Add((Mech)mech.DeepCopy());
 
+            if (mech.creatureData.staticKeywords[StaticKeyword.Echo] > 0)
+            {
+                gameHandler.players[curPlayer].shop.options.Add(mech.BasicCopy());
+            }
+
             if (mech.creatureData.staticKeywords[StaticKeyword.Binary] > 0)
             {
                 mech.creatureData.staticKeywords[StaticKeyword.Binary]--;
-                mech.cardText += " (No Binary)";
+
+                Mech binaryLessCopy = mech.BasicCopy();
+                binaryLessCopy.cardText += " (No Binary)";
 
                 //the copy should have basic stats
-                gameHandler.players[curPlayer].hand.cards.Add(mech.DeepCopy());
+                gameHandler.players[curPlayer].hand.cards.Add(binaryLessCopy);
 
             }
             mech.creatureData.staticKeywords[StaticKeyword.Binary] = 0;
