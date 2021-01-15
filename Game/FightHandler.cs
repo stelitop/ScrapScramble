@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class MechAttribute : Attribute
+    public class FightHandler
     {
-        public MechAttribute()
-        {
 
-        }
     }
 }

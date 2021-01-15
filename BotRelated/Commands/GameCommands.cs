@@ -304,7 +304,8 @@ namespace ScrapScramble.BotRelated.Commands
             {
                 Title = "List of Upgrades",
                 Description = $"Page {page}/{totalPages}",
-                Color = DiscordColor.Azure                
+                Color = DiscordColor.Azure,
+                Footer = new DiscordEmbedBuilder.EmbedFooter { Text = $"Total Upgrades: {BotInfoHandler.gameHandler.pool.mechs.Count()}"}
             };
 
             Rarity lastRarity = Rarity.NO_RARITY;

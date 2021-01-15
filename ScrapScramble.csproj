@@ -162,12 +162,14 @@
     <Compile Include="Game\Cards\Mechs\EpicMechs.cs" />
     <Compile Include="Game\Cards\Mechs\LegendaryMechs.cs" />
     <Compile Include="Game\Cards\Mechs\RareMechs.cs" />
+    <Compile Include="Game\Cards\Mechs\VentureCo.cs" />
     <Compile Include="Game\Cards\Rarity.cs" />
     <Compile Include="Game\CombatOutputCollector.cs" />
     <Compile Include="Game\CreatureData.cs" />
+    <Compile Include="Game\FightHandler.cs" />
     <Compile Include="Game\Hand.cs" />
     <Compile Include="Game\Cards\MinionPool.cs" />
-    <Compile Include="Game\MechAttribute.cs" />
+    <Compile Include="Game\UpgradeAttribute.cs" />
     <Compile Include="Game\Shop.cs" />
     <Compile Include="Game\GameHandler.cs" />
     <Compile Include="Game\Player.cs" />

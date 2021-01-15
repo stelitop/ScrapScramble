@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game.Cards.Mechs
 {
-    [MechAttribute]
+    [UpgradeAttribute]
     public class HardPuncher : Mech
     {
         public HardPuncher()
@@ -19,7 +19,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class SpringedSmilebot : Mech
     {
         public SpringedSmilebot()
@@ -32,7 +32,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class RunawayTire : Mech
     {
         public RunawayTire()
@@ -45,7 +45,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class MedievalSpikeball : Mech
     {
         public MedievalSpikeball()
@@ -63,7 +63,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class HeavyDutyPlating : Mech
     {
         public HeavyDutyPlating()
@@ -76,7 +76,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class RefurbishePlating : Mech
     {
         public RefurbishePlating()
@@ -93,7 +93,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class Healthbox : Mech
     {
         public Healthbox()
@@ -112,7 +112,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class Microchip : Mech
     {
         public Microchip()
@@ -125,7 +125,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class Oilmental : Mech
     {
         public Oilmental()
@@ -148,7 +148,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class RustedJunkwarden : Mech
     {
         public RustedJunkwarden()
@@ -161,7 +161,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class SwindlersCoin : Mech
     {
         public SwindlersCoin()
@@ -176,19 +176,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
-    public class VentureCoSticker : Mech
-    {
-        public VentureCoSticker()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Venture Co. Sticker";
-            this.cardText = string.Empty;
-            this.creatureData = new CreatureData(1, 0, 2);
-        }
-    }
-
-    [MechAttribute]
+    [UpgradeAttribute]
     public class ArmOfExotron : Mech
     {
         public ArmOfExotron()
@@ -205,7 +193,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class LegOfExotron : Mech
     {
         public LegOfExotron()
@@ -222,7 +210,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class ChainMail : Mech
     {
         public ChainMail()
@@ -241,7 +229,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class TrafficCone : Mech
     {
         public TrafficCone()
@@ -260,7 +248,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class MetalgillSnapper : Mech
     {
         public MetalgillSnapper()
@@ -273,7 +261,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class MotherboardOfExotron : Mech
     {
         public MotherboardOfExotron()
@@ -287,7 +275,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class ProtectiveFirewall : Mech
     {
         public ProtectiveFirewall()
@@ -301,7 +289,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class RivetedTrinked : Mech
     {
         public RivetedTrinked()
@@ -319,7 +307,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class TankTreads : Mech
     {
         public TankTreads()
@@ -338,7 +326,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class WheelOfExotron : Mech
     {
         public WheelOfExotron()
@@ -356,7 +344,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class MalfunctioningPuncher : Mech
     {
         public MalfunctioningPuncher()
@@ -378,7 +366,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class HelicopterBlades : Mech
     {
         public HelicopterBlades()
@@ -397,7 +385,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class ShieldbotClanker : Mech
     {
         public ShieldbotClanker()
@@ -421,7 +409,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class SpikebotShanker : Mech
     {
         public SpikebotShanker()
@@ -445,7 +433,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class SpeedyProcessor : Mech
     {
         public SpeedyProcessor()
@@ -459,7 +447,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class LeadHead : Mech
     {
         public LeadHead()
@@ -472,7 +460,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class OneHitWonder : Mech
     {
         public OneHitWonder()
@@ -491,7 +479,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class Steamfunk : Mech
     {
         public Steamfunk()
@@ -512,7 +500,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class PrismaticBarrier : Mech
     {
         public PrismaticBarrier()
@@ -531,7 +519,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class SixpistolConstable : Mech
     {
         public SixpistolConstable()
@@ -544,7 +532,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class TwoHeadedColossus : Mech
     {
         public TwoHeadedColossus()
@@ -557,7 +545,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class OrbitalMechanosphere : Mech
     {
         public OrbitalMechanosphere()
@@ -569,7 +557,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class BronzeBruiser : Mech
     {
         public BronzeBruiser()
@@ -600,7 +588,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class SilverShogun : Mech
     {
         public SilverShogun()
@@ -631,7 +619,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class GoldenGunner : Mech
     {
         public GoldenGunner()
@@ -662,7 +650,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class PlatinumParagon : Mech
     {
         public PlatinumParagon()
@@ -697,7 +685,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
 /*
 
-[MechAttribute]
+[UpgradeAttribute]
 public class NextMech : Mech
 {
     public NextMech()

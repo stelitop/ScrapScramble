@@ -13,7 +13,6 @@ namespace ScrapScramble.Game.Cards
         public CreatureData creatureData;
         public Rarity rarity;
 
-        public string name;
         public string cardText;
 
         public bool printEffectInCombat = true;
@@ -69,8 +68,6 @@ namespace ScrapScramble.Game.Cards
 
             gameHandler.players[curPlayer].curMana -= this.creatureData.cost;
 
-            //TODO: add this to memory
-
             for (int i=0; i<gameHandler.players[curPlayer].attachedMechs.Count(); i++)
             {                
                 gameHandler.players[curPlayer].attachedMechs[i].OnBuyingAMech(this, ref gameHandler, curPlayer, enemy);
@@ -89,6 +86,8 @@ namespace ScrapScramble.Game.Cards
         public virtual void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void OnBuyingAMech(Mech m, ref GameHandler gameHandler, int curPlayer, int enemy) { }
+
+        public virtual void AfterThisTakesDamage(int damage, ref GameHandler gameHandler, int curPlayer, int enemy) { }
 
         public int CompareTo(Mech other)
         {

@@ -178,7 +178,7 @@ namespace ScrapScramble.BotRelated.Commands
             string msg = string.Empty;
             for (int i=0; i<BotInfoHandler.gameHandler.opponents.Count(); i++)
             {
-                if (i < BotInfoHandler.gameHandler.opponents[i]) msg += $"{i}) {BotInfoHandler.gameHandler.players[i].name} vs {BotInfoHandler.gameHandler.opponents[i]}) {BotInfoHandler.gameHandler.players[BotInfoHandler.gameHandler.opponents[i]].name}\n";
+                if (i < BotInfoHandler.gameHandler.opponents[i]) msg += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} vs {BotInfoHandler.gameHandler.opponents[i]+1}) {BotInfoHandler.gameHandler.players[BotInfoHandler.gameHandler.opponents[i]].name}\n";
             }
             if (msg.Equals(string.Empty)) msg = "No pairs have been assigned yet.";
             else msg.Trim();
@@ -278,7 +278,7 @@ namespace ScrapScramble.BotRelated.Commands
         public async Task SetStartingLives(CommandContext ctx, int num)
         {
             if (num < 1) num = 1;
-            BotInfoHandler.gameHandler.currentRound = num;
+            BotInfoHandler.gameHandler.startingLives = num;
 
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {

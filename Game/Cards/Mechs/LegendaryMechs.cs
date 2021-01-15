@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game.Cards.Mechs
 {
-    //[MechAttribute]
+    //[UpgradeAttribute]
     public class CheapFillerLegendary : Mech
     {
         public CheapFillerLegendary()
@@ -19,7 +19,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class LadyInByte : Mech
     {
         public LadyInByte()
@@ -38,7 +38,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
     
-    [MechAttribute]
+    [UpgradeAttribute]
     public class Solartron3000 : Mech
     {
         private bool triggered;
@@ -64,11 +64,59 @@ namespace ScrapScramble.Game.Cards.Mechs
             }
         }
     }
+
+    [UpgradeAttribute]
+    public class ExotronTheForbidden : Mech
+    {
+        public ExotronTheForbidden()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Exotron the Forbidden";
+            this.cardText = this.writtenEffect = "Start of Combat: If you've bought all 5 parts of Exotron this game, destroy the enemy Mech.";
+            this.creatureData = new CreatureData(15, 15, 15);
+        }
+
+        private bool Criteria(Card m)
+        {
+            if (m.name.Equals("Arm of Exotron")) return true;
+            if (m.name.Equals("Leg of Exotron")) return true;
+            if (m.name.Equals("Motherboard of Exotron")) return true;
+            if (m.name.Equals("Wheel of Exotron")) return true;
+            return false;
+        }
+
+        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {            
+            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, this.Criteria);
+
+            int arm = 0, leg = 0, mb = 0, wheel = 0;
+            for (int i=0; i<list.Count(); i++)
+            {
+                if (list[i].name.Equals("Arm of Exotron")) arm = 1;
+                else if (list[i].name.Equals("Leg of Exotron")) leg = 1;
+                else if (list[i].name.Equals("Motherboard of Exotron")) mb = 1;
+                else if (list[i].name.Equals("Wheel of Exotron")) wheel = 1;
+            }
+
+            if (arm + leg + mb + wheel == 4)
+            {
+                gameHandler.players[enemy].destroyed = true;
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Exotron the Forbidden triggers, destroying {gameHandler.players[enemy].name}.");
+            }
+            else
+            {
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Exotron the Forbidden fails to trigger.");
+            }    
+        }
+    }
+
 }
 
 /*
 
-[MechAttribute]
+[UpgradeAttribute]
 public class NextMech : Mech
 {
     public NextMech()

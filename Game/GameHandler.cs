@@ -216,6 +216,9 @@ namespace ScrapScramble.Game
 
                 gameHandler.players[i].submitted = false;
 
+                gameHandler.players[i].playHistory.Add(new List<Cards.Card>());
+                gameHandler.players[i].boughtThisTurn.Clear();
+
                 gameHandler.players[i].creatureData.InitStaticKeywordsDictionary();
                 
             }

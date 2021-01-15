@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game.Cards.Mechs
 {
-    [MechAttribute]
+    [UpgradeAttribute]
     public class GoldBolts : Mech
     {
         public GoldBolts()
@@ -24,7 +24,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class WupallSmasher : Mech
     {
         public WupallSmasher()
@@ -42,7 +42,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class TightropeChampion : Mech
     {
         public TightropeChampion()
@@ -70,7 +70,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class CarbonCarapace : Mech
     {
         public CarbonCarapace()
@@ -89,7 +89,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class CopperplatedPrince : Mech
     {
         public CopperplatedPrince()
@@ -108,7 +108,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class CopperplatedPrincess : Mech
     {
         public CopperplatedPrincess()
@@ -127,7 +127,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class HomingMissile : Mech
     {
         public HomingMissile()
@@ -149,7 +149,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class TwilightDrone : Mech
     {
         public TwilightDrone()
@@ -167,7 +167,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class OffbrandShoe : Mech
     {
         public OffbrandShoe()
@@ -185,7 +185,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class Hypnodrone : Mech
     {
         public Hypnodrone()
@@ -206,7 +206,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class MkIVSuperCobra : Mech
     {
         public MkIVSuperCobra()
@@ -230,7 +230,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class LivewireBramble : Mech
     {
         public LivewireBramble()
@@ -266,7 +266,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class PeekABot : Mech
     {
         public PeekABot()
@@ -299,7 +299,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class LightningWeasel : Mech
     {
         public LightningWeasel()
@@ -334,7 +334,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class SocietyProgressor : Mech
     {
         public SocietyProgressor()
@@ -363,7 +363,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class SiliconGrenadeBelt : Mech
     {
         public SiliconGrenadeBelt()
@@ -381,7 +381,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class ScrapStacker : Mech
     {
         public ScrapStacker()
@@ -400,7 +400,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class PacifisticRecruitomatic : Mech
     {
         public PacifisticRecruitomatic()
@@ -431,7 +431,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class ElectricBoogaloo : Mech
     {
         public ElectricBoogaloo()
@@ -456,11 +456,55 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    [UpgradeAttribute]
+    public class Pacerager : Mech
+    {
+        public Pacerager()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Pacerager";
+            this.cardText = "Rush x2. After this takes damage, destroy it.";
+            this.writtenEffect = "After this takes damage, destroy it";
+            this.creatureData = new CreatureData(3, 5, 1);
+            this.creatureData.staticKeywords[StaticKeyword.Rush] = 2;
+        }
+
+        public override void AfterThisTakesDamage(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].destroyed = true;
+            gameHandler.combatOutputCollector.combatHeader.Add(
+                $"{gameHandler.players[curPlayer].name}'s Pacerager triggers, destroying {gameHandler.players[curPlayer].name}.");
+        }
+    }
+
+    [UpgradeAttribute]
+    public class PrismaticReflectotron : Mech
+    {
+        private bool triggered;
+        public PrismaticReflectotron()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Prismatic Reflectotron";
+            this.cardText = this.writtenEffect = "After your Mech takes damage for the first time, deal the same amount to the enemy Mech.";
+            this.creatureData = new CreatureData(6, 2, 2);
+            this.triggered = false;
+        }
+
+        public override void AfterThisTakesDamage(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (!this.triggered)
+            {
+                this.triggered = true;
+                gameHandler.players[enemy].TakeDamage(damage, ref gameHandler, curPlayer, enemy,
+                    $"{gameHandler.players[curPlayer].name}'s Prismatic Reflectotron triggers, dealing {damage} damage, ");
+            }
+        }
+    }
 }
 
 /*
 
-[MechAttribute]
+[UpgradeAttribute]
 public class NextMech : Mech
 {
     public NextMech()

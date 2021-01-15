@@ -38,9 +38,9 @@ namespace ScrapScramble.Game
                 // Note the AsParallel here, this will parallelize everything after.
                 from a in AppDomain.CurrentDomain.GetAssemblies().AsParallel()
                 from t in a.GetTypes()
-                let attributes = t.GetCustomAttributes(typeof(MechAttribute), true)
+                let attributes = t.GetCustomAttributes(typeof(UpgradeAttribute), true)
                 where attributes != null && attributes.Length > 0
-                select new { Type = t, Attributes = attributes.Cast<MechAttribute>() };
+                select new { Type = t, Attributes = attributes.Cast<UpgradeAttribute>() };
 
             foreach (var x in allMechClasses)
             {

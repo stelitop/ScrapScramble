@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game.Cards.Mechs
 {
-    [MechAttribute]
+    [UpgradeAttribute]
     public class Naptron : Mech
     {
         public Naptron()
@@ -27,7 +27,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class HighRoller : Mech
     {
         public HighRoller()
@@ -50,7 +50,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class FallenReaver : Mech
     {
         public FallenReaver()
@@ -76,7 +76,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class Investrotron : Mech
     {
         public Investrotron()
@@ -101,14 +101,14 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [MechAttribute]
+    [UpgradeAttribute]
     public class MassAccelerator : Mech
     {
         public MassAccelerator()
         {
             this.rarity = Rarity.Epic;
             this.name = "Mass Accelerator";
-            this.cardText = "Start of Combat: If you're Overloaded, deal 5 damage to the enemy Mech.";
+            this.cardText = this.writtenEffect = "Start of Combat: If you're Overloaded, deal 5 damage to the enemy Mech.";
             this.creatureData = new CreatureData(6, 5, 5);
         }
 
@@ -126,11 +126,35 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    [UpgradeAttribute]
+    public class PanicButton : Mech
+    {
+        private bool triggered;
+        public PanicButton()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Panic Button";
+            this.cardText = this.writtenEffect = "After your Mech is reduced to 5 or less Health, deal 10 damage to the enemy Mech.";
+            this.creatureData = new CreatureData(5, 3, 3);
+            this.triggered = false;
+        }
+
+        public override void AfterThisTakesDamage(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (!this.triggered && gameHandler.players[curPlayer].creatureData.health <= 5)
+            {
+                this.triggered = true;
+                gameHandler.players[enemy].TakeDamage(10, ref gameHandler, curPlayer, enemy,
+                    $"{gameHandler.players[curPlayer].name}'s Panic Button triggers, dealing 10 damage, ");
+            }
+        }
+    }
+
 }
 
 /*
 
-[MechAttribute]
+[UpgradeAttribute]
 public class NextMech : Mech
 {
     public NextMech()

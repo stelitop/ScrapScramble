@@ -21,6 +21,9 @@ namespace ScrapScramble.Game
 
         public List<Mech> attachedMechs;
 
+        public List<List<Card>> playHistory;
+        public List<Mech> boughtThisTurn;
+
         public bool destroyed;
 
         public List<string> aftermathMessages;
@@ -42,6 +45,9 @@ namespace ScrapScramble.Game
             this.overloaded = 0;
             this.submitted = false;
             this.lives = 0;
+            this.playHistory = new List<List<Card>>();
+            this.playHistory.Add(new List<Card>());
+            this.boughtThisTurn = new List<Mech>();
         }
         public Player(string name) : this()
         {
@@ -90,8 +96,9 @@ namespace ScrapScramble.Game
             {
                 mech.creatureData.staticKeywords[StaticKeyword.Binary]--;
 
-                Mech binaryLessCopy = mech.BasicCopy();
+                Mech binaryLessCopy = mech.BasicCopy();                
                 binaryLessCopy.cardText += " (No Binary)";
+                binaryLessCopy.creatureData.staticKeywords[StaticKeyword.Binary]--;
 
                 //the copy should have basic stats
                 gameHandler.players[curPlayer].hand.cards.Add(binaryLessCopy);
@@ -106,10 +113,16 @@ namespace ScrapScramble.Game
 
         public bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            bool result = this.shop.options[shopPos].BuyCard(shopPos, ref gameHandler, curPlayer, enemy);
+            if (shopPos >= this.shop.options.Count()) return false;
+            Card card = this.shop.options[shopPos].DeepCopy();
+
+            bool result = this.shop.options[shopPos].BuyCard(shopPos, ref gameHandler, curPlayer, enemy);                        
 
             if (result)
             {
+                this.playHistory[this.playHistory.Count() - 1].Add(card.DeepCopy());
+                this.boughtThisTurn.Add((Mech)card.DeepCopy());
+
                 this.shop.options.RemoveAt(shopPos);
             }
             return result;
@@ -117,10 +130,15 @@ namespace ScrapScramble.Game
 
         public bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
+            if (handPos >= this.hand.cards.Count()) return false;
+            Card card = this.hand.cards[handPos].DeepCopy();
+
             bool result = this.hand.cards[handPos].PlayCard(handPos, ref gameHandler, curPlayer, enemy);
 
             if (result)
             {
+                this.playHistory[this.playHistory.Count() - 1].Add(card.DeepCopy());
+
                 this.hand.cards.RemoveAt(handPos);
             }
             return result;
@@ -169,7 +187,6 @@ namespace ScrapScramble.Game
             {
                 this.destroyed = true;
                 msg += $"destroying {this.name}.";
-                //output a msg about getting destroyed
             }
 
             //Console.WriteLine("Called: " + msg);
@@ -177,7 +194,10 @@ namespace ScrapScramble.Game
 
             if (damage > 0)
             {
-                //TODO: AfterThisTakesDamage kw
+                for (int i=0; i<this.attachedMechs.Count() && gameHandler.players[attacker].IsAlive() && gameHandler.players[defender].IsAlive(); i++)
+                {
+                    this.attachedMechs[i].AfterThisTakesDamage(damage, ref gameHandler, defender, attacker);
+                }
             }
 
             return damage;

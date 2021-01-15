@@ -22,5 +22,21 @@ namespace ScrapScramble.Game.Cards
             }
             return ret;
         }
+
+        public static List<T> FilterList<T>(ref List<List<T> > cards, Criteria<T> criteria) where T : Card
+        {
+            List<T> ret = new List<T>();
+            for (int i = 0; i < cards.Count(); i++)
+            {
+                for (int j = 0; j < cards[i].Count(); j++)
+                {
+                    if (criteria(cards[i][j]))
+                    {
+                        ret.Add((T)cards[i][j].DeepCopy());
+                    }
+                }
+            }
+            return ret;
+        }
     }
 }
