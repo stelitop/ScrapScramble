@@ -235,7 +235,7 @@ namespace ScrapScramble.BotRelated.Commands
                 DiscordUser user = await ctx.Client.GetUserAsync(BotInfoHandler.participantsDiscordIds[i]);
                 if (BotInfoHandler.inGame)
                 {
-                    if (BotInfoHandler.gameHandler.players[i].submitted) responseMessage.Description += ":green_square: ";
+                    if (BotInfoHandler.gameHandler.players[i].ready) responseMessage.Description += ":green_square: ";
                     else responseMessage.Description += ":red_square: ";
                 }
                 responseMessage.Description += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} ({user.Username})";
@@ -268,23 +268,47 @@ namespace ScrapScramble.BotRelated.Commands
             string name = mechName[0];
             for (int i = 1; i < mechName.Count(); i++) name = name + " " + mechName[i];
 
+            List<int> candidates = new List<int>();
+
             for (int i=0; i<BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
             {
                 if (BotInfoHandler.gameHandler.pool.mechs[i].name.StartsWith(name, StringComparison.OrdinalIgnoreCase))
                 {
-                    Mech mech = BotInfoHandler.gameHandler.pool.mechs[i];
-                    responseMessage = new DiscordEmbedBuilder
-                    {
-                        Title = $"{BotInfoHandler.gameHandler.pool.mechs[i].name}",
-                        Description = $"{mech.creatureData.cost}/{mech.creatureData.attack}/{mech.creatureData.health} - {mech.rarity} Upgrade",
-                        Color = DiscordColor.Green
-                    };
-
-                    if (!mech.cardText.Equals(string.Empty)) responseMessage.Description += $"\n{mech.cardText}";
-
-                    await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
-                    return;
+                    candidates.Add(i);
                 }
+            }
+
+            if (candidates.Count() == 1)
+            {
+                Mech mech = BotInfoHandler.gameHandler.pool.mechs[candidates[0]];
+                responseMessage = new DiscordEmbedBuilder
+                {
+                    Title = $"{mech.name}",
+                    Description = $"{mech.creatureData.cost}/{mech.creatureData.attack}/{mech.creatureData.health} - {mech.rarity} Upgrade",
+                    Color = DiscordColor.Green
+                };
+
+                if (!mech.cardText.Equals(string.Empty)) responseMessage.Description += $"\n{mech.cardText}";
+
+                await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+                return;
+            }
+            else if (candidates.Count() > 1)
+            {
+                responseMessage = new DiscordEmbedBuilder
+                {
+                    Title = $"{candidates.Count()} Matches Found",
+                    Color = DiscordColor.Azure
+                };
+
+                for (int i=0; i<candidates.Count(); i++)
+                {
+                    if (i == 0) responseMessage.Description = BotInfoHandler.gameHandler.pool.mechs[candidates[i]].name;
+                    else responseMessage.Description += $", {BotInfoHandler.gameHandler.pool.mechs[candidates[i]].name}";
+                }
+
+                await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+                return;
             }
 
             responseMessage = new DiscordEmbedBuilder

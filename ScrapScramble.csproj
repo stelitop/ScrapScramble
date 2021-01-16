@@ -166,9 +166,9 @@
     <Compile Include="Game\Cards\Rarity.cs" />
     <Compile Include="Game\CombatOutputCollector.cs" />
     <Compile Include="Game\CreatureData.cs" />
-    <Compile Include="Game\FightHandler.cs" />
     <Compile Include="Game\Hand.cs" />
     <Compile Include="Game\Cards\MinionPool.cs" />
+    <Compile Include="Game\PairsHandler.cs" />
     <Compile Include="Game\UpgradeAttribute.cs" />
     <Compile Include="Game\Shop.cs" />
     <Compile Include="Game\GameHandler.cs" />

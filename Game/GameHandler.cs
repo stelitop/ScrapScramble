@@ -12,7 +12,7 @@ namespace ScrapScramble.Game
         public MinionPool pool;
 
         public List<Player> players;
-        public List<int> opponents;
+        public PairsHandler pairsHandler;
         public int maxMana = 10;
 
         public CombatOutputCollector combatOutputCollector;
@@ -24,14 +24,14 @@ namespace ScrapScramble.Game
         {
             this.players = new List<Player>();
             this.pool = new MinionPool();
-            this.opponents = new List<int>();
+            this.pairsHandler = new PairsHandler();
             this.combatOutputCollector = new CombatOutputCollector();
         }
 
         public void AddPlayer(string name)
         {
             this.players.Add(new Player(name));
-            this.opponents.Add(this.players.Count() - 1);
+            this.pairsHandler.AddPlayer();
 
             //do some other stuff later
         }
@@ -58,7 +58,7 @@ namespace ScrapScramble.Game
                 this.players[i].curMana = this.maxMana;
                 this.players[i].lives = this.startingLives;
 
-                this.players[i].submitted = false;
+                this.players[i].ready = false;
             }
 
             //do other stuff like matching later
@@ -214,7 +214,7 @@ namespace ScrapScramble.Game
                 gameHandler.players[i].overloaded = gameHandler.players[i].creatureData.staticKeywords[StaticKeyword.Overload];
                 gameHandler.players[i].curMana = gameHandler.maxMana - gameHandler.players[i].overloaded;
 
-                gameHandler.players[i].submitted = false;
+                gameHandler.players[i].ready = false;
 
                 gameHandler.players[i].playHistory.Add(new List<Cards.Card>());
                 gameHandler.players[i].boughtThisTurn.Clear();
@@ -227,7 +227,7 @@ namespace ScrapScramble.Game
             {
                 for (int j = 0; j < gameHandler.players[i].attachedMechs.Count(); j++)
                 {
-                    gameHandler.players[i].attachedMechs[j].Aftermath(ref gameHandler, i, gameHandler.opponents[i]);
+                    gameHandler.players[i].attachedMechs[j].Aftermath(ref gameHandler, i, gameHandler.pairsHandler.opponents[i]);
                 }
             }
 

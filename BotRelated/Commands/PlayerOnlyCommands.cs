@@ -61,7 +61,7 @@ namespace ScrapScramble.BotRelated.Commands
                 //invalid shop position
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
             }
-            else if (!BotInfoHandler.gameHandler.players[index].BuyCard(shopPos, ref BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.opponents[index]))
+            else if (!BotInfoHandler.gameHandler.players[index].BuyCard(shopPos, ref BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.pairsHandler.opponents[index]))
             {
                 //upgrade is too expensive
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
@@ -71,7 +71,7 @@ namespace ScrapScramble.BotRelated.Commands
                 //valid pos
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":+1:")).ConfigureAwait(false);
 
-                BotInfoHandler.gameHandler.players[index].submitted = false;
+                BotInfoHandler.gameHandler.players[index].ready = false;
                 BotInfoHandler.RefreshPlayerList(ctx);
 
                 await BotInfoHandler.RefreshUI(ctx, index);
@@ -90,7 +90,7 @@ namespace ScrapScramble.BotRelated.Commands
                 //invalid hand position
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
             }
-            else if (!BotInfoHandler.gameHandler.players[index].PlayCard(handPos, ref BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.opponents[index]))
+            else if (!BotInfoHandler.gameHandler.players[index].PlayCard(handPos, ref BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.pairsHandler.opponents[index]))
             {
                 //upgrade is too expensive
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
@@ -100,7 +100,7 @@ namespace ScrapScramble.BotRelated.Commands
                 //valid pos
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":+1:")).ConfigureAwait(false);
 
-                BotInfoHandler.gameHandler.players[index].submitted = false;
+                BotInfoHandler.gameHandler.players[index].ready = false;
                 BotInfoHandler.RefreshPlayerList(ctx);
 
                 await BotInfoHandler.RefreshUI(ctx, index);
@@ -116,19 +116,19 @@ namespace ScrapScramble.BotRelated.Commands
             await BotInfoHandler.SendNewUI(ctx, index);
         }
 
-        [Command("submit")]
-        [Description("Submits the things you've done this round.")]
-        public async Task SubmitRound(CommandContext ctx)
+        [Command("ready")]
+        [Description("Indicates that you're ready with your play this round.")]
+        public async Task ReadyRound(CommandContext ctx)
         {
             int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
 
             DiscordEmbedBuilder responseMessage;
 
-            if (BotInfoHandler.gameHandler.players[index].submitted)
+            if (BotInfoHandler.gameHandler.players[index].ready)
             {
                 responseMessage = new DiscordEmbedBuilder
                 {
-                    Title = "You Have Already Submitted",
+                    Title = "You Have Already Readied",
                     Color = DiscordColor.Red
                 };
             }
@@ -136,11 +136,11 @@ namespace ScrapScramble.BotRelated.Commands
             {
                 responseMessage = new DiscordEmbedBuilder
                 {
-                    Title = "You Have Submitted Successfully",
-                    Description = "You can still make changes to your Mech but you will need to resubmit.",
+                    Title = "You Have Readied Successfully",
+                    Description = "You can still make changes to your Mech but you will need to use >ready again.",
                     Color = DiscordColor.Green
                 };
-                BotInfoHandler.gameHandler.players[index].submitted = true;
+                BotInfoHandler.gameHandler.players[index].ready = true;
                 BotInfoHandler.RefreshPlayerList(ctx);
             }
 

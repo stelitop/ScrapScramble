@@ -37,14 +37,7 @@ namespace ScrapScramble.BotRelated
             BotInfoHandler.participantsDiscordIds.RemoveAt(index);
             BotInfoHandler.UIMessages.RemoveAt(index);
             BotInfoHandler.gameHandler.players.RemoveAt(index);
-            BotInfoHandler.gameHandler.opponents.RemoveAt(index);
-
-            //move opponent indexes by 1
-            for (int i=0; i<BotInfoHandler.gameHandler.opponents.Count(); i++)
-            {
-                if (BotInfoHandler.gameHandler.opponents[i] == index) BotInfoHandler.gameHandler.opponents[i] = i;
-                else if (BotInfoHandler.gameHandler.opponents[i] > index) BotInfoHandler.gameHandler.opponents[i]--;
-            }
+            BotInfoHandler.gameHandler.pairsHandler.RemovePlayer(index);
         }
 
         public static async Task SendNewUI(CommandContext ctx, int index)
@@ -79,7 +72,7 @@ namespace ScrapScramble.BotRelated
             {
                 Title = $"{gameHandler.players[index].name}'s Information",
                 Color = DiscordColor.Brown,
-                Footer = new DiscordEmbedBuilder.EmbedFooter { Text = "Type >help to see what commands are available. Commands related to your mech can only be used in DMs. When you're done with your turn, type >submit." }
+                Footer = new DiscordEmbedBuilder.EmbedFooter { Text = "Type >help to see what commands are available. Commands related to your mech can only be used in DMs. When you're done with your turn, type >ready." }
             };
             
             string aftermathMsg = gameHandler.players[index].GetAftermathMessages();            
@@ -132,7 +125,7 @@ namespace ScrapScramble.BotRelated
                 DiscordUser user = await ctx.Client.GetUserAsync(BotInfoHandler.participantsDiscordIds[i]);
                 if (BotInfoHandler.inGame)
                 {
-                    if (BotInfoHandler.gameHandler.players[i].submitted)
+                    if (BotInfoHandler.gameHandler.players[i].ready)
                     {
                         readyNum++;
                         responseMessage.Description += ":green_square: ";
@@ -149,7 +142,7 @@ namespace ScrapScramble.BotRelated
 
             if (readyNum == BotInfoHandler.gameHandler.players.Count())
             {
-                await interactivePlayerList.Channel.SendMessageAsync($"Hey {interactivePlayerListCaller.Mention}, all players have submitted!").ConfigureAwait(false);
+                await interactivePlayerList.Channel.SendMessageAsync($"Hey {interactivePlayerListCaller.Mention}, all players have ready!").ConfigureAwait(false);
             }
         }
     }

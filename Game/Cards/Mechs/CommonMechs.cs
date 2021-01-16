@@ -527,7 +527,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Sixpistol Constable";
             this.cardText = "Rush x6";
-            this.creatureData = new CreatureData(10, 6, 6);
+            this.creatureData = new CreatureData(15, 6, 6);
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 6;
         }
     }

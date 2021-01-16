@@ -14,7 +14,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Rare;
             this.name = "Gold Bolts";
             this.cardText = "Battlecry: Transform your Shields into Health.";
-            this.creatureData = new CreatureData(3, 1, 1);
+            this.creatureData = new CreatureData(3, 3, 2);
         }
 
         public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
@@ -32,7 +32,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Rare;
             this.name = "Wupall Smasher";
             this.cardText = "Battlecry: Transform your Spikes into Attack.";
-            this.creatureData = new CreatureData(5, 3, 3);
+            this.creatureData = new CreatureData(5, 4, 5);
         }
 
         public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
@@ -497,6 +497,93 @@ namespace ScrapScramble.Game.Cards.Mechs
                 this.triggered = true;
                 gameHandler.players[enemy].TakeDamage(damage, ref gameHandler, curPlayer, enemy,
                     $"{gameHandler.players[curPlayer].name}'s Prismatic Reflectotron triggers, dealing {damage} damage, ");
+            }
+        }
+    }
+
+    [UpgradeAttribute]
+    public class RoboRabbit : Mech
+    {
+        public RoboRabbit()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Robo-Rabbit";
+            this.cardText = "Battlecry: Gain +2/+2 for each other Robo-Rabbit you've played this game.";
+            this.creatureData = new CreatureData(2, 1, 1);
+        }
+
+        private bool Criteria(Card m)
+        {
+            return m.name.Equals("Robo-Rabbit");
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, this.Criteria);
+
+            gameHandler.players[curPlayer].creatureData.attack += 2 * list.Count();
+            gameHandler.players[curPlayer].creatureData.health += 2 * list.Count();
+        }
+    }
+
+    [UpgradeAttribute]
+    public class Autobalancer : Mech
+    {
+        public Autobalancer()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Autobalancer";
+            this.cardText = this.writtenEffect = "Start of Combat: The player who bought fewer Upgrades last turn gives their Mech +2/+2. If tied, gain +1/+1.";
+            this.creatureData = new CreatureData(4, 4, 4);
+        }
+
+        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].boughtThisTurn.Count() < gameHandler.players[enemy].boughtThisTurn.Count())
+            {
+                gameHandler.players[curPlayer].creatureData.attack += 2;
+                gameHandler.players[curPlayer].creatureData.health += 2;
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Autobalancer gives it +2/+2, leaving it as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
+            }
+            else if (gameHandler.players[curPlayer].boughtThisTurn.Count() > gameHandler.players[enemy].boughtThisTurn.Count())
+            {
+                gameHandler.players[enemy].creatureData.attack += 2;
+                gameHandler.players[enemy].creatureData.health += 2;
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Autobalancer gives {gameHandler.players[enemy].name} +2/+2, leaving it as a {gameHandler.players[enemy].creatureData.Stats()}.");
+            }
+            else
+            {
+                gameHandler.players[curPlayer].creatureData.attack += 1;
+                gameHandler.players[curPlayer].creatureData.health += 1;
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Autobalancer gives it +1/+1 due to a tie, leaving it as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
+            }
+        }
+    }
+
+    [UpgradeAttribute]
+    public class PlatedBeetleDrone : Mech
+    {
+        private int attacks;
+        public PlatedBeetleDrone()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Plated Beetle Drone";
+            this.cardText = this.writtenEffect = "The first time your Mech takes damage, gain +3 Shields. The second time, gain +2. The third, +1.";
+            this.creatureData = new CreatureData(4, 2, 3);
+            this.attacks = 0;
+        }
+
+        public override void AfterThisTakesDamage(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            attacks++;
+            if (attacks < 4)
+            {
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += (4 - attacks);
+                gameHandler.combatOutputCollector.combatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Plated Beetle Drone triggers, giving it +{4 - attacks} Shields, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields]} Shields.");
             }
         }
     }

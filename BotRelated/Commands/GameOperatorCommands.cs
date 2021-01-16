@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.Interactivity.Extensions;
 using ScrapScramble.BotRelated.Attributes;
 using ScrapScramble.Game;
 using System;
@@ -176,10 +177,15 @@ namespace ScrapScramble.BotRelated.Commands
         public async Task GetPairsList(CommandContext ctx)
         {            
             string msg = string.Empty;
-            for (int i=0; i<BotInfoHandler.gameHandler.opponents.Count(); i++)
+            for (int i=0; i<BotInfoHandler.gameHandler.pairsHandler.opponents.Count(); i++)
             {
-                if (i < BotInfoHandler.gameHandler.opponents[i]) msg += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} vs {BotInfoHandler.gameHandler.opponents[i]+1}) {BotInfoHandler.gameHandler.players[BotInfoHandler.gameHandler.opponents[i]].name}\n";
+                if (i < BotInfoHandler.gameHandler.pairsHandler.opponents[i]) msg += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} vs {BotInfoHandler.gameHandler.pairsHandler.opponents[i]+1}) {BotInfoHandler.gameHandler.players[BotInfoHandler.gameHandler.pairsHandler.opponents[i]].name}\n";                
             }
+            for (int i=0; i<BotInfoHandler.gameHandler.pairsHandler.opponents.Count(); i++)
+            {
+                if (i == BotInfoHandler.gameHandler.pairsHandler.opponents[i]) msg += $"'{i+1} {BotInfoHandler.gameHandler.players[i].name} gets a bye";
+            }
+
             if (msg.Equals(string.Empty)) msg = "No pairs have been assigned yet.";
             else msg.Trim();
 
@@ -203,11 +209,7 @@ namespace ScrapScramble.BotRelated.Commands
             pl1--;
             pl2--;
 
-            BotInfoHandler.gameHandler.opponents[BotInfoHandler.gameHandler.opponents[pl1]] = BotInfoHandler.gameHandler.opponents[pl1];
-            BotInfoHandler.gameHandler.opponents[BotInfoHandler.gameHandler.opponents[pl2]] = BotInfoHandler.gameHandler.opponents[pl2];
-
-            BotInfoHandler.gameHandler.opponents[pl1] = pl2;
-            BotInfoHandler.gameHandler.opponents[pl2] = pl1;
+            BotInfoHandler.gameHandler.pairsHandler.SetPair(pl1, pl2);
 
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder{
                 Title = "Pair Assigned Successfully",
@@ -307,6 +309,105 @@ namespace ScrapScramble.BotRelated.Commands
                 Title = $"{deadNames}Have Been Eliminated",
                 Color = DiscordColor.Aquamarine
             }).ConfigureAwait(false);
+        }
+
+        private bool ProcessEditCommand(string msg, int index)
+        {
+            var arguments = msg.Split(' ');
+            if (arguments.Count() == 0) return false;
+
+            int val = 0;
+
+            switch (arguments[0].ToLower())
+            {
+                case "attack":
+                case "health":
+                case "mana":
+                case "lives":
+                    if (arguments.Count() != 3) break;
+                    if (!int.TryParse(arguments[2], out val)) return false;
+
+                    ref int chosenVar = ref BotInfoHandler.gameHandler.players[index].curMana;
+
+                    switch (arguments[0].ToLower())
+                    {
+                        case "attack": { chosenVar = ref BotInfoHandler.gameHandler.players[index].creatureData.attack; break; }
+                        case "health": { chosenVar = ref BotInfoHandler.gameHandler.players[index].creatureData.health; break; }
+                        case "mana": { chosenVar = ref BotInfoHandler.gameHandler.players[index].curMana; break; }
+                        case "lives": { chosenVar = ref BotInfoHandler.gameHandler.players[index].lives; break; }
+                        default: { return false; }
+                    }
+
+                    switch(arguments[1])
+                    {
+                        case "=":
+                            chosenVar = val;
+                            return true;
+
+                        case "+=":
+                            chosenVar += val;
+                            return true;
+
+                        case "-=":
+                            chosenVar -= val;
+                            return true;
+
+                        default:
+                            return false;
+                    }                                    
+
+                default:
+                    return false;
+            }
+            return false;
+        }
+
+        [Command("editplayer")]
+        [RequireIngame]
+        public async Task EditPlayer(CommandContext ctx, int index)
+        {
+            if (index < 1 || index > BotInfoHandler.gameHandler.players.Count()) return;
+            index--;
+            
+            string subCommand = string.Empty;
+
+            while (true)
+            {
+                var interactivity = ctx.Client.GetInteractivity();
+
+                var msgResult = await interactivity.WaitForMessageAsync(
+                    x => x.Channel == ctx.Channel &&
+                    x.Author == ctx.User).ConfigureAwait(false);                
+
+                if (msgResult.TimedOut) break;
+
+                if (msgResult.Result.Content.ToLower().Equals("end"))
+                {
+                    msgResult.Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":+1:")).ConfigureAwait(false);
+                    break;
+                }
+
+                bool result = ProcessEditCommand(msgResult.Result.Content, index);
+
+                if (result)
+                {
+                    await msgResult.Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":+1:")).ConfigureAwait(false);
+                }
+                else
+                {
+                    await msgResult.Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
+                }
+            }
+        }
+
+        [Command("nextpairs")]
+        [RequireIngame]
+        [Description("Generaters the opponents for the next round")]
+        public async Task NextOpponents(CommandContext ctx)
+        {
+            BotInfoHandler.gameHandler.pairsHandler.NextRoundPairs(ref BotInfoHandler.gameHandler);
+
+            await GetPairsList(ctx);
         }
     }
 }

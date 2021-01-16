@@ -32,7 +32,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         public VentureCoSawblade()
         {
             this.rarity = Rarity.Common;
-            this.name = "Venture Co. Sawmblade";
+            this.name = "Venture Co. Sawblade";
             this.cardText = "Battlecry: Gain +1 Attack for each Venture Co. Upgrade you've bought this game.";
             this.creatureData = new CreatureData(2, 1, 1);
         }
@@ -91,7 +91,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Epic;
             this.name = "Venture Co. Flamethrower";
-            this.cardText = this.writtenEffect = "Start of Combat: Deal 3 damage to the enemy Mech for each Venture Co. Upgrade you've bought this game.";
+            this.cardText = this.writtenEffect = "Start of Combat: Deal 3 damage to the enemy Mech for each Venture Co. Upgrade you've played this game.";
             this.creatureData = new CreatureData(5, 2, 2);            
         }
 
@@ -103,7 +103,37 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    [UpgradeAttribute]
+    public class SponsorshipScrubber : Mech
+    {
+        public SponsorshipScrubber()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Sponsorship Scrubber";
+            this.cardText = this.writtenEffect = "Start of Combat: If your opponent has purchased a Venture Co. Upgrade this game, steal 6 Attack from their Mech.";
+            this.creatureData = new CreatureData(3, 1, 2);
+        }
 
+        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[enemy].playHistory, VentureCo.Criteria);
+
+            if (list.Count() > 0)
+            {
+                int stolen = Math.Min(6, gameHandler.players[enemy].creatureData.attack-1);
+                gameHandler.players[enemy].creatureData.attack -= stolen;
+                gameHandler.players[curPlayer].creatureData.attack += stolen;
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Sponsorship Scrubbler steals {stolen} Attack from {gameHandler.players[enemy].name}, leaving it with {gameHandler.players[enemy].creatureData.attack} Attack and leaving {gameHandler.players[curPlayer].name} with {gameHandler.players[curPlayer].creatureData.attack} Attack.");
+            }
+            else
+            {
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Sponsorship Scrubbler fails to trigger.");
+            }
+
+        }
+    }
 }
 
 /*

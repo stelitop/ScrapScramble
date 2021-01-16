@@ -28,7 +28,7 @@ namespace ScrapScramble.Game
 
         public List<string> aftermathMessages;
 
-        public bool submitted;
+        public bool ready;
 
         public int lives;
 
@@ -43,7 +43,7 @@ namespace ScrapScramble.Game
             this.destroyed = false;
             this.aftermathMessages = new List<string>();
             this.overloaded = 0;
-            this.submitted = false;
+            this.ready = false;
             this.lives = 0;
             this.playHistory = new List<List<Card>>();
             this.playHistory.Add(new List<Card>());
@@ -66,6 +66,9 @@ namespace ScrapScramble.Game
             ret += $"\nKeywords:\n";
             foreach (var kw in this.creatureData.staticKeywords)
             {
+                if (kw.Key == StaticKeyword.Echo) continue;
+                if (kw.Key == StaticKeyword.Binary) continue;
+
                 if (kw.Value != 0) ret += $"{kw.Key}: {kw.Value}\n";
             }
             ret += $"\nPlayer Effects:\n"; 
