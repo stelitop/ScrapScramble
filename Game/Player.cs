@@ -111,6 +111,8 @@ namespace ScrapScramble.Game
 
             this.creatureData += mech.creatureData;
 
+            this.creatureData.staticKeywords[StaticKeyword.Echo] = 0;            
+
             mech.Battlecry(ref gameHandler, curPlayer, enemy);
         }
 

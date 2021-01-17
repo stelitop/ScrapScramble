@@ -104,6 +104,32 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
+    public class VentureCoVault : Mech
+    {
+        public VentureCoVault()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Venture Co. Vault";
+            this.cardText = "Taunt. Aftermath: Add 3 random Venture Co. Upgrades to your shop.";
+            this.writtenEffect = "Aftermath: Add 3 random Venture Co. Upgrades to your shop.";
+            this.creatureData = new CreatureData(3, 0, 5);
+            this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
+        }
+
+        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, VentureCo.Criteria);
+
+            for (int i=0; i<3; i++)
+            {
+                int card = GameHandler.randomGenerator.Next(0, list.Count());
+
+                gameHandler.players[curPlayer].shop.options.Add((Mech)list[card].DeepCopy());
+            }
+        }
+    }
+
+    [UpgradeAttribute]
     public class SponsorshipScrubber : Mech
     {
         public SponsorshipScrubber()

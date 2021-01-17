@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ScrapScramble.BotRelated.Commands
@@ -404,10 +405,20 @@ namespace ScrapScramble.BotRelated.Commands
         [RequireIngame]
         [Description("Generaters the opponents for the next round")]
         public async Task NextOpponents(CommandContext ctx)
-        {
+        {            
             BotInfoHandler.gameHandler.pairsHandler.NextRoundPairs(ref BotInfoHandler.gameHandler);
 
             await GetPairsList(ctx);
+        }
+
+        [Command("wait")]
+        public async Task TestWait(CommandContext ctx, TimeSpan time)
+        {
+            await ctx.RespondAsync("Frog");
+
+            Thread.Sleep(time);
+
+            await ctx.RespondAsync("Champ");
         }
     }
 }

@@ -60,7 +60,7 @@ namespace ScrapScramble.Game
 
                 if (players.Count()%2 == 1)
                 {
-                    if (players[players.Count()-1] == opponents[players.Count()-1])
+                    if (players[players.Count()-1] == opponents[players[players.Count() - 1]])
                     {
                         NextRoundPairs(ref gameHandler);
                         return;
