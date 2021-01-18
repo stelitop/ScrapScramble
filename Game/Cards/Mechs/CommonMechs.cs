@@ -681,6 +681,159 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    [UpgradeAttribute]
+    public class ThreeFacedEmojitron : Mech
+    {
+        public ThreeFacedEmojitron()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Three-Faced Emojitron";
+            this.cardText = "Choose One - Gain Rush; or +2/+2.";
+            this.creatureData = new CreatureData(5, 4, 2);
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            PlayerInteraction chooseOne = new PlayerInteraction("Choose One", "1) Gain Rush\n2) Gain +2/+2", "Write the corresponding number", AnswerType.IntAnswer);
+            string res;
+            bool show = true;
+            while (true)
+            {
+                res = chooseOne.SendInteractionAsync(curPlayer, show).Result;
+                show = false;
+                if (res.Equals(string.Empty)) continue;
+                if (res.Equals("TimeOut"))
+                {
+                    continue;
+                }
+                else
+                {
+                    if (int.Parse(res) == 1)
+                    {
+                        gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush]++;
+                    }
+                    else if (int.Parse(res) == 2)
+                    {
+                        gameHandler.players[curPlayer].creatureData.attack += 2;
+                        gameHandler.players[curPlayer].creatureData.health += 2;
+                    }
+                    else continue;
+                    break;
+                }
+            }
+        }
+    }
+
+    [UpgradeAttribute]
+    public class CorrodedBastion : Mech
+    {
+        public CorrodedBastion()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Corroded Bastion";
+            this.cardText = "Choose One - Gain Taunt; or Overload: (2).";
+            this.creatureData = new CreatureData(2, 2, 4);
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            PlayerInteraction chooseOne = new PlayerInteraction("Choose One", "1) Gain Taunt\n2) Gain Overload: (2)", "Write the corresponding number", AnswerType.IntAnswer);
+            string res;
+            bool show = true;
+            while (true)
+            {
+                res = chooseOne.SendInteractionAsync(curPlayer, show).Result;
+                show = false;
+                if (res.Equals(string.Empty)) continue;
+                if (res.Equals("TimeOut"))
+                {
+                    continue;
+                }
+                else
+                {
+                    if (int.Parse(res) == 1)
+                    {
+                        gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Taunt]++;
+                    }
+                    else if (int.Parse(res) == 2)
+                    {
+                        gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload]+=2;
+                    }
+                    else continue;
+                    break;
+                }
+            }
+        }
+    }
+
+    [UpgradeAttribute]
+    public class SystemRebooter : Mech
+    {
+        public SystemRebooter()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "System Rebooter";
+            this.cardText = "Battlecry: Freeze an Upgrade. Give it Rush.";
+            this.creatureData = new CreatureData(4, 3, 3);
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
+
+            int shopIndex = PlayerInteraction.FreezeUpgradeInShop(ref gameHandler, curPlayer, enemy);
+
+            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.staticKeywords[StaticKeyword.Rush]++;
+            gameHandler.players[curPlayer].shop.options[shopIndex].cardText += " (Rush)";
+        }
+    }
+
+    [UpgradeAttribute]
+    public class BigFan : Mech
+    {
+        public BigFan()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Big Fan";
+            this.cardText = "Battlecry: Freeze an Upgrade. Give it +3/+3 and Taunt.";
+            this.creatureData = new CreatureData(4, 3, 3);
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
+
+            int shopIndex = PlayerInteraction.FreezeUpgradeInShop(ref gameHandler, curPlayer, enemy);
+
+            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.staticKeywords[StaticKeyword.Taunt]++;
+            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.attack += 3;
+            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.health += 3;
+            gameHandler.players[curPlayer].shop.options[shopIndex].cardText += " (Taunt)";
+        }
+    }
+
+    [UpgradeAttribute]
+    public class SyntheticSnowball : Mech
+    {
+        public SyntheticSnowball()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Synthetic Snowball";
+            this.cardText = "Echo. Battlecry: Freeze an Upgrade. Give it +2/+2.";
+            this.creatureData = new CreatureData(3, 2, 2);
+            this.creatureData.staticKeywords[StaticKeyword.Echo] = 1;
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
+
+            int shopIndex = PlayerInteraction.FreezeUpgradeInShop(ref gameHandler, curPlayer, enemy);
+
+            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.attack += 2;
+            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.health += 2;
+        }
+    }
 }
 
 /*

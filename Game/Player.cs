@@ -1,4 +1,5 @@
-﻿using ScrapScramble.BotRelated;
+﻿using DSharpPlus.CommandsNext;
+using ScrapScramble.BotRelated;
 using ScrapScramble.Game.Cards;
 using ScrapScramble.Game.Effects;
 using System;
@@ -31,6 +32,8 @@ namespace ScrapScramble.Game
         public bool ready;
 
         public int lives;
+
+        public CommandContext ctx;
 
         public Player()
         {
@@ -119,9 +122,12 @@ namespace ScrapScramble.Game
         public bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (shopPos >= this.shop.options.Count()) return false;
+            if (this.shop.options[shopPos].creatureData.staticKeywords[StaticKeyword.Freeze] > 0) return false;
             Card card = this.shop.options[shopPos].DeepCopy();
 
-            bool result = this.shop.options[shopPos].BuyCard(shopPos, ref gameHandler, curPlayer, enemy);                        
+            this.shop.options[shopPos].inLimbo = true;
+            bool result = this.shop.options[shopPos].BuyCard(shopPos, ref gameHandler, curPlayer, enemy);
+            this.shop.options[shopPos].inLimbo = false;
 
             if (result)
             {

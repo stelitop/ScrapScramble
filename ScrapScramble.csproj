@@ -169,6 +169,7 @@
     <Compile Include="Game\Hand.cs" />
     <Compile Include="Game\Cards\MinionPool.cs" />
     <Compile Include="Game\PairsHandler.cs" />
+    <Compile Include="Game\PlayerInteraction.cs" />
     <Compile Include="Game\UpgradeAttribute.cs" />
     <Compile Include="Game\Shop.cs" />
     <Compile Include="Game\GameHandler.cs" />

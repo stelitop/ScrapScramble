@@ -110,8 +110,8 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Common;
             this.name = "Venture Co. Vault";
-            this.cardText = "Taunt. Aftermath: Add 3 random Venture Co. Upgrades to your shop.";
-            this.writtenEffect = "Aftermath: Add 3 random Venture Co. Upgrades to your shop.";
+            this.cardText = "Taunt. Aftermath: Add 3 other random Venture Co. Upgrades to your shop.";
+            this.writtenEffect = "Aftermath: Add 3 other random Venture Co. Upgrades to your shop.";
             this.creatureData = new CreatureData(3, 0, 5);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
@@ -120,12 +120,45 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, VentureCo.Criteria);
 
+            for (int i=list.Count()-1; i>=0; i--)
+            {
+                if (list[i].name == this.name)
+                {
+                    list.RemoveAt(i);
+                    break;
+                }
+            }
+
             for (int i=0; i<3; i++)
             {
                 int card = GameHandler.randomGenerator.Next(0, list.Count());
 
                 gameHandler.players[curPlayer].shop.options.Add((Mech)list[card].DeepCopy());
             }
+        }
+    }
+
+    [UpgradeAttribute]
+    public class VentureCoCoolant : Mech
+    {
+        public VentureCoCoolant()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Venture Co. Coolant";
+            this.cardText = "Battlecry: Freeze an Upgrade. Give it -4 Attack. Overload: (1).";
+            this.creatureData = new CreatureData(2, 2, 3);
+            this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
+
+            int shopIndex = PlayerInteraction.FreezeUpgradeInShop(ref gameHandler, curPlayer, enemy);
+
+            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.attack -= 4;
+            if (gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.attack < 0)
+                gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.attack = 0;
         }
     }
 

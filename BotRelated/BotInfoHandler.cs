@@ -125,7 +125,12 @@ namespace ScrapScramble.BotRelated
                 DiscordUser user = await ctx.Client.GetUserAsync(BotInfoHandler.participantsDiscordIds[i]);
                 if (BotInfoHandler.inGame)
                 {
-                    if (BotInfoHandler.gameHandler.players[i].ready)
+                    if (BotInfoHandler.gameHandler.players[i].lives <= 0)
+                    {
+                        readyNum++;
+                        responseMessage.Description += ":skull: ";
+                    }
+                    else if (BotInfoHandler.gameHandler.players[i].ready)
                     {
                         readyNum++;
                         responseMessage.Description += ":green_square: ";
@@ -140,9 +145,9 @@ namespace ScrapScramble.BotRelated
 
             await interactivePlayerList.ModifyAsync(embed: responseMessage.Build()).ConfigureAwait(false);
 
-            if (readyNum == BotInfoHandler.gameHandler.players.Count())
+            if (readyNum >= BotInfoHandler.gameHandler.players.Count())
             {
-                await interactivePlayerList.Channel.SendMessageAsync($"Hey {interactivePlayerListCaller.Mention}, all players have ready!").ConfigureAwait(false);
+                await interactivePlayerList.Channel.SendMessageAsync($"Hey {interactivePlayerListCaller.Mention}, all players are ready!").ConfigureAwait(false);
             }
         }
     }

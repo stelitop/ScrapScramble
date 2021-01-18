@@ -4,6 +4,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
 using ScrapScramble.BotRelated.Attributes;
 using ScrapScramble.Game;
+using ScrapScramble.Game.Cards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -114,6 +115,7 @@ namespace ScrapScramble.BotRelated.Commands
 
                 for (int i = 0; i < BotInfoHandler.participantsDiscordIds.Count(); i++)
                 {
+                    if (BotInfoHandler.gameHandler.players[i].lives <= 0) continue;
                     await BotInfoHandler.SendNewUI(ctx, i);
                 }
 
@@ -176,28 +178,36 @@ namespace ScrapScramble.BotRelated.Commands
         [Description("Displays all pairs of players that will fight in the next round.")]
         [RequireIngame]
         public async Task GetPairsList(CommandContext ctx)
-        {            
+        {
+            Console.WriteLine(1);
             string msg = string.Empty;
+            Console.WriteLine(2);
             for (int i=0; i<BotInfoHandler.gameHandler.pairsHandler.opponents.Count(); i++)
             {
+                if (BotInfoHandler.gameHandler.players[i].lives <= 0) continue;
+                Console.WriteLine($"{BotInfoHandler.gameHandler.pairsHandler.opponents.Count()}: {i}, {BotInfoHandler.gameHandler.pairsHandler.opponents[i]}");
                 if (i < BotInfoHandler.gameHandler.pairsHandler.opponents[i]) msg += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} vs {BotInfoHandler.gameHandler.pairsHandler.opponents[i]+1}) {BotInfoHandler.gameHandler.players[BotInfoHandler.gameHandler.pairsHandler.opponents[i]].name}\n";                
             }
+            Console.WriteLine(3);
             for (int i=0; i<BotInfoHandler.gameHandler.pairsHandler.opponents.Count(); i++)
             {
-                if (i == BotInfoHandler.gameHandler.pairsHandler.opponents[i]) msg += $"'{i+1} {BotInfoHandler.gameHandler.players[i].name} gets a bye";
+                if (BotInfoHandler.gameHandler.players[i].lives <= 0) continue;
+                if (i == BotInfoHandler.gameHandler.pairsHandler.opponents[i]) msg += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} gets a bye\n";
             }
+            Console.WriteLine(4);
 
             if (msg.Equals(string.Empty)) msg = "No pairs have been assigned yet.";
             else msg.Trim();
-
+            Console.WriteLine(5);
             var responseMessage = new DiscordEmbedBuilder
             {
                 Title = "List of Mech Pairs for Combat",
                 Description = msg,
                 Color = DiscordColor.Azure
             };
-
+            Console.WriteLine(6);
             await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+            Console.WriteLine(7);
         }
 
         [Command("pair")]
@@ -209,6 +219,8 @@ namespace ScrapScramble.BotRelated.Commands
             if (pl2 < 1 || pl2 > BotInfoHandler.participantsDiscordIds.Count()) return;
             pl1--;
             pl2--;
+            if (BotInfoHandler.gameHandler.players[pl1].lives <= 0) return;
+            if (BotInfoHandler.gameHandler.players[pl2].lives <= 0) return;
 
             BotInfoHandler.gameHandler.pairsHandler.SetPair(pl1, pl2);
 
@@ -230,7 +242,9 @@ namespace ScrapScramble.BotRelated.Commands
             //if (pl1 == pl2) return;
             pl1--;
             pl2--;
-            
+            if (BotInfoHandler.gameHandler.players[pl1].lives <= 0) return;
+            if (BotInfoHandler.gameHandler.players[pl2].lives <= 0) return;
+
             GameHandlerMethods.StartBattle(ref BotInfoHandler.gameHandler, pl1, pl2);
             
             var fightMessage = new DiscordEmbedBuilder{
@@ -291,7 +305,7 @@ namespace ScrapScramble.BotRelated.Commands
             }).ConfigureAwait(false);
         }
 
-        [Command("removedead")]
+        //[Command("removedead")]
         [RequireIngame]
         public async Task RemoveDeadPlayers(CommandContext ctx)
         {
@@ -355,7 +369,27 @@ namespace ScrapScramble.BotRelated.Commands
 
                         default:
                             return false;
-                    }                                    
+                    }
+                case "shop":
+                    if (arguments.Count() < 3) break;
+                    string name = arguments[2];
+                    for (int i = 3; i < arguments.Count(); i++) name = name + $" {arguments[i]}";
+
+                    switch (arguments[1])
+                    {
+                        case "+=":
+
+                            for (int i = 0; i < BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
+                                if (BotInfoHandler.gameHandler.pool.mechs[i].name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    BotInfoHandler.gameHandler.players[index].shop.options.Add((Mech)BotInfoHandler.gameHandler.pool.mechs[i].DeepCopy());
+                                    return true;
+                                }
+                            return false;
+
+                        default:
+                            return false;
+                    }
 
                 default:
                     return false;

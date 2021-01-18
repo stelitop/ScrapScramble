@@ -37,7 +37,10 @@ namespace ScrapScramble.Game.Cards
 
         public override string GetInfo()
         {
-            return $"{this.name} - {this.rarity} Mech - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
+            string ret = $"{this.name} - {this.rarity} - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
+            if (this.creatureData.staticKeywords[StaticKeyword.Freeze] == 1) ret = $"(Frozen for 1 turn) {ret}";
+            else if (this.creatureData.staticKeywords[StaticKeyword.Freeze] > 1) ret = $"(Frozen for {this.creatureData.staticKeywords[StaticKeyword.Freeze]} turns) {ret}";
+            return ret;
         }
 
         //public Mech(MechJsonTemplate mechJson)

@@ -15,6 +15,7 @@ namespace ScrapScramble.Game
         Shields,
         Spikes,
         Overload,
-        Echo
+        Echo,
+        Freeze
     }
 }

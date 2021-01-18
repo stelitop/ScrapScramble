@@ -17,10 +17,27 @@ namespace ScrapScramble.Game.Effects
         }
 
         public void Refresh(MinionPool pool, int maxMana)
-        {
-            this.options.Clear();
-
+        {            
             int commons = 4, rares = 3, epics = 2, legendaries = 1;
+
+            List<Mech> kept = new List<Mech>();
+
+            for (int i=0; i<this.options.Count(); i++)
+            {
+                if (this.options[i].creatureData.staticKeywords[StaticKeyword.Freeze] > 0)
+                {
+                    this.options[i].creatureData.staticKeywords[StaticKeyword.Freeze]--;
+                    kept.Add((Mech)this.options[i].DeepCopy());
+
+                    if (this.options[i].rarity == Rarity.Common) commons--;
+                    else if (this.options[i].rarity == Rarity.Rare) rares--;
+                    else if (this.options[i].rarity == Rarity.Epic) epics--;
+                    else if (this.options[i].rarity == Rarity.Legendary) legendaries--;
+                }
+            }
+
+            this.options.Clear();
+            this.options = kept;
 
             List<Mech> subList = new List<Mech>();            
 

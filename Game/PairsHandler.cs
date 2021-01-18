@@ -40,57 +40,68 @@ namespace ScrapScramble.Game
             this.opponents[b] = a;
         }
 
-        public void NextRoundPairs(ref GameHandler gameHandler)
+        public void NextRoundPairs(ref GameHandler gameHandler, int times = 0)
         {
-            List<int> players = new List<int>();            
-
+            Console.WriteLine(".1");
+            List<int> players = new List<int>();
+            List<int> newOpponents = new List<int>();
+            Console.WriteLine(".2");
+            for (int i = 0; i < gameHandler.players.Count(); i++)
+            {
+                newOpponents.Add(i);
+                if (gameHandler.players[i].lives > 0) players.Add(i);
+            }
+            
+            Console.WriteLine(".3");
+            players = players.OrderBy(x => GameHandler.randomGenerator.Next()).ToList();
+            Console.WriteLine(".4");
             if (players.Count() == 1)
             {
-                this.opponents[0] = 0;
+                newOpponents[players[0]] = players[0];
             }
             else if (players.Count() == 2)
             {
-                this.opponents[0] = 1;
-                this.opponents[1] = 0;
+                newOpponents[players[0]] = players[1];
+                newOpponents[players[1]] = players[0];
             }
             else
             {
-                for (int i = 0; i < gameHandler.players.Count(); i++) players.Add(i);
-                players = players.OrderBy(x => GameHandler.randomGenerator.Next()).ToList();
-
                 if (players.Count()%2 == 1)
                 {
-                    if (players[players.Count()-1] == opponents[players[players.Count() - 1]])
+                    if (players[players.Count()-1] == opponents[players[players.Count() - 1]] && times < 8)
                     {
-                        NextRoundPairs(ref gameHandler);
+                        NextRoundPairs(ref gameHandler, times+1);
                         return;
                     }
-                    this.opponents[players[players.Count() - 1]] = players[players.Count() - 1];
+                    newOpponents[players[players.Count() - 1]] = players[players.Count() - 1];
                     for (int i=0; i<players.Count()-1; i+=2)
                     {
-                        if (this.opponents[players[i]] == players[i+1])
+                        if (this.opponents[players[i]] == players[i+1] && times < 8)
                         {
-                            NextRoundPairs(ref gameHandler);
+                            NextRoundPairs(ref gameHandler, times+1);
                             return;
                         }
-                        this.opponents[players[i]] = players[i+1];
-                        this.opponents[players[i+1]] = players[i];
+                        newOpponents[players[i]] = players[i+1];
+                        newOpponents[players[i+1]] = players[i];
                     }
                 }
                 else
                 {
                     for (int i = 0; i < players.Count(); i += 2)
                     {
-                        if (this.opponents[players[i]] == players[i+1])
+                        if (this.opponents[players[i]] == players[i+1] && times < 8)
                         {
-                            NextRoundPairs(ref gameHandler);
+                            NextRoundPairs(ref gameHandler, times+1);
                             return;
                         }
-                        this.opponents[players[i]] = players[i+1];
-                        this.opponents[players[i+1]] = players[i];
+                        newOpponents[players[i]] = players[i+1];
+                        newOpponents[players[i+1]] = players[i];
                     }
                 }
             }
+            Console.WriteLine(".5");
+            this.opponents.Clear();
+            for (int i = 0; i < newOpponents.Count(); i++) this.opponents.Add(newOpponents[i]);
         }
     }
 }

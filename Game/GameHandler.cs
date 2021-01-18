@@ -204,7 +204,7 @@ namespace ScrapScramble.Game
             //delete aftermath msgs which haven't been implemented yet Lol!
 
             for (int i = 0; i < gameHandler.players.Count(); i++)
-            {
+            { 
                 //add to history
 
                 gameHandler.players[i].aftermathMessages.Clear();

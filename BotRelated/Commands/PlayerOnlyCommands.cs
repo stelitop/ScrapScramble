@@ -56,6 +56,8 @@ namespace ScrapScramble.BotRelated.Commands
             shopPos--;
             int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
 
+            BotInfoHandler.gameHandler.players[index].ctx = ctx;
+
             if (shopPos >= BotInfoHandler.gameHandler.players[index].shop.options.Count() || shopPos < 0)
             {
                 //invalid shop position
@@ -84,6 +86,8 @@ namespace ScrapScramble.BotRelated.Commands
         {
             handPos--;
             int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
+
+            BotInfoHandler.gameHandler.players[index].ctx = ctx;
 
             if (handPos >= BotInfoHandler.gameHandler.players[index].hand.cards.Count() || handPos < 0)
             {

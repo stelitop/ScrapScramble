@@ -587,6 +587,49 @@ namespace ScrapScramble.Game.Cards.Mechs
             }
         }
     }
+
+    [UpgradeAttribute]
+    public class ByteBarker : Mech
+    {
+        public ByteBarker()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Byte Barker";
+            this.cardText = "Binary. Choose One - Gain +6 Spikes; or +6 Shields.";
+            this.creatureData = new CreatureData(6, 4, 4);
+            this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
+        }
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            PlayerInteraction chooseOne = new PlayerInteraction("Choose One", "1) Gain +6 Spikes\n2) Gain +6 Shields", "Write the corresponding number", AnswerType.IntAnswer);
+            string res;
+            bool show = true;
+            while (true)
+            {
+                res = chooseOne.SendInteractionAsync(curPlayer, show).Result;
+                show = false;
+                if (res.Equals(string.Empty)) continue;
+                if (res.Equals("TimeOut"))
+                {
+                    continue;
+                }
+                else
+                {
+                    if (int.Parse(res) == 1)
+                    {
+                        gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 6;
+                    }
+                    else if (int.Parse(res) == 2)
+                    {
+                        gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 6;
+                    }
+                    else continue;
+                    break;
+                }
+            }
+        }
+    }
+
 }
 
 /*

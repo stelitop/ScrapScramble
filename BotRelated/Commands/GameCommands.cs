@@ -235,7 +235,8 @@ namespace ScrapScramble.BotRelated.Commands
                 DiscordUser user = await ctx.Client.GetUserAsync(BotInfoHandler.participantsDiscordIds[i]);
                 if (BotInfoHandler.inGame)
                 {
-                    if (BotInfoHandler.gameHandler.players[i].ready) responseMessage.Description += ":green_square: ";
+                    if (BotInfoHandler.gameHandler.players[i].lives <= 0) responseMessage.Description += ":skull: ";
+                    else if (BotInfoHandler.gameHandler.players[i].ready) responseMessage.Description += ":green_square: ";
                     else responseMessage.Description += ":red_square: ";
                 }
                 responseMessage.Description += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} ({user.Username})";
