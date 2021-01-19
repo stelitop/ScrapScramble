@@ -179,13 +179,19 @@ namespace ScrapScramble.Game
 
             if (gameHandler.players[mech1].IsAlive())
             {
-                gameHandler.combatOutputCollector.combatHeader.Add($"{gameHandler.players[mech1].name} has won!");
+                gameHandler.combatOutputCollector.combatHeader.Add($"{gameHandler.players[mech1].name} has won!");                
                 gameHandler.players[mech2].lives--;
+
+                gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count][mech1] = FightResult.WIN;
+                gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count][mech2] = FightResult.LOSS;
             }
             else
             {
                 gameHandler.combatOutputCollector.combatHeader.Add($"{gameHandler.players[mech2].name} has won!");
                 gameHandler.players[mech1].lives--;
+
+                gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count][mech1] = FightResult.LOSS;
+                gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count][mech2] = FightResult.WIN;
             }
 
             //-combat header
@@ -227,7 +233,15 @@ namespace ScrapScramble.Game
             {
                 for (int j = 0; j < gameHandler.players[i].attachedMechs.Count(); j++)
                 {
-                    gameHandler.players[i].attachedMechs[j].Aftermath(ref gameHandler, i, gameHandler.pairsHandler.opponents[i]);
+                    gameHandler.players[i].attachedMechs[j].AftermathMe(ref gameHandler, i, gameHandler.pairsHandler.opponents[i]);
+                }
+            }
+
+            for (int i = 0; i < gameHandler.players.Count(); i++)
+            {
+                for (int j = 0; j < gameHandler.players[i].attachedMechs.Count(); j++)
+                {
+                    gameHandler.players[i].attachedMechs[j].AftermathEnemy(ref gameHandler, i, gameHandler.pairsHandler.opponents[i]);
                 }
             }
 

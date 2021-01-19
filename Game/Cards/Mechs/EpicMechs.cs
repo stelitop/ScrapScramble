@@ -19,7 +19,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Taunt] += 2;
         }
 
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush] += 2;
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -38,7 +38,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(4, 3, 3);
         }
 
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
 
@@ -61,7 +61,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(5, 8, 8);
         }
 
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
 
             for (int i=0; i<6; i++)
@@ -87,7 +87,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(5, 4, 4);
         }
 
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
 
@@ -150,6 +150,94 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    [UpgradeAttribute]
+    public class Bibliobot : Mech
+    {
+        private string letter = "  ";
+
+        public Bibliobot()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Bibliobot";
+            this.cardText = "Battlecry: Name a letter. This round, after you buy an Upgrade that starts with that letter, gain +2 Attack.";
+            this.writtenEffect = "Not Frog";
+            this.creatureData = new CreatureData(5, 5, 3);
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            var playerInteraction = new PlayerInteraction("Name a Letter", string.Empty, "Capitalisation is ignored", AnswerType.CharAnswer);
+
+            string res;
+            bool show = true;
+            while (true)
+            {
+                res = playerInteraction.SendInteractionAsync(curPlayer, show).Result;
+                show = false;
+                if (res.Equals(string.Empty)) continue;
+                if (res.Equals("TimeOut"))
+                {
+                    show = true;
+                    continue;
+                }
+            
+                letter = res;
+
+                this.writtenEffect = $"After you buy an Upgrade that starts with the letter '{letter}', gain +2 Attack.";
+
+                break;
+            }
+            Console.WriteLine(letter);
+        }
+
+        public override void OnBuyingAMech(Mech m, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            Console.WriteLine(m.name[0] + " " + this.letter);
+            if (m.name.StartsWith(this.letter, StringComparison.OrdinalIgnoreCase))
+            {
+                gameHandler.players[curPlayer].creatureData.attack += 2;
+            }
+        }
+
+        public override Card DeepCopy()
+        {
+            Bibliobot ret = (Bibliobot)Activator.CreateInstance(this.GetType());
+            ret.name = this.name;
+            ret.rarity = this.rarity;
+            ret.cardText = this.cardText;
+            ret.creatureData = this.creatureData.DeepCopy();
+            ret.writtenEffect = this.writtenEffect;
+            ret.letter = this.letter;
+            Console.WriteLine("Frog " + this.letter);
+            return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class Mirrordome : Mech
+    {
+        public Mirrordome()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Mirrordome";
+            this.cardText = this.writtenEffect = "Aftermath: This turn, your shop is a copy of your opponent's.";
+            this.creatureData = new CreatureData(4, 0, 8);
+        }
+
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].shop.options.Clear();
+
+            for (int i=0; i<gameHandler.players[enemy].shop.options.Count(); i++)
+            {
+                gameHandler.players[curPlayer].shop.options.Add(
+                    (Mech)gameHandler.players[enemy].shop.options[i].DeepCopy());
+            }
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Mirrordome replaced your shop with a copy of {gameHandler.players[enemy].name}'s shop.");
+        }
+    }
 }
 
 /*

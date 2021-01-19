@@ -6,13 +6,21 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game
 {
+    public enum FightResult
+    {
+        WIN,
+        LOSS,
+        BYE
+    }
+
     public class PairsHandler
     {
         public List<int> opponents { get; }
-
+        public List<List<FightResult>> playerResults;
         public PairsHandler()
         {
-            this.opponents = new List<int>();        
+            this.opponents = new List<int>();
+            this.playerResults = new List<List<FightResult>>();
         }
 
         public void AddPlayer()
@@ -42,6 +50,12 @@ namespace ScrapScramble.Game
 
         public void NextRoundPairs(ref GameHandler gameHandler, int times = 0)
         {
+            this.playerResults.Add(new List<FightResult>());
+            for (int i=0; i<gameHandler.players.Count(); i++)
+            {
+                this.playerResults[this.playerResults.Count() - 1].Add(FightResult.BYE);
+            }
+
             Console.WriteLine(".1");
             List<int> players = new List<int>();
             List<int> newOpponents = new List<int>();

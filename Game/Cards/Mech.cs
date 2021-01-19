@@ -86,7 +86,8 @@ namespace ScrapScramble.Game.Cards
         //}
 
         public virtual void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy) { }
-        public virtual void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void AftermathEnemy(ref GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void OnBuyingAMech(Mech m, ref GameHandler gameHandler, int curPlayer, int enemy) { }
 
@@ -107,6 +108,7 @@ namespace ScrapScramble.Game.Cards
             ret.rarity = this.rarity;
             ret.cardText = this.cardText;
             ret.creatureData = this.creatureData.DeepCopy();
+            ret.writtenEffect = this.writtenEffect;
             return ret;
         }
         public Mech BasicCopy()

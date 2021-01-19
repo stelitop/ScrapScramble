@@ -138,7 +138,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
 
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {            
             int pos = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
             gameHandler.players[curPlayer].shop.options[pos].creatureData.attack += 2;
@@ -401,7 +401,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 8;
         }
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 8;
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -425,7 +425,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 8;
         }
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 8;
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -490,7 +490,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(7, 7, 7);
         }
 
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             int pos = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
             gameHandler.players[curPlayer].shop.options[pos].creatureData.attack += 2;
@@ -553,7 +553,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Orbital Mechanosphere";
             this.cardText = string.Empty;
-            this.creatureData = new CreatureData(30, 30, 30);            
+            this.creatureData = new CreatureData(30, 50, 50);            
         }
     }
 
@@ -573,7 +573,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             if (m.rarity == Rarity.Common) return true;
             return false;
         }
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
 
@@ -604,7 +604,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             if (m.rarity == Rarity.Rare) return true;
             return false;
         }
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
 
@@ -635,7 +635,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             if (m.rarity == Rarity.Epic) return true;
             return false;
         }
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
 
@@ -666,7 +666,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             if (m.rarity == Rarity.Legendary) return true;
             return false;
         }
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
 

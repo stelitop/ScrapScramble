@@ -91,7 +91,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Epic;
             this.name = "Venture Co. Flamethrower";
-            this.cardText = this.writtenEffect = "Start of Combat: Deal 3 damage to the enemy Mech for each Venture Co. Upgrade you've played this game.";
+            this.cardText = this.writtenEffect = "Start of Combat: Deal 2 damage to the enemy Mech for each Venture Co. Upgrade you've played this game.";
             this.creatureData = new CreatureData(5, 2, 2);            
         }
 
@@ -99,7 +99,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
 
-            gameHandler.players[enemy].TakeDamage(3*list.Count(), ref gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Venture Co. Flamethrower deals {3*list.Count()} damage, ");
+            gameHandler.players[enemy].TakeDamage(2*list.Count(), ref gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Venture Co. Flamethrower deals {2*list.Count()} damage, ");
         }
     }
 
@@ -116,7 +116,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
 
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, VentureCo.Criteria);
 

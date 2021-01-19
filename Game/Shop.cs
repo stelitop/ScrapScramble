@@ -71,6 +71,8 @@ namespace ScrapScramble.Game.Effects
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
                 this.options.Add((Mech)m.DeepCopy());
             }
+
+            this.options.Sort();
         }
 
         public List<string> GetShopInfo()

@@ -91,8 +91,6 @@ namespace ScrapScramble.Game
 
         public void AttachMech(Mech mech, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            this.attachedMechs.Add((Mech)mech.DeepCopy());
-
             if (mech.creatureData.staticKeywords[StaticKeyword.Echo] > 0)
             {
                 gameHandler.players[curPlayer].shop.options.Add(mech.BasicCopy());
@@ -117,12 +115,16 @@ namespace ScrapScramble.Game
             this.creatureData.staticKeywords[StaticKeyword.Echo] = 0;            
 
             mech.Battlecry(ref gameHandler, curPlayer, enemy);
+
+            this.attachedMechs.Add((Mech)mech.DeepCopy());
         }
 
         public bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (shopPos >= this.shop.options.Count()) return false;
             if (this.shop.options[shopPos].creatureData.staticKeywords[StaticKeyword.Freeze] > 0) return false;
+            if (this.shop.options[shopPos].inLimbo) return false;
+
             Card card = this.shop.options[shopPos].DeepCopy();
 
             this.shop.options[shopPos].inLimbo = true;

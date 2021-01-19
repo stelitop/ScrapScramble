@@ -30,7 +30,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(6, 5, 5);
         }
 
-        public override void Aftermath(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack = gameHandler.players[curPlayer].creatureData.health;
             gameHandler.players[curPlayer].aftermathMessages.Add(
