@@ -122,7 +122,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             for (int i=list.Count()-1; i>=0; i--)
             {
-                if (list[i].name == this.name)
+                if (list[i].name.Equals(this.name))
                 {
                     list.RemoveAt(i);
                     break;

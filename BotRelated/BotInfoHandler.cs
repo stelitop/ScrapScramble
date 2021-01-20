@@ -15,6 +15,7 @@ namespace ScrapScramble.BotRelated
         public static List<ulong> participantsDiscordIds = new List<ulong>();
         public static bool inGame = false;
         public static bool shopsSent = false;
+        public static bool pairsReady = false;
 
         public static List<DiscordMessage> UIMessages = new List<DiscordMessage>();
 

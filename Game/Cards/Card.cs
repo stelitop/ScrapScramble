@@ -9,10 +9,11 @@ namespace ScrapScramble.Game.Cards
     public abstract class Card
     {
         public string name;
+        public string cardText;
+
         public bool inLimbo = false;
 
         public abstract bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy);
-        public abstract bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy);
         public abstract string GetInfo();
         public abstract Card DeepCopy();
     }

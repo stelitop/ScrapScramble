@@ -112,6 +112,177 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    [UpgradeAttribute]
+    public class LordBarox : Mech
+    {
+        int bet = -1;
+
+        public LordBarox()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Lord Barox";
+            this.cardText = "Battlecry: Name ANY other Mech. Aftermath: If it won last round, gain 5 Mana this turn only.";
+            this.creatureData = new CreatureData(5, 4, 4);
+            this.printEffectInCombat = false;
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.AlivePlayers() <= 1) return;
+
+            var prompt = new PlayerInteraction("Name a Player", "The name needs to be exactly written.", "Capitalisation is ignored", AnswerType.StringAnswer);
+
+            string res;
+            bool show = true;
+            while (true)
+            {
+                res = prompt.SendInteractionAsync(curPlayer, show).Result;
+                show = false;
+                if (res.Equals(string.Empty)) continue;
+                if (res.Equals("TimeOut"))
+                {
+                    show = true;
+                    continue;
+                }
+
+                for (int i=0; i<gameHandler.players.Count(); i++)
+                {
+                    if (gameHandler.players[i].name.Equals(res, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (gameHandler.players[i].lives <= 0) break;
+                        if (i == curPlayer) break;
+                        this.bet = i;
+                        break;
+                    }
+                }
+
+                if (this.bet == -1) continue;
+
+                this.writtenEffect = $"You have bet on {gameHandler.players[this.bet].name}! If they win their next fight, you'll gain 5 Mana next turn.";
+                this.printEffectInCombat = false;
+
+                break;
+            }
+        }
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (this.bet == -1) return;
+
+            if (gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count() - 2][this.bet] == FightResult.WIN)
+            {
+                gameHandler.players[curPlayer].curMana += 5;
+                gameHandler.players[curPlayer].aftermathMessages.Add(
+                    "The bet on your Lord Barox was correct! You gain 5 Mana this turn only.");
+            }
+            else
+            {
+                gameHandler.players[curPlayer].aftermathMessages.Add(
+                    "The bet on your Lord Barox was incorrect.");
+            }
+        }
+
+        public override Card DeepCopy()
+        {
+            LordBarox ret = (LordBarox)Activator.CreateInstance(this.GetType());
+            ret.name = this.name;
+            ret.rarity = this.rarity;
+            ret.cardText = this.cardText;
+            ret.creatureData = this.creatureData.DeepCopy();
+            ret.writtenEffect = this.writtenEffect;
+            ret.bet = this.bet;            
+            return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class HatChucker8000 : Mech
+    {
+        private Rarity chosenRarity = Rarity.NO_RARITY;
+        public HatChucker8000()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Hat Chucker 8000";
+            this.cardText = "Battlecry: Name a Rarity. Aftermath: Give all players' Upgrades of that rarity +2/+2.";
+            this.creatureData = new CreatureData(3, 3, 3);
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            var prompt = new PlayerInteraction("Name a Rarity", "Common, Rare, Epic or Legendary", "Capitalisation is ignored", AnswerType.StringAnswer);
+
+            string res;
+            bool show = true;
+            while (true)
+            {
+                res = prompt.SendInteractionAsync(curPlayer, show).Result;
+                show = false;
+                if (res.Equals(string.Empty)) continue;
+                if (res.Equals("TimeOut"))
+                {
+                    show = true;
+                    continue;
+                }
+
+                if (res.Equals("common", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Common;
+                else if (res.Equals("rare", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Rare;
+                else if (res.Equals("epic", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Epic;
+                else if (res.Equals("legendary", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Legendary;
+                else continue;
+
+                this.writtenEffect = $"Aftermath: Give all players' Upgrades of rarity {this.chosenRarity} +2/+2.";
+                this.printEffectInCombat = false;
+
+                break;
+            }
+        }
+
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            for (int i=0; i<gameHandler.players[curPlayer].shop.options.Count(); i++)
+            {
+                if (gameHandler.players[curPlayer].shop.options[i].rarity == this.chosenRarity)
+                {
+                    gameHandler.players[curPlayer].shop.options[i].creatureData.attack += 2;
+                    gameHandler.players[curPlayer].shop.options[i].creatureData.health += 2;
+                }
+            }
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Hat Chucker 8000 gave your {this.chosenRarity} Upgrades +2/+2.");
+        }
+
+        public override void AftermathEnemy(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            for (int j=0; j<gameHandler.players.Count(); j++)
+            {
+                if (j == curPlayer) continue;
+
+                for (int i = 0; i < gameHandler.players[j].shop.options.Count(); i++)
+                {
+                    if (gameHandler.players[j].shop.options[i].rarity == this.chosenRarity)
+                    {
+                        gameHandler.players[j].shop.options[i].creatureData.attack += 2;
+                        gameHandler.players[j].shop.options[i].creatureData.health += 2;
+                    }
+                }
+
+                gameHandler.players[j].aftermathMessages.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Hat Chucker 8000 gave your {this.chosenRarity} Upgrades +2/+2.");
+            }
+        }
+
+        public override Card DeepCopy()
+        {
+            HatChucker8000 ret = (HatChucker8000)Activator.CreateInstance(this.GetType());
+            ret.name = this.name;
+            ret.rarity = this.rarity;
+            ret.cardText = this.cardText;
+            ret.creatureData = this.creatureData.DeepCopy();
+            ret.writtenEffect = this.writtenEffect;
+            ret.chosenRarity = this.chosenRarity;
+            return ret;
+        }
+    }
 }
 
 /*

@@ -62,6 +62,8 @@ namespace ScrapScramble.BotRelated.Commands
                 BotInfoHandler.shopsSent = false;
                 BotInfoHandler.gameHandler.StartNewGame();
                 BotInfoHandler.gameHandler.currentRound = 1;
+                BotInfoHandler.pairsReady = false;
+
                 await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
 
                 await ctx.Client.UpdateStatusAsync(new DiscordActivity
@@ -71,6 +73,10 @@ namespace ScrapScramble.BotRelated.Commands
                 });
 
                 await SendShops(ctx);
+
+                await NextPairs(ctx);
+
+                BotInfoHandler.pairsReady = false;
             }
 
         }
@@ -155,8 +161,21 @@ namespace ScrapScramble.BotRelated.Commands
         [RequireIngame]
         public async Task NextRound(CommandContext ctx)
         {
+            if (BotInfoHandler.pairsReady == false)
+            {
+                await NextPairs(ctx);
+
+                //await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
+                //    Title = "Pairs Not Assigned",
+                //    Description = "Type >nextpairs to be able to proceed to the next round.",
+                //    Color = DiscordColor.Red
+                //}).ConfigureAwait(false);
+                //return;
+            }
             BotInfoHandler.gameHandler.currentRound++;
             BotInfoHandler.shopsSent = false;
+            BotInfoHandler.pairsReady = false;
+
             for (int i = 0; i < BotInfoHandler.UIMessages.Count(); i++)
             {
                 BotInfoHandler.UIMessages[i] = null;
@@ -237,6 +256,8 @@ namespace ScrapScramble.BotRelated.Commands
         [RequireGuild]
         public async Task Fight(CommandContext ctx, [Description("Player 1")]int pl1, [Description("Player 2")]int pl2)
         {
+            //should make this send an embed
+
             if (pl1 < 1 || pl1 > BotInfoHandler.participantsDiscordIds.Count()) return;
             if (pl2 < 1 || pl2 > BotInfoHandler.participantsDiscordIds.Count()) return;
             //if (pl1 == pl2) return;
@@ -246,12 +267,12 @@ namespace ScrapScramble.BotRelated.Commands
             if (BotInfoHandler.gameHandler.players[pl2].lives <= 0) return;
 
             GameHandlerMethods.StartBattle(ref BotInfoHandler.gameHandler, pl1, pl2);
-            
+
             var fightMessage = new DiscordEmbedBuilder{
                 Title = "Combat!",
                 Color = DiscordColor.Gold
             };
-            
+
             string msg = string.Empty;
             for (int i = 0; i < BotInfoHandler.gameHandler.combatOutputCollector.introductionHeader.Count(); i++)
             {
@@ -438,7 +459,7 @@ namespace ScrapScramble.BotRelated.Commands
         [Command("nextpairs")]
         [RequireIngame]
         [Description("Generaters the opponents for the next round")]
-        public async Task NextOpponents(CommandContext ctx)
+        public async Task NextPairs(CommandContext ctx)
         {            
             BotInfoHandler.gameHandler.pairsHandler.NextRoundPairs(ref BotInfoHandler.gameHandler);
 

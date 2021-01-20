@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScrapScramble.BotRelated;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -116,6 +117,7 @@ namespace ScrapScramble.Game
             Console.WriteLine(".5");
             this.opponents.Clear();
             for (int i = 0; i < newOpponents.Count(); i++) this.opponents.Add(newOpponents[i]);
+            BotInfoHandler.pairsReady = true;
         }
     }
 }

@@ -184,6 +184,7 @@ namespace ScrapScramble.Game.Cards.Mechs
                 letter = res;
 
                 this.writtenEffect = $"After you buy an Upgrade that starts with the letter '{letter}', gain +2 Attack.";
+                this.printEffectInCombat = false;
 
                 break;
             }
@@ -236,6 +237,59 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
                 $"Your Mirrordome replaced your shop with a copy of {gameHandler.players[enemy].name}'s shop.");
+        }
+    }
+
+    [UpgradeAttribute]
+    public class SuperScooper : Mech
+    {
+        public SuperScooper()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Super Scooper";
+            this.cardText = this.writtenEffect = "Start of Combat: Steal the stats of the lowest-Cost Upgrade your opponent bought last turn from their Mech.";
+            this.creatureData = new CreatureData(8, 3, 7);
+        }
+
+        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            int lowestCost = 9999;
+            List<Mech> upgradesList = new List<Mech>();
+
+            for (int i=0; i<gameHandler.players[enemy].boughtThisTurn.Count(); i++)
+            {
+                if (gameHandler.players[enemy].boughtThisTurn[i].creatureData.cost < lowestCost && gameHandler.players[enemy].boughtThisTurn[i].creatureData.attack != 0 && gameHandler.players[enemy].boughtThisTurn[i].creatureData.health != 0)
+                {
+                    lowestCost = gameHandler.players[enemy].boughtThisTurn[i].creatureData.cost;
+                    upgradesList.Clear();
+                    upgradesList.Add(gameHandler.players[enemy].boughtThisTurn[i]);
+                }
+            }
+            
+            if (upgradesList.Count == 0)
+            {
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Super Scooper triggers but doesn't do anything.");
+                return;
+            }
+
+            int pos = GameHandler.randomGenerator.Next(0, upgradesList.Count());
+
+            int attackst = upgradesList[pos].creatureData.attack;
+            int healthst = upgradesList[pos].creatureData.health;
+
+            upgradesList[pos].creatureData.attack = 0;
+            upgradesList[pos].creatureData.health = 0;
+
+            gameHandler.players[curPlayer].creatureData.attack += attackst;
+            gameHandler.players[curPlayer].creatureData.health += healthst;
+
+            gameHandler.players[enemy].creatureData.attack -= attackst;
+            gameHandler.players[enemy].creatureData.health -= healthst;
+
+            gameHandler.combatOutputCollector.preCombatHeader.Add(
+                $"{gameHandler.players[curPlayer].name}'s Super Scooper steals {attackst}/{healthst} from {gameHandler.players[enemy].name}'s {upgradesList[pos].name}, " +
+                $"leaving it as a {gameHandler.players[enemy].creatureData.Stats()} and leaving {gameHandler.players[curPlayer].name} as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
         }
     }
 }

@@ -13,8 +13,6 @@ namespace ScrapScramble.Game.Cards
         public CreatureData creatureData;
         public Rarity rarity;
 
-        public string cardText;
-
         public bool printEffectInCombat = true;
         public string writtenEffect;
 
@@ -37,7 +35,10 @@ namespace ScrapScramble.Game.Cards
 
         public override string GetInfo()
         {
-            string ret = $"{this.name} - {this.rarity} - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
+            string ret = string.Empty; 
+            if (this.cardText.Equals(string.Empty) ) ret = $"{this.name} - {this.rarity} - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health}";
+            else ret = $"{this.name} - {this.rarity} - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
+
             if (this.creatureData.staticKeywords[StaticKeyword.Freeze] == 1) ret = $"(Frozen for 1 turn) {ret}";
             else if (this.creatureData.staticKeywords[StaticKeyword.Freeze] > 1) ret = $"(Frozen for {this.creatureData.staticKeywords[StaticKeyword.Freeze]} turns) {ret}";
             return ret;
@@ -64,7 +65,7 @@ namespace ScrapScramble.Game.Cards
             return true;
         }
 
-        public override bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].shop.options.Count() <= shopPos) return false;
             if (this.creatureData.cost > gameHandler.players[curPlayer].curMana) return false;
@@ -103,15 +104,15 @@ namespace ScrapScramble.Game.Cards
 
         public override Card DeepCopy()
         {
-            Mech ret = (Mech)Activator.CreateInstance(this.GetType());
+            Mech ret = (Mech)Activator.CreateInstance(this.GetType());            
             ret.name = this.name;
             ret.rarity = this.rarity;
-            ret.cardText = this.cardText;
-            ret.creatureData = this.creatureData.DeepCopy();
-            ret.writtenEffect = this.writtenEffect;
+            ret.cardText = this.cardText;            
+            ret.creatureData = this.creatureData.DeepCopy();            
+            ret.writtenEffect = this.writtenEffect;            
             return ret;
         }
-        public Mech BasicCopy()
+        public virtual Mech BasicCopy()
         {
             return (Mech)Activator.CreateInstance(this.GetType());
         }

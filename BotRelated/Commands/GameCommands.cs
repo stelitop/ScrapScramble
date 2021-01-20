@@ -217,8 +217,7 @@ namespace ScrapScramble.BotRelated.Commands
         }
 
         [Command("playerlist")]
-        [Description("Shows a list of all players currently signed up.")]        
-        [RequireGuild]
+        [Description("Shows a list of all players currently signed up.")]
         public async Task PlayerList(CommandContext ctx)
         {
             var responseMessage = new DiscordEmbedBuilder

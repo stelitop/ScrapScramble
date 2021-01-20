@@ -63,6 +63,16 @@ namespace ScrapScramble.Game
 
             //do other stuff like matching later
         }        
+
+        public int AlivePlayers()
+        {
+            int ret = 0;
+            for (int i=0; i<this.players.Count(); i++)
+            {
+                if (this.players[i].lives > 0) ret++;
+            }
+            return ret;
+        }
     }
 
     public class GameHandlerMethods
@@ -70,16 +80,16 @@ namespace ScrapScramble.Game
         public static void StartBattle(ref GameHandler gameHandler, int mech1, int mech2)
         {
             //check for any exceptions
+
             
             if (Math.Max(mech1, mech2) >= gameHandler.players.Count()) return;
             //if (mech1 == mech2) { Console.WriteLine($"{gameHandler.players[mech1].name} tried to fight itself."); return; }
-
+            
             gameHandler.combatOutputCollector.Clear();
             
             gameHandler.players[mech1].destroyed = false;
             gameHandler.players[mech2].destroyed = false;
-
-           
+            
             //-introductionHeader output
             gameHandler.combatOutputCollector.introductionHeader.Add($"[{gameHandler.players[mech1].name} vs {gameHandler.players[mech2].name}]");
             gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech1].name} upgraded with:");
@@ -87,8 +97,8 @@ namespace ScrapScramble.Game
             for (int i=0; i<gameHandler.players[mech1].attachedMechs.Count(); i++)
             {
                 gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech1].attachedMechs[i].name}");
-            }            
-
+            }
+            
             gameHandler.combatOutputCollector.introductionHeader.Add($"\n{gameHandler.players[mech2].name} upgraded with:");
             for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count(); i++)
             {
@@ -99,11 +109,11 @@ namespace ScrapScramble.Game
             //save the data so it reverts after combat
             CreatureData crData1 = gameHandler.players[mech1].creatureData.DeepCopy();
             CreatureData crData2 = gameHandler.players[mech2].creatureData.DeepCopy();
-
+            
             gameHandler.players[mech1].GetInfoForCombat(ref gameHandler);
             gameHandler.combatOutputCollector.statsHeader.Add(string.Empty);
-            gameHandler.players[mech2].GetInfoForCombat(ref gameHandler);            
-
+            gameHandler.players[mech2].GetInfoForCombat(ref gameHandler);
+            
             int prStat1 = crData1.staticKeywords[StaticKeyword.Rush] - crData1.staticKeywords[StaticKeyword.Taunt];
             int prStat2 = crData2.staticKeywords[StaticKeyword.Rush] - crData2.staticKeywords[StaticKeyword.Taunt];
             
@@ -113,7 +123,7 @@ namespace ScrapScramble.Game
 
             
             bool coinflip = false;
-
+            
             //see who has bigger priority
             if (prStat1 > prStat2) result = false;
             else if (prStat1 < prStat2) result = true;
@@ -127,7 +137,7 @@ namespace ScrapScramble.Game
                 if (GameHandler.randomGenerator.Next(0, 2) == 0) result = false;
                 else result = true;
             }
-
+            
             if (result == true)
             {                
                 GeneralFunctions.Swap<int>(ref mech1, ref mech2);
@@ -135,11 +145,9 @@ namespace ScrapScramble.Game
                 crData1 = crData2.DeepCopy();
                 crData2 = midCrData.DeepCopy();
             }
-           
-            //output attack priority somewhere, somehow :)
-
-            //-preCombat header                
-
+            
+            //-preCombat header               
+            
             if (!coinflip) gameHandler.combatOutputCollector.preCombatHeader.Add($"{gameHandler.players[mech1].name} has Attack Priority.");
             else gameHandler.combatOutputCollector.preCombatHeader.Add($"{gameHandler.players[mech1].name} wins the coinflip for Attack Priority.");
             
@@ -155,7 +163,7 @@ namespace ScrapScramble.Game
             //-preCombat header
 
             //-combat header
-                //the fighting
+            //the fighting
             for (int curAttacker = 0; gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); curAttacker++)
             {
                 int attacker, defender;
@@ -182,19 +190,23 @@ namespace ScrapScramble.Game
                 gameHandler.combatOutputCollector.combatHeader.Add($"{gameHandler.players[mech1].name} has won!");                
                 gameHandler.players[mech2].lives--;
 
-                gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count][mech1] = FightResult.WIN;
-                gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count][mech2] = FightResult.LOSS;
+                gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count-1][mech1] = FightResult.WIN;
+                gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count-1][mech2] = FightResult.LOSS;
             }
             else
             {
                 gameHandler.combatOutputCollector.combatHeader.Add($"{gameHandler.players[mech2].name} has won!");
                 gameHandler.players[mech1].lives--;
 
-                gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count][mech1] = FightResult.LOSS;
-                gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count][mech2] = FightResult.WIN;
+                gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count-1][mech1] = FightResult.LOSS;
+                gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count-1][mech2] = FightResult.WIN;
             }
 
             //-combat header
+
+
+            Console.WriteLine("Frog2");
+
 
             //revert to before the fight
             gameHandler.players[mech1].creatureData = crData1.DeepCopy();
