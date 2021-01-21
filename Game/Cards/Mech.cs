@@ -33,7 +33,7 @@ namespace ScrapScramble.Game.Cards
         //    this.writtenEffect = string.Empty;
         //}        
 
-        public override string GetInfo()
+        public override string GetInfo(ref GameHandler gameHandler, int player)
         {
             string ret = string.Empty; 
             if (this.cardText.Equals(string.Empty) ) ret = $"{this.name} - {this.rarity} - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health}";

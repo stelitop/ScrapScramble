@@ -178,6 +178,7 @@
     <Compile Include="Game\Shop.cs" />
     <Compile Include="Game\GameHandler.cs" />
     <Compile Include="Game\Player.cs" />
+    <Compile Include="Game\SpecificEffects.cs" />
     <Compile Include="Game\StaticKeyword.cs" />
     <Compile Include="GeneralFunctions.cs" />
     <Compile Include="Program.cs" />

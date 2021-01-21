@@ -76,7 +76,7 @@ namespace ScrapScramble.Game.Effects
             this.options.Sort();
         }
 
-        public List<string> GetShopInfo()
+        public List<string> GetShopInfo(ref GameHandler gameHandler, int player)
         {
             List<string> retList = new List<string>();
 
@@ -89,7 +89,7 @@ namespace ScrapScramble.Game.Effects
             string ret = string.Empty;
             for (int i = 0; i < this.options.Count(); i++)
             {
-                string newBit = $"{i + 1}) " + this.options[i].GetInfo();
+                string newBit = $"{i + 1}) " + this.options[i].GetInfo(ref gameHandler, player);
                 //ret += $"{i+1}) " + this.options[i].GetInfo();
                 if (ret.Length + newBit.Length > 1020)
                 {

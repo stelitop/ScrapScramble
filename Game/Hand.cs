@@ -16,7 +16,7 @@ namespace ScrapScramble.Game
             this.cards = new List<Card>();
         }
 
-        public List<string> GetHandInfo()
+        public List<string> GetHandInfo(ref GameHandler gameHandler, int player)
         {
             List<string> retList = new List<string>();
 
@@ -29,7 +29,7 @@ namespace ScrapScramble.Game
             string ret = string.Empty;
             for (int i = 0; i < this.cards.Count(); i++)
             {
-                string newBit = $"{i + 1}) " + this.cards[i].GetInfo();
+                string newBit = $"{i + 1}) " + this.cards[i].GetInfo(ref gameHandler, player);
                 //ret += $"{i+1}) " + this.cards[i].GetInfo();
                 if (ret.Length + newBit.Length > 1020)
                 {

@@ -61,7 +61,7 @@ namespace ScrapScramble.Game.Cards.Mechs
                 gameHandler.players[curPlayer].creatureData.health += 2;
                 gameHandler.combatOutputCollector.preCombatHeader.Add(
                     $"{gameHandler.players[curPlayer].name}'s Tighrope Champion triggers and gives it +2/+2, leaving it as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
-            }   
+            }
             else
             {
                 gameHandler.combatOutputCollector.preCombatHeader.Add(
@@ -83,7 +83,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += gameHandler.players[enemy].creatureData.attack%10;
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += gameHandler.players[enemy].creatureData.attack % 10;
             gameHandler.combatOutputCollector.preCombatHeader.Add(
                 $"{gameHandler.players[curPlayer].name}'s Carbon Carapace gives it +{gameHandler.players[enemy].creatureData.attack % 10} Shields, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields]} Shields.");
         }
@@ -245,7 +245,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             if (gameHandler.players[curPlayer].shop.options.Count() <= 2)
             {
-                for (int i=0; i<gameHandler.players[curPlayer].shop.options.Count(); i++)
+                for (int i = 0; i < gameHandler.players[curPlayer].shop.options.Count(); i++)
                 {
                     gameHandler.players[curPlayer].shop.options[i] = new LivewireBramble();
                 }
@@ -254,7 +254,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             {
                 int pos1, pos2;
                 pos1 = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count());
-                pos2 = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count()-1);
+                pos2 = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() - 1);
                 if (pos2 >= pos1) pos2++;
 
                 gameHandler.players[curPlayer].shop.options[pos1] = new LivewireBramble();
@@ -283,12 +283,12 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             List<int> highestCosts = new List<int>();
             int maxCost = -1;
-            for (int i=0; i<gameHandler.players[enemy].shop.options.Count(); i++)
+            for (int i = 0; i < gameHandler.players[enemy].shop.options.Count(); i++)
             {
                 if (maxCost < gameHandler.players[enemy].shop.options[i].creatureData.cost) maxCost = gameHandler.players[enemy].shop.options[i].creatureData.cost;
             }
 
-            for (int i=0; i<gameHandler.players[enemy].shop.options.Count(); i++)
+            for (int i = 0; i < gameHandler.players[enemy].shop.options.Count(); i++)
             {
                 if (gameHandler.players[enemy].shop.options[i].creatureData.cost == maxCost) highestCosts.Add(i);
             }
@@ -349,7 +349,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             if (curPlayer == enemy) return;
 
-            for (int i=0; i<gameHandler.players[enemy].shop.options.Count(); i++)
+            for (int i = 0; i < gameHandler.players[enemy].shop.options.Count(); i++)
             {
                 if (gameHandler.players[enemy].shop.options[i].creatureData.staticKeywords[StaticKeyword.Binary] > 0)
                 {
@@ -524,6 +524,11 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].creatureData.attack += 2 * list.Count();
             gameHandler.players[curPlayer].creatureData.health += 2 * list.Count();
         }
+
+        public override string GetInfo(ref GameHandler gameHandler, int player)
+        {
+            return base.GetInfo(ref gameHandler, player) + $" *({CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, Criteria).Count})*";
+        }
     }
 
     [UpgradeAttribute]
@@ -649,7 +654,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             bool show = true;
             while (true)
             {
-                res = playerInteraction.SendInteractionAsync(curPlayer, show).Result;                
+                res = playerInteraction.SendInteractionAsync(curPlayer, show).Result;
                 show = false;
                 if (res.Equals(string.Empty)) continue;
                 if (res.Equals("TimeOut"))
@@ -691,6 +696,74 @@ namespace ScrapScramble.Game.Cards.Mechs
             {
                 gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, ref gameHandler, curPlayer, enemy);
             }
+        }
+    }
+
+    [UpgradeAttribute]
+    public class AnonymousSupplier : Mech
+    {
+        public AnonymousSupplier()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Anonymous Supplier";
+            this.cardText = this.writtenEffect = "Your Upgrades are not shared in the combat log.";
+            this.creatureData = new CreatureData(3, 3, 3);
+        }
+
+        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].specificEffects.hideUpgradesInLog = true;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class TrickRoomster : Mech
+    {
+        public TrickRoomster()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Trick Roomster";
+            this.cardText = this.writtenEffect = "The Mech with the lower Attack Priority goes first instead.";
+            this.creatureData = new CreatureData(4, 1, 1);
+        }
+
+        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].specificEffects.invertAttackPriority = true;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class BrassBracer : Mech
+    {
+        public BrassBracer()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Brass Bracer";
+            this.cardText = this.writtenEffect = "This minion ignores damage from Spikes.";
+            this.creatureData = new CreatureData(5, 3,4);
+        }
+
+        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].specificEffects.ignoreSpikes = true;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class RadiatingCrucible : Mech
+    {
+        public RadiatingCrucible()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Radiating Crucible";
+            this.cardText = this.writtenEffect = "This minion's attacks ignore Shields.";
+            this.creatureData = new CreatureData(5, 4, 3);
+        }
+
+        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].specificEffects.ignoreShields = true;
         }
     }
 }

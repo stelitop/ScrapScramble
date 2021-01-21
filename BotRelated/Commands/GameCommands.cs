@@ -417,7 +417,7 @@ namespace ScrapScramble.BotRelated.Commands
 
             for (int i=0; i < BotInfoHandler.gameHandler.pool.spareparts.Count(); i++)
             {
-                msg += $"{i+1}) {BotInfoHandler.gameHandler.pool.spareparts[i].GetInfo()}";
+                msg += $"{i+1}) {BotInfoHandler.gameHandler.pool.spareparts[i].GetInfo(ref BotInfoHandler.gameHandler, -1)}";
                 if (i != BotInfoHandler.gameHandler.pool.spareparts.Count() - 1) msg += "\n";
             }
 

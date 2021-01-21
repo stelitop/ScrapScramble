@@ -16,19 +16,19 @@ namespace ScrapScramble.BotRelated.Commands
     class PlayerOnlyCommands : BaseCommandModule
     {
         //[Command("mechinfo")]
-        public async Task MechInfo(CommandContext ctx)
-        {
-            int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
+        //public async Task MechInfo(CommandContext ctx)
+        //{
+        //    int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
 
-            DiscordEmbedBuilder responseMessage = new DiscordEmbedBuilder
-            {
-                Title = "Your Mech's Data",
-                Description = BotInfoHandler.gameHandler.players[index].PrintInfo(ref BotInfoHandler.gameHandler),
-                Color = DiscordColor.Brown
-            };
+        //    DiscordEmbedBuilder responseMessage = new DiscordEmbedBuilder
+        //    {
+        //        Title = "Your Mech's Data",
+        //        Description = BotInfoHandler.gameHandler.players[index].PrintInfo(ref BotInfoHandler.gameHandler),
+        //        Color = DiscordColor.Brown
+        //    };
 
-            await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
-        }
+        //    await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+        //}
 
         [Command("shop")]
         public async Task ResentShop(CommandContext ctx)
@@ -40,7 +40,7 @@ namespace ScrapScramble.BotRelated.Commands
                 Title = $"Round {BotInfoHandler.gameHandler.currentRound} Shop",               
                 Color = DiscordColor.Azure
             };
-            List<string> shopList = BotInfoHandler.gameHandler.players[index].shop.GetShopInfo();
+            List<string> shopList = BotInfoHandler.gameHandler.players[index].shop.GetShopInfo(ref BotInfoHandler.gameHandler, index);
             for (int i=0; i<shopList.Count(); i++)
             {
                 shopEmbed.AddField("Shop", shopList[i]);

@@ -334,6 +334,23 @@ namespace ScrapScramble.Game.Cards.Mechs
             }
         }
     }
+
+    [UpgradeAttribute]
+    public class CopperCommander : Mech
+    {
+        public CopperCommander()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Copper Commander";
+            this.cardText = this.writtenEffect = "Your Start of Combat effects trigger twice.";
+            this.creatureData = new CreatureData(4, 3, 3);
+        }
+
+        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].specificEffects.multiplierStartOfCombat = 2;
+        }
+    }
 }
 
 /*

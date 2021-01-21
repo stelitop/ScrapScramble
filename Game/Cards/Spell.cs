@@ -28,7 +28,7 @@ namespace ScrapScramble.Game.Cards
             return ret;
         }
 
-        public override string GetInfo()
+        public override string GetInfo(ref GameHandler gameHandler, int player)
         {
             string ret = string.Empty;
             if (this.rarity == SpellRarity.Spare_Part) ret = $"{this.name} - Spare Part - {this.cost} - {this.cardText}";

@@ -21,6 +21,7 @@ namespace ScrapScramble.Game
         public string name;
 
         public List<Mech> attachedMechs;
+        public SpecificEffects specificEffects;
 
         public List<List<Card>> playHistory;
         public List<Mech> boughtThisTurn;
@@ -51,10 +52,70 @@ namespace ScrapScramble.Game
             this.playHistory = new List<List<Card>>();
             this.playHistory.Add(new List<Card>());
             this.boughtThisTurn = new List<Mech>();
+            this.specificEffects = new SpecificEffects();
         }
         public Player(string name) : this()
         {
             this.name = name;
+        }
+
+        public string PrintInfoGeneral(ref GameHandler gameHandler)
+        {
+            string ret = string.Empty;
+
+            ret += $"**{this.creatureData.attack}/{this.creatureData.health}**\n";
+            ret += $"Mana: {this.curMana}/{gameHandler.maxMana}";
+            if (this.overloaded > 0) ret += $" ({this.overloaded} Overloaded)";
+
+            return ret;
+        }
+        public string PrintInfoKeywords(ref GameHandler gameHandler)
+        {
+            string ret = string.Empty;
+
+            foreach (var kw in this.creatureData.staticKeywords)
+            {
+                if (kw.Key == StaticKeyword.Echo) continue;
+                if (kw.Key == StaticKeyword.Binary) continue;
+
+                if (kw.Value != 0)
+                {
+                    if (ret.Equals(string.Empty)) ret += $"{kw.Key}: {kw.Value}";
+                    else ret += $"\n{kw.Key}: {kw.Value}";
+                }
+            }
+
+            if (ret.Equals(string.Empty)) return "(none)";
+            return ret;
+        }
+        public string PrintInfoEffects(ref GameHandler gameHandler)
+        {
+            string ret = string.Empty;
+
+            for (int i = 0; i < this.attachedMechs.Count(); i++)
+            {
+                if (!this.attachedMechs[i].writtenEffect.Equals(string.Empty))
+                {
+                    if (ret.Equals(string.Empty)) ret += $"{this.attachedMechs[i].writtenEffect}";
+                    else ret += $"\n{this.attachedMechs[i].writtenEffect}";
+                }
+            }
+
+            if (ret.Equals(string.Empty)) return "(none)";
+            return ret;
+        }
+        public string PrintInfoUpgrades(ref GameHandler gameHandler)
+        {
+            string ret = string.Empty;
+
+            foreach (var upgrade in this.attachedMechs)
+            {
+                if (ret.Equals(string.Empty)) ret += $"{upgrade.name}";
+                else ret += $"\n{upgrade.name}";
+            }
+
+            if (ret.Equals(string.Empty)) return "(none)";
+            return ret;
         }
 
         public string PrintInfo(ref GameHandler gameHandler)
@@ -91,6 +152,8 @@ namespace ScrapScramble.Game
 
         public void AttachMech(Mech mech, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
+            mech.OnPlay(ref gameHandler, curPlayer, enemy);
+
             if (mech.creatureData.staticKeywords[StaticKeyword.Magnetic] > 0)
             {
                 for (int i = 0; i < mech.creatureData.staticKeywords[StaticKeyword.Magnetic]; i++)
@@ -122,8 +185,8 @@ namespace ScrapScramble.Game
 
             this.creatureData.staticKeywords[StaticKeyword.Echo] = 0;
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 0;
-
-            mech.OnPlay(ref gameHandler, curPlayer, enemy);
+            this.creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
+            this.creatureData.staticKeywords[StaticKeyword.Binary] = 0;
 
             mech.Battlecry(ref gameHandler, curPlayer, enemy);
 
@@ -172,13 +235,13 @@ namespace ScrapScramble.Game
         {
             string msg = $"{this.name} attacks for {this.creatureData.attack} damage, ";
             int damage = this.creatureData.attack;
-            if (this.creatureData.staticKeywords[StaticKeyword.Spikes] > 0)
+            if (this.creatureData.staticKeywords[StaticKeyword.Spikes] > 0 && !gameHandler.players[defender].specificEffects.ignoreSpikes)
             {
                 damage += this.creatureData.staticKeywords[StaticKeyword.Spikes];
                 msg += $"increased to {damage} by Spikes, ";
             }
 
-            if (gameHandler.players[defender].creatureData.staticKeywords[StaticKeyword.Shields] > 0)
+            if (gameHandler.players[defender].creatureData.staticKeywords[StaticKeyword.Shields] > 0 && !gameHandler.players[attacker].specificEffects.ignoreShields)
             {
                 damage -= gameHandler.players[defender].creatureData.staticKeywords[StaticKeyword.Shields];
                 if (damage < 0) damage = 0;
@@ -194,7 +257,7 @@ namespace ScrapScramble.Game
                 }
             }
 
-            this.creatureData.staticKeywords[StaticKeyword.Spikes] = 0;
+            if (!gameHandler.players[defender].specificEffects.ignoreSpikes) this.creatureData.staticKeywords[StaticKeyword.Spikes] = 0;
 
             return gameHandler.players[defender].TakeDamage(damage, ref gameHandler, attacker, defender, msg);
         }
@@ -244,6 +307,7 @@ namespace ScrapScramble.Game
                 if (this.attachedMechs[i].writtenEffect.Equals(string.Empty)) continue;
                 if (!this.attachedMechs[i].printEffectInCombat) continue;
                 if (this.attachedMechs[i].writtenEffect.StartsWith("Aftermath:")) continue;
+                if (this.attachedMechs[i].writtenEffect.StartsWith("Spellburst:")) continue;
 
                 if (isVanilla) preCombatEffects = this.attachedMechs[i].writtenEffect;
                 else preCombatEffects = preCombatEffects + $"\n{this.attachedMechs[i].writtenEffect}";
@@ -258,8 +322,6 @@ namespace ScrapScramble.Game
                     break;
                 }
             }
-            
-
 
             if (isVanilla)
             {

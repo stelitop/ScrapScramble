@@ -119,7 +119,7 @@ namespace ScrapScramble.Game
             
             for (int i=0; i<gameHandler.pool.spareparts.Count(); i++)
             {
-                magnetic.description += $"{i+1}) {gameHandler.pool.spareparts[i].GetInfo()}";
+                magnetic.description += $"{i+1}) {gameHandler.pool.spareparts[i].GetInfo(ref gameHandler, curPlayer)}";
                 if (i != gameHandler.pool.spareparts.Count() - 1) magnetic.description += "\n";
             }
 

@@ -94,13 +94,22 @@ namespace ScrapScramble.Game
             gameHandler.combatOutputCollector.introductionHeader.Add($"[{gameHandler.players[mech1].name} vs {gameHandler.players[mech2].name}]");
             gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech1].name} upgraded with:");
             
-            for (int i=0; i<gameHandler.players[mech1].attachedMechs.Count(); i++)
+            if (gameHandler.players[mech1].specificEffects.hideUpgradesInLog)
+            {
+                gameHandler.combatOutputCollector.introductionHeader.Add("(Hidden)");
+            }
+            else for (int i=0; i<gameHandler.players[mech1].attachedMechs.Count(); i++)
             {
                 gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech1].attachedMechs[i].name}");
             }
             
             gameHandler.combatOutputCollector.introductionHeader.Add($"\n{gameHandler.players[mech2].name} upgraded with:");
-            for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count(); i++)
+
+            if (gameHandler.players[mech2].specificEffects.hideUpgradesInLog)
+            {
+                gameHandler.combatOutputCollector.introductionHeader.Add("(Hidden)");
+            }
+            else for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count(); i++)
             {
                 gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech2].attachedMechs[i].name}");
             }
@@ -145,21 +154,35 @@ namespace ScrapScramble.Game
                 crData1 = crData2.DeepCopy();
                 crData2 = midCrData.DeepCopy();
             }
-            
+
             //-preCombat header               
-            
-            if (!coinflip) gameHandler.combatOutputCollector.preCombatHeader.Add($"{gameHandler.players[mech1].name} has Attack Priority.");
+
+            if (!coinflip)
+            {             
+                gameHandler.combatOutputCollector.preCombatHeader.Add($"{gameHandler.players[mech1].name} has Attack Priority.");
+                if (gameHandler.players[mech1].specificEffects.invertAttackPriority || gameHandler.players[mech2].specificEffects.invertAttackPriority)
+                {
+                    gameHandler.combatOutputCollector.preCombatHeader.Add($"Because of a Trick Roomster, {gameHandler.players[mech2].name} has Attack Priority instead.");
+                    GeneralFunctions.Swap<int>(ref mech1, ref mech2);
+                    CreatureData midCrData = crData1.DeepCopy();
+                    crData1 = crData2.DeepCopy();
+                    crData2 = midCrData.DeepCopy();
+                }
+            }
             else gameHandler.combatOutputCollector.preCombatHeader.Add($"{gameHandler.players[mech1].name} wins the coinflip for Attack Priority.");
             
             //trigger Start of Combat effects
-            for (int i = 0; i < gameHandler.players[mech1].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
-            {
-                gameHandler.players[mech1].attachedMechs[i].StartOfCombat(ref gameHandler, mech1, mech2);
-            }
-            for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
-            {
-                gameHandler.players[mech2].attachedMechs[i].StartOfCombat(ref gameHandler, mech2, mech1);
-            }
+            for (int multiplier = 0; multiplier < gameHandler.players[mech1].specificEffects.multiplierStartOfCombat; multiplier++)
+                for (int i = 0; i < gameHandler.players[mech1].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
+                {
+                    gameHandler.players[mech1].attachedMechs[i].StartOfCombat(ref gameHandler, mech1, mech2);
+                }
+
+            for (int multiplier = 0; multiplier < gameHandler.players[mech2].specificEffects.multiplierStartOfCombat; multiplier++)
+                for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
+                {
+                    gameHandler.players[mech2].attachedMechs[i].StartOfCombat(ref gameHandler, mech2, mech1);
+                }
             //-preCombat header
 
             //-combat header
@@ -260,6 +283,7 @@ namespace ScrapScramble.Game
             for (int i=0; i<gameHandler.players.Count(); i++)
             {
                 gameHandler.players[i].attachedMechs.Clear();
+                gameHandler.players[i].specificEffects = new SpecificEffects();
             }
         }
     }

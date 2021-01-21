@@ -110,6 +110,39 @@ namespace ScrapScramble.Game.Cards.Mechs
                     $"{gameHandler.players[curPlayer].name}'s Exotron the Forbidden fails to trigger.");
             }    
         }
+
+        public override string GetInfo(ref GameHandler gameHandler, int player)
+        {
+            string ret = base.GetInfo(ref gameHandler, player);
+
+            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, this.Criteria);
+
+            int arm = 0, leg = 0, mb = 0, wheel = 0;
+            for (int i = 0; i < list.Count(); i++)
+            {
+                if (list[i].name.Equals("Arm of Exotron")) arm = 1;
+                else if (list[i].name.Equals("Leg of Exotron")) leg = 1;
+                else if (list[i].name.Equals("Motherboard of Exotron")) mb = 1;
+                else if (list[i].name.Equals("Wheel of Exotron")) wheel = 1;
+            }
+
+            if (arm + leg + mb + wheel == 4) return ret += " *(Ready!)*";
+            else if (arm + leg + mb + wheel == 0) return ret += " *(Missing: All)*";
+            else
+            {
+                ret += " *(Missing:";
+
+                if (arm == 0) ret += " Arm,";
+                if (leg == 0) ret += " Leg,";
+                if (mb == 0) ret += " Motherboard,";
+                if (wheel == 0) ret += " Wheel,";
+
+                ret = ret.Remove(ret.Length - 1, 1);
+                ret += ")*";
+            }
+
+            return ret;
+        }
     }
 
     [UpgradeAttribute]

@@ -73,8 +73,10 @@ namespace ScrapScramble.BotRelated.Commands
                 });
 
                 await SendShops(ctx);
-
+                Thread.Sleep(1000);
                 await NextPairs(ctx);
+                Thread.Sleep(1000);
+                await CreateInteractivePlayerlist(ctx);
 
                 BotInfoHandler.pairsReady = false;
             }
@@ -190,7 +192,10 @@ namespace ScrapScramble.BotRelated.Commands
 
 
             await BotInfoHandler.RefreshPlayerList(ctx);
+            Thread.Sleep(1000);
             await SendShops(ctx);
+            Thread.Sleep(1000);
+            await CreateInteractivePlayerlist(ctx);
         }
 
         [Command("pairslist")]

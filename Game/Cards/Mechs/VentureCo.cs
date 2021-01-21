@@ -14,6 +14,14 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    public class VentureCoMechNaming : Mech
+    {
+        public override string GetInfo(ref GameHandler gameHandler, int player)
+        {
+            return base.GetInfo(ref gameHandler, player) + $" *({CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, VentureCo.Criteria).Count})*";
+        }
+    }
+
     [UpgradeAttribute]
     public class VentureCoSticker : Mech
     {
@@ -27,7 +35,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class VentureCoSawblade : Mech
+    public class VentureCoSawblade : VentureCoMechNaming
     {
         public VentureCoSawblade()
         {
@@ -45,7 +53,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class VentureCoPauldrons : Mech
+    public class VentureCoPauldrons : VentureCoMechNaming
     {
         public VentureCoPauldrons()
         {
@@ -65,7 +73,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class VentureCoThrusters : Mech
+    public class VentureCoThrusters : VentureCoMechNaming
     {
         public VentureCoThrusters()
         {
@@ -85,7 +93,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class VentureCoFlamethrower : Mech
+    public class VentureCoFlamethrower : VentureCoMechNaming
     {
         public VentureCoFlamethrower()
         {
@@ -193,6 +201,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         }
     }
+
 }
 
 /*

@@ -79,16 +79,19 @@ namespace ScrapScramble.BotRelated
             string aftermathMsg = gameHandler.players[index].GetAftermathMessages();            
             if (!aftermathMsg.Equals(string.Empty)) msg.AddField("[Aftermath]", aftermathMsg);
 
-            msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfo(ref BotInfoHandler.gameHandler));
-            
-            List<string> shopValue = gameHandler.players[index].shop.GetShopInfo();
+            msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfoGeneral(ref BotInfoHandler.gameHandler));            
+            msg.AddField("[Keywords]", gameHandler.players[index].PrintInfoKeywords(ref BotInfoHandler.gameHandler));
+            msg.AddField("[Effects]", gameHandler.players[index].PrintInfoEffects(ref BotInfoHandler.gameHandler));
+            msg.AddField("[Upgrades]", gameHandler.players[index].PrintInfoUpgrades(ref BotInfoHandler.gameHandler));
+
+            List<string> shopValue = gameHandler.players[index].shop.GetShopInfo(ref gameHandler, index);
 
             for (int i=0; i<shopValue.Count(); i++)
             {
                 msg.AddField($"[Round {BotInfoHandler.gameHandler.currentRound} Shop]", shopValue[i]);
             }
 
-            List<string> handValue = gameHandler.players[index].hand.GetHandInfo();
+            List<string> handValue = gameHandler.players[index].hand.GetHandInfo(ref BotInfoHandler.gameHandler, index);
 
             for (int i=0; i<handValue.Count(); i++)
             {
@@ -100,7 +103,16 @@ namespace ScrapScramble.BotRelated
 
         public static async Task SendNewPlayerList(CommandContext ctx)
         {
-            interactivePlayerList = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { Color = DiscordColor.Aquamarine}).ConfigureAwait(false);
+            if (interactivePlayerList != null)
+            {
+                interactivePlayerList.ModifyAsync(embed: new DiscordEmbedBuilder{
+                    Title = "Old Interactive List of Participants",
+                    Description = "A new interactive list has been called and this one is not updated.",
+                    Color = DiscordColor.Gray
+                }.Build()).ConfigureAwait(false);
+            }
+
+            interactivePlayerList = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { Color = DiscordColor.SpringGreen}).ConfigureAwait(false);
             interactivePlayerListCaller = ctx.User;
 
             await RefreshPlayerList(ctx);
@@ -113,7 +125,7 @@ namespace ScrapScramble.BotRelated
             var responseMessage = new DiscordEmbedBuilder
             {
                 Title = "Interactive List of Participants",
-                Color = DiscordColor.Azure,
+                Color = DiscordColor.SpringGreen,
                 Description = string.Empty
             };
 
