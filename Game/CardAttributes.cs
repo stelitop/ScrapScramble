@@ -16,6 +16,15 @@ namespace ScrapScramble.Game
     }
 
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class SpellAttribute : Attribute
+    {
+        public SpellAttribute()
+        {
+
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class TokenAttribute : Attribute
     {
         public TokenAttribute()
@@ -25,11 +34,12 @@ namespace ScrapScramble.Game
     }
 
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class SpellAttribute : Attribute
+    public class SparePartAttribute : Attribute
     {
-        public SpellAttribute()
+        public SparePartAttribute()
         {
 
         }
+
     }
 }

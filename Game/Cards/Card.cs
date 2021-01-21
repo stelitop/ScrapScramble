@@ -16,5 +16,7 @@ namespace ScrapScramble.Game.Cards
         public abstract bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy);
         public abstract string GetInfo();
         public abstract Card DeepCopy();
+
+        public virtual void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy) { }
     }
 }

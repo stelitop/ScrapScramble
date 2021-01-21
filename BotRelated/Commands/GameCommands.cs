@@ -408,5 +408,24 @@ namespace ScrapScramble.BotRelated.Commands
                 await menuMessage.DeleteReactionAsync(foundEmoji, ctx.User).ConfigureAwait(false);                
             }
         }
+    
+        [Command("spareparts")]
+        [Description("Displays all spare parts.")]
+        public async Task SpareParts(CommandContext ctx)
+        {
+            string msg = string.Empty;
+
+            for (int i=0; i < BotInfoHandler.gameHandler.pool.spareparts.Count(); i++)
+            {
+                msg += $"{i+1}) {BotInfoHandler.gameHandler.pool.spareparts[i].GetInfo()}";
+                if (i != BotInfoHandler.gameHandler.pool.spareparts.Count() - 1) msg += "\n";
+            }
+
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder{
+                Title = "List of Spare Parts",
+                Description = msg,
+                Color = DiscordColor.Azure
+            }).ConfigureAwait(false);
+        }
     }
 }

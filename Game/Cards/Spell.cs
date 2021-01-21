@@ -31,7 +31,8 @@ namespace ScrapScramble.Game.Cards
         public override string GetInfo()
         {
             string ret = string.Empty;
-            ret = $"{this.name} - {this.rarity} - {this.cost} - {this.cardText}";
+            if (this.rarity == SpellRarity.Spare_Part) ret = $"{this.name} - Spare Part - {this.cost} - {this.cardText}";
+            else ret = $"{this.name} - {this.rarity} - {this.cost} - {this.cardText}";
             return ret;
         }
 
@@ -42,11 +43,16 @@ namespace ScrapScramble.Game.Cards
 
             gameHandler.players[curPlayer].curMana -= this.cost;
 
+            for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
+            {
+                gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, ref gameHandler, curPlayer, enemy);
+            }
+
             this.OnPlay(ref gameHandler, curPlayer, enemy);
 
             return true;
         }
 
-        public virtual void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy) { }
     }
 }

@@ -45,7 +45,7 @@ namespace ScrapScramble
             Client = new DiscordClient(config);           
 
             //listens to events
-            Client.Ready += OnClientReady;           
+            Client.Ready += OnClientReady;
 
             Client.UseInteractivity(new InteractivityConfiguration
             {

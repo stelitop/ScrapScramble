@@ -211,7 +211,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(5, 2, 5);
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
@@ -239,4 +239,40 @@ namespace ScrapScramble.Game.Cards.Mechs
                 "Your Mecha'thun's Generator adds 3 other random Mecha'thun Cultists to your shop.");
         }
     }
+
+    [UpgradeAttribute]
+    public class MechaThunsLord : Mech
+    {
+        private bool spellburst = true;
+
+        public MechaThunsLord()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Mecha'thun's Lord";
+            this.cardText = this.writtenEffect = "Spellburst: Give your Mecha'thun +10/+10.";
+            this.creatureData = new CreatureData(10, 10, 10);
+        }
+
+        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
+            if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
+        }
+
+        public override void OnSpellCast(Card spell, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (spellburst)
+            {
+                spellburst = false;
+                this.writtenEffect = string.Empty;
+
+                int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
+                if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
+
+                gameHandler.players[curPlayer].shop.options[index].creatureData.attack += 10;
+                gameHandler.players[curPlayer].shop.options[index].creatureData.health += 10;
+            }
+        }
+    }
+    
 }

@@ -292,6 +292,48 @@ namespace ScrapScramble.Game.Cards.Mechs
                 $"leaving it as a {gameHandler.players[enemy].creatureData.Stats()} and leaving {gameHandler.players[curPlayer].name} as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
         }
     }
+
+    [UpgradeAttribute]
+    public class TitaniumBloomer : Mech
+    {
+        public TitaniumBloomer()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Titanium Bloomer";
+            this.cardText = "Battlecry: Add a Lightning Bloom to your hand.";
+            this.creatureData = new CreatureData(4, 4, 2);
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].hand.cards.Add(new LightningBloom());
+        }
+    }
+
+    [UpgradeAttribute]
+    public class SpellPrinter : Mech
+    {
+        private bool spellburst = true;
+
+        public SpellPrinter()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Spell Printer";
+            this.cardText = this.writtenEffect = "Spellburst: Add a copy of the spell to your hand.";
+            this.creatureData = new CreatureData(5, 4, 5);
+        }
+
+        public override void OnSpellCast(Card spell, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (spellburst)
+            {
+                spellburst = false;
+                this.writtenEffect = string.Empty;
+
+                gameHandler.players[curPlayer].hand.cards.Add(spell.DeepCopy());
+            }
+        }
+    }
 }
 
 /*

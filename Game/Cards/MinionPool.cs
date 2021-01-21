@@ -13,10 +13,12 @@ namespace ScrapScramble.Game
     public class MinionPool
     {
         public List<Mech> mechs;
+        public List<Spell> spareparts;
         
         public MinionPool()
         {
             this.mechs = new List<Mech>();
+            this.spareparts = new List<Spell>();
             this.FillGenericMinionPool();
         }        
 
@@ -45,6 +47,21 @@ namespace ScrapScramble.Game
             foreach (var x in allMechClasses)
             {
                 this.mechs.Add((Mech)(Activator.CreateInstance(x.Type)));
+            }
+
+            this.spareparts = new List<Spell>();
+
+            var allSparePartClasses =
+                // Note the AsParallel here, this will parallelize everything after.
+                from a in AppDomain.CurrentDomain.GetAssemblies().AsParallel()
+                from t in a.GetTypes()
+                let attributes = t.GetCustomAttributes(typeof(SparePartAttribute), true)
+                where attributes != null && attributes.Length > 0
+                select new { Type = t, Attributes = attributes.Cast<SparePartAttribute>() };
+
+            foreach (var x in allSparePartClasses)
+            {
+                this.spareparts.Add((Spell)(Activator.CreateInstance(x.Type)));
             }
 
             this.GenericMinionPollSort();

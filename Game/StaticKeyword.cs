@@ -16,6 +16,7 @@ namespace ScrapScramble.Game
         Spikes,
         Overload,
         Echo,
-        Freeze
+        Freeze,
+        Magnetic
     }
 }

@@ -674,7 +674,25 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    [UpgradeAttribute]
+    public class ArcaneAutomatron : Mech
+    {
+        public ArcaneAutomatron()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Arcane Automatron";
+            this.cardText = "Buying this Upgrade also counts as casting a spell.";
+            this.creatureData = new CreatureData(2, 1, 3);
+        }
 
+        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
+            {
+                gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, ref gameHandler, curPlayer, enemy);
+            }
+        }
+    }
 }
 
 /*

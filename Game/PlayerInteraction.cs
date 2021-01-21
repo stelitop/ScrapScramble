@@ -93,6 +93,7 @@ namespace ScrapScramble.Game
                 if (res.Equals(string.Empty)) continue;
                 if (res.Equals("TimeOut"))
                 {
+                    show = true;
                     continue;
                 }
                 else
@@ -108,6 +109,42 @@ namespace ScrapScramble.Game
                         return shopIndex;
                     }
                     else continue;                    
+                }
+            }
+        }
+
+        public static int ActivateMagnetic(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            PlayerInteraction magnetic = new PlayerInteraction("Write the number of a Spare Part", string.Empty, "Write the corresponding index", AnswerType.IntAnswer);
+            
+            for (int i=0; i<gameHandler.pool.spareparts.Count(); i++)
+            {
+                magnetic.description += $"{i+1}) {gameHandler.pool.spareparts[i].GetInfo()}";
+                if (i != gameHandler.pool.spareparts.Count() - 1) magnetic.description += "\n";
+            }
+
+            string res;
+            bool show = true;
+            while (true)
+            {
+                res = magnetic.SendInteractionAsync(curPlayer, show).Result;
+                show = false;
+
+                if (res.Equals(string.Empty)) continue;
+                if (res.Equals("TimeOut"))
+                {
+                    show = true;
+                    continue;
+                }
+                else
+                {
+                    int index = int.Parse(res) - 1;
+                    if (0 <= index && index < gameHandler.pool.spareparts.Count())
+                    {
+                        gameHandler.players[curPlayer].hand.cards.Add(gameHandler.pool.spareparts[index].DeepCopy());
+                        return index;
+                    }
+                    else continue;
                 }
             }
         }

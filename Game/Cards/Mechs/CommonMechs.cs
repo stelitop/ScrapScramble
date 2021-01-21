@@ -834,6 +834,150 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.health += 2;
         }
     }
+
+    [UpgradeAttribute]
+    public class MagnetBall : Mech
+    {
+        public MagnetBall()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Magnet Ball";
+            this.cardText = "Magnetic, Taunt. Overload: (4).";
+            this.creatureData = new CreatureData(2, 4, 5);
+            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
+            this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
+            this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class Shieldmobile : Mech
+    {
+        public Shieldmobile()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Shieldmobile";
+            this.cardText = "Magnetic. Battlecry: Gain +6 Shields. Overload: (4).";
+            this.creatureData = new CreatureData(2, 2, 6);
+            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
+            this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 6;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class BoomerangMagnet : Mech
+    {
+        public BoomerangMagnet()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Boomerang Magnet";
+            this.cardText = "Magnetic, Rush. Overload: (4)";
+            this.creatureData = new CreatureData(5, 5, 3);
+            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
+            this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
+            this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class DjinniDecelerator : Mech
+    {
+        public DjinniDecelerator()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Djinni Decelerator";
+            this.cardText = "Magnetic, Taunt x2";
+            this.creatureData = new CreatureData(5, 6, 6);
+            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
+            this.creatureData.staticKeywords[StaticKeyword.Taunt] = 2;            
+        }
+    }
+
+    [UpgradeAttribute]
+    public class TrashCube : Mech
+    {
+        public TrashCube()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Trash Cube";
+            this.cardText = "Echo, Magnetic";
+            this.creatureData = new CreatureData(5, 4, 4);
+            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
+            this.creatureData.staticKeywords[StaticKeyword.Echo] = 1;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class Spikecycle : Mech
+    {
+        public Spikecycle()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Shieldmobile";
+            this.cardText = "Magnetic. Battlecry: Gain +6 Spikes. Overload: (4).";
+            this.creatureData = new CreatureData(2, 6, 2);
+            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
+            this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 6;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class CircusCircuit : Mech
+    {
+        public CircusCircuit()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Circus Circuit";
+            this.cardText = "Aftermath: Add a random Spare Part to your hand.";
+            this.creatureData = new CreatureData(3, 2, 3);
+        }
+
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            int pos = GameHandler.randomGenerator.Next(0, gameHandler.pool.spareparts.Count());
+
+            gameHandler.players[curPlayer].hand.cards.Add(gameHandler.pool.spareparts[pos].DeepCopy());
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Circus Circuit added a {gameHandler.pool.spareparts[pos].name} to your hand.");
+        }
+    }
+
+    [UpgradeAttribute]
+    public class Tinkerpet: Mech
+    {
+        private bool spellburst = true;
+
+        public Tinkerpet()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Tinkerpet";
+            this.cardText = this.writtenEffect = "Spellburst: Give your Mech +4 Spikes and +4 Shields.";
+            this.creatureData = new CreatureData(2, 1, 1);
+        }
+
+        public override void OnSpellCast(Card spell, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (this.spellburst)
+            {
+                this.spellburst = false;
+                this.writtenEffect = string.Empty;
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
+            }
+        }
+    }
+
 }
 
 /*

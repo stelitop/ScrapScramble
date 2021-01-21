@@ -70,7 +70,7 @@ namespace ScrapScramble.Game
             foreach (var kw in this.creatureData.staticKeywords)
             {
                 if (kw.Key == StaticKeyword.Echo) continue;
-                if (kw.Key == StaticKeyword.Binary) continue;
+                if (kw.Key == StaticKeyword.Binary) continue;                
 
                 if (kw.Value != 0) ret += $"{kw.Key}: {kw.Value}\n";
             }
@@ -91,6 +91,14 @@ namespace ScrapScramble.Game
 
         public void AttachMech(Mech mech, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
+            if (mech.creatureData.staticKeywords[StaticKeyword.Magnetic] > 0)
+            {
+                for (int i = 0; i < mech.creatureData.staticKeywords[StaticKeyword.Magnetic]; i++)
+                {
+                    PlayerInteraction.ActivateMagnetic(ref gameHandler, curPlayer, enemy);
+                }
+            }
+
             if (mech.creatureData.staticKeywords[StaticKeyword.Echo] > 0)
             {
                 gameHandler.players[curPlayer].shop.options.Add(mech.BasicCopy());
@@ -112,7 +120,10 @@ namespace ScrapScramble.Game
 
             this.creatureData += mech.creatureData;
 
-            this.creatureData.staticKeywords[StaticKeyword.Echo] = 0;            
+            this.creatureData.staticKeywords[StaticKeyword.Echo] = 0;
+            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 0;
+
+            mech.OnPlay(ref gameHandler, curPlayer, enemy);
 
             mech.Battlecry(ref gameHandler, curPlayer, enemy);
 
