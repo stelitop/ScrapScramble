@@ -268,11 +268,21 @@ namespace ScrapScramble.BotRelated.Commands
             string name = mechName[0];
             for (int i = 1; i < mechName.Count(); i++) name = name + " " + mechName[i];
 
+            if (name.Length < 3)
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder{
+                    Title = "Input Is Too Short",
+                    Description = "Your input needs to be at least 3 characters long.",
+                    Color = DiscordColor.Red
+                }).ConfigureAwait(false);
+                return;
+            }
+
             List<int> candidates = new List<int>();
 
             for (int i=0; i<BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
             {
-                if (BotInfoHandler.gameHandler.pool.mechs[i].name.StartsWith(name, StringComparison.OrdinalIgnoreCase))
+                if (BotInfoHandler.gameHandler.pool.mechs[i].name.ToLower().Contains(name.ToLower()))
                 {
                     candidates.Add(i);
                 }
