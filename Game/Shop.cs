@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ScrapScramble.Game.Effects
-{
+{   
     public class Shop
     {
         public List<Mech> options;
@@ -14,6 +14,37 @@ namespace ScrapScramble.Game.Effects
         public Shop()
         {
             this.options = new List<Mech>();
+        }
+
+        public int AddUpgrade(Mech m)
+        {
+            this.options.Add((Mech)m.DeepCopy());
+
+            return this.options.Count() - 1;
+        }
+
+        public Mech At(int index)
+        {
+            if (index < 0 || index >= this.options.Count()) return new BlankUpgrade();
+            else if (this.options[index].name == BlankUpgrade.name) return new BlankUpgrade();
+            return this.options[index];
+        }
+
+        public void RemoveUpgrade(int index)
+        {
+            if (index < 0 || index >= this.options.Count()) return;
+
+            this.options[index] = new BlankUpgrade();
+        }
+
+        public int OptionsCount()
+        {
+            int ret = 0;
+            for (int i=0; i<this.options.Count(); i++)
+            {
+                if (this.options[i].name != BlankUpgrade.name) ret++;
+            }
+            return ret;
         }
 
         public void Refresh(MinionPool pool, int maxMana)
@@ -46,15 +77,15 @@ namespace ScrapScramble.Game.Effects
             for (int i = 0; i < legendaries; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
-                this.options.Add((Mech)m.DeepCopy());
+                this.AddUpgrade(m);
             }
 
             subList.Clear();
             for (int i = 0; i < pool.mechs.Count(); i++) if (pool.mechs[i].rarity == Rarity.Epic && pool.mechs[i].creatureData.cost <= maxMana - 5) subList.Add(pool.mechs[i]);
             for (int i = 0; i < epics; i++)
             {
-                Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];                
-                this.options.Add((Mech)m.DeepCopy());
+                Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
+                this.AddUpgrade(m);
             }
 
             subList.Clear();
@@ -62,7 +93,7 @@ namespace ScrapScramble.Game.Effects
             for (int i = 0; i < rares; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
-                this.options.Add((Mech)m.DeepCopy());
+                this.AddUpgrade(m);
             }
 
             subList.Clear();
@@ -70,7 +101,7 @@ namespace ScrapScramble.Game.Effects
             for (int i = 0; i < commons; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
-                this.options.Add((Mech)m.DeepCopy());
+                this.AddUpgrade(m);
             }
 
             this.options.Sort();
@@ -102,6 +133,23 @@ namespace ScrapScramble.Game.Effects
             }
             retList.Add(ret);
             return retList;
+        }       
+    }
+
+    public class BlankUpgrade : Mech
+    {
+        public new const string name = "Blank";
+        public BlankUpgrade()
+        {
+            this.inLimbo = true;
+            this.cardText = string.Empty;
+            this.rarity = Rarity.NO_RARITY;
+            this.creatureData = new CreatureData();            
+        }
+
+        public override string GetInfo(ref GameHandler gameHandler, int player)
+        {
+            return string.Empty;
         }
     }
 }

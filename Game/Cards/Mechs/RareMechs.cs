@@ -766,6 +766,152 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].specificEffects.ignoreShields = true;
         }
     }
+
+    [UpgradeAttribute]
+    public class Scrapbarber : Mech
+    {
+        public Scrapbarber()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Scrapbarber";
+            this.cardText = this.writtenEffect = "After this attacks the enemy Mech, steal 2 Attack and Health from it.";
+            this.creatureData = new CreatureData(9, 3, 3);
+        }
+
+        public override void AfterThisAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            int stolenat = Math.Min(gameHandler.players[enemy].creatureData.attack - 1, 2);
+            int stolenhp = Math.Min(gameHandler.players[enemy].creatureData.health, 2);
+
+            gameHandler.players[curPlayer].creatureData.attack += stolenat;
+            gameHandler.players[curPlayer].creatureData.health += stolenhp;
+
+            gameHandler.players[enemy].creatureData.attack -= stolenat;
+            gameHandler.players[enemy].creatureData.health -= stolenhp;
+
+            gameHandler.combatOutputCollector.combatHeader.Add(
+                $"{gameHandler.players[curPlayer].name}'s Scrapbarber steals {stolenat}/{stolenhp} from {gameHandler.players[enemy].name}, " +
+                $"leaving it as a {gameHandler.players[enemy].creatureData.Stats()} and leaving {gameHandler.players[curPlayer].name} as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
+        }
+    }
+
+    [UpgradeAttribute]
+    public class CopyShredder : Mech
+    {
+        public CopyShredder()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Copy Shredder";
+            this.cardText = this.writtenEffect = "Start of Combat: Gain +1/+1 for each duplicate Upgrade your opponent bought this round.";
+            this.creatureData = new CreatureData(3, 2, 4);
+        }
+
+        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<string> found = new List<string>();
+            int buff = 0;
+
+            for (int i=0; i<gameHandler.players[enemy].boughtThisTurn.Count(); i++)
+            {
+                if (found.Contains(gameHandler.players[enemy].boughtThisTurn[i].name))
+                {
+                    buff++;
+                }
+                else found.Add(gameHandler.players[enemy].boughtThisTurn[i].name);
+            }
+
+            gameHandler.players[curPlayer].creatureData.attack += buff;
+            gameHandler.players[curPlayer].creatureData.health += buff;
+
+            gameHandler.combatOutputCollector.preCombatHeader.Add(
+                $"{gameHandler.players[curPlayer].name}'s Copy Shredder gives it +{buff}/+{buff}.");
+        }
+    }
+
+    [UpgradeAttribute]
+    public class BrawlersPlating : Mech
+    {
+        private bool enemyatk = false;
+        private bool meatk = false;
+        private bool activated = false;
+
+        public BrawlersPlating()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Brawler's Plating";
+            this.cardText = this.writtenEffect = "After both Mechs have attacked, gain +8 Shields.";
+            this.creatureData = new CreatureData(2, 1, 2);
+        }        
+
+        private void Effect(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (!activated)
+            {
+                activated = true;
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 8;
+                gameHandler.combatOutputCollector.combatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Brawler's Plating triggers and gives it +8 Shields, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields]} Shields.");
+            }   
+        }
+
+        public override void AfterThisAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            meatk = true;
+            if (meatk && enemyatk) this.Effect(ref gameHandler, curPlayer, enemy);
+        }
+
+        public override void AfterTheEnemyAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            enemyatk = true;
+            if (meatk && enemyatk) this.Effect(ref gameHandler, curPlayer, enemy);
+        }
+        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            meatk = enemyatk = activated = false;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class PowerGlove : Mech
+    {
+        private bool enemyatk = false;
+        private bool meatk = false;
+        private bool activated = false;
+
+        public PowerGlove()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Power Glove";
+            this.cardText = this.writtenEffect = "After both Mechs have attacked, deal 4 damage to the enemy Mech.";
+            this.creatureData = new CreatureData(3, 2, 3);
+        }
+
+        private void Effect(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (!activated)
+            {
+                activated = true;
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 8;
+                gameHandler.players[enemy].TakeDamage(4, ref gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Brawler's Plating triggers and deals 4 damage, ");                
+            }
+        }
+
+        public override void AfterThisAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            meatk = true;
+            if (meatk && enemyatk) this.Effect(ref gameHandler, curPlayer, enemy);
+        }
+
+        public override void AfterTheEnemyAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            enemyatk = true;
+            if (meatk && enemyatk) this.Effect(ref gameHandler, curPlayer, enemy);
+        }
+        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            meatk = enemyatk = activated = false;
+        }
+    }
 }
 
 /*

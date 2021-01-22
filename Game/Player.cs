@@ -274,6 +274,8 @@ namespace ScrapScramble.Game
             {
                 this.destroyed = true;
                 msg += $"destroying {this.name}.";
+                gameHandler.combatOutputCollector.combatHeader.Add(msg);
+                return damage;
             }
 
             //Console.WriteLine("Called: " + msg);
@@ -281,6 +283,14 @@ namespace ScrapScramble.Game
 
             if (damage > 0)
             {
+                if (gameHandler.players[attacker].creatureData.staticKeywords[StaticKeyword.Poisonous] > 0)
+                {
+                    this.destroyed = true;
+                    gameHandler.combatOutputCollector.combatHeader.Add($"{gameHandler.players[attacker].name}'s Poisonous destroys {this.name}.");
+
+                    return damage;
+                }
+
                 for (int i=0; i<this.attachedMechs.Count() && gameHandler.players[attacker].IsAlive() && gameHandler.players[defender].IsAlive(); i++)
                 {
                     this.attachedMechs[i].AfterThisTakesDamage(damage, ref gameHandler, defender, attacker);

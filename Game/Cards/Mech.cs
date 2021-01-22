@@ -94,6 +94,8 @@ namespace ScrapScramble.Game.Cards
         public virtual void OnSpellCast(Card spell, ref GameHandler gameHandler, int curPlayer, int enemy) { }
 
         public virtual void AfterThisTakesDamage(int damage, ref GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void AfterThisAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void AfterTheEnemyAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy) { }
 
         public int CompareTo(Mech other)
         {

@@ -201,11 +201,19 @@ namespace ScrapScramble.Game
                     defender = mech1;
                 }
 
-                gameHandler.players[attacker].AttackMech(ref gameHandler, attacker, defender);
+                int dmg = gameHandler.players[attacker].AttackMech(ref gameHandler, attacker, defender);
 
                 if (!gameHandler.players[mech1].IsAlive() || !gameHandler.players[mech2].IsAlive()) break;
 
-                //add an AfterThisAttacks
+                for (int i=0; i<gameHandler.players[attacker].attachedMechs.Count(); i++)
+                {
+                    gameHandler.players[attacker].attachedMechs[i].AfterThisAttacks(dmg, ref gameHandler, attacker, defender);
+                }
+
+                for (int i = 0; i < gameHandler.players[defender].attachedMechs.Count(); i++)
+                {
+                    gameHandler.players[defender].attachedMechs[i].AfterTheEnemyAttacks(dmg, ref gameHandler, attacker, defender);
+                }
             }
 
             if (gameHandler.players[mech1].IsAlive())

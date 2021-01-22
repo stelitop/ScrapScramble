@@ -351,6 +351,23 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].specificEffects.multiplierStartOfCombat = 2;
         }
     }
+
+    [UpgradeAttribute]
+    public class SpringloadedJester : Mech
+    {
+        public SpringloadedJester()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Springloaded Jester";
+            this.cardText = this.writtenEffect = "After this attacks, swap your Mech's Attack and Health.";
+            this.creatureData = new CreatureData(2, 1, 1);
+        }
+
+        public override void AfterThisAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            GeneralFunctions.Swap<int>(ref gameHandler.players[curPlayer].creatureData.attack, ref gameHandler.players[curPlayer].creatureData.health);            
+        }
+    }
 }
 
 /*

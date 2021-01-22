@@ -17,6 +17,7 @@ namespace ScrapScramble.Game
         Overload,
         Echo,
         Freeze,
-        Magnetic
+        Magnetic,
+        Poisonous
     }
 }

@@ -191,6 +191,17 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
         }
+
+        public override string GetInfo(ref GameHandler gameHandler, int player)
+        {
+            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, delegate(Card m) { return m.name.Equals(this.name); });
+
+            string ret = base.GetInfo(ref gameHandler, player);
+
+            if (list.Count() > 0) ret += " *(played before)*";            
+
+            return ret;
+        }
     }
 
     [UpgradeAttribute]
@@ -207,6 +218,71 @@ namespace ScrapScramble.Game.Cards.Mechs
         public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
+        }
+
+        public override string GetInfo(ref GameHandler gameHandler, int player)
+        {
+            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
+
+            string ret = base.GetInfo(ref gameHandler, player);
+
+            if (list.Count() > 0) ret += " *(played before)*";
+
+            return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class MotherboardOfExotron : Mech
+    {
+        public MotherboardOfExotron()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Motherboard of Exotron";
+            this.cardText = "Tiebreaker. Overload: (1)";
+            this.creatureData = new CreatureData(2, 2, 2);
+            this.creatureData.staticKeywords[StaticKeyword.Tiebreaker] = 1;
+            this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
+        }
+
+        public override string GetInfo(ref GameHandler gameHandler, int player)
+        {
+            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
+
+            string ret = base.GetInfo(ref gameHandler, player);
+
+            if (list.Count() > 0) ret += " *(played before)*";
+
+            return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class WheelOfExotron : Mech
+    {
+        public WheelOfExotron()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Wheel of Exotron";
+            this.cardText = "Battlecry: Gain +2 Spikes and +2 Shields.";
+            this.creatureData = new CreatureData(2, 1, 1);
+        }
+
+        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
+        }
+
+        public override string GetInfo(ref GameHandler gameHandler, int player)
+        {
+            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
+
+            string ret = base.GetInfo(ref gameHandler, player);
+
+            if (list.Count() > 0) ret += " *(played before)*";
+
+            return ret;
         }
     }
 
@@ -259,21 +335,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(2, 4, 2);
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 2;
         }
-    }
-
-    [UpgradeAttribute]
-    public class MotherboardOfExotron : Mech
-    {
-        public MotherboardOfExotron()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Motherboard of Exotron";
-            this.cardText = "Tiebreaker. Overload: (1)";
-            this.creatureData = new CreatureData(2, 2, 2);
-            this.creatureData.staticKeywords[StaticKeyword.Tiebreaker] = 1;
-            this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class ProtectiveFirewall : Mech
@@ -325,25 +387,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
         }
     }
-
-    [UpgradeAttribute]
-    public class WheelOfExotron : Mech
-    {
-        public WheelOfExotron()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Wheel of Exotron";
-            this.cardText = "Battlecry: Gain +2 Spikes and +2 Shields.";
-            this.creatureData = new CreatureData(2, 1, 1);
-        }
-
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
-        }
-    }
-
+    
     [UpgradeAttribute]
     public class MalfunctioningPuncher : Mech
     {
@@ -918,7 +962,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         public Spikecycle()
         {
             this.rarity = Rarity.Common;
-            this.name = "Shieldmobile";
+            this.name = "Spikecycle";
             this.cardText = "Magnetic. Battlecry: Gain +6 Spikes. Overload: (4).";
             this.creatureData = new CreatureData(2, 6, 2);
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
@@ -977,7 +1021,6 @@ namespace ScrapScramble.Game.Cards.Mechs
             }
         }
     }
-
 }
 
 /*

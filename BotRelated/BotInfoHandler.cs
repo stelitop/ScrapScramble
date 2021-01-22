@@ -79,10 +79,10 @@ namespace ScrapScramble.BotRelated
             string aftermathMsg = gameHandler.players[index].GetAftermathMessages();            
             if (!aftermathMsg.Equals(string.Empty)) msg.AddField("[Aftermath]", aftermathMsg);
 
-            msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfoGeneral(ref BotInfoHandler.gameHandler));            
-            msg.AddField("[Keywords]", gameHandler.players[index].PrintInfoKeywords(ref BotInfoHandler.gameHandler));
-            msg.AddField("[Effects]", gameHandler.players[index].PrintInfoEffects(ref BotInfoHandler.gameHandler));
-            msg.AddField("[Upgrades]", gameHandler.players[index].PrintInfoUpgrades(ref BotInfoHandler.gameHandler));
+            msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfoGeneral(ref BotInfoHandler.gameHandler) + "\n", true);                       
+            msg.AddField("[Keywords]", gameHandler.players[index].PrintInfoKeywords(ref BotInfoHandler.gameHandler) + "\n", true);
+            msg.AddField("[Upgrades]", gameHandler.players[index].PrintInfoUpgrades(ref BotInfoHandler.gameHandler) + "\n", true);
+            msg.AddField("[Effects]", gameHandler.players[index].PrintInfoEffects(ref BotInfoHandler.gameHandler) + "\n");
 
             List<string> shopValue = gameHandler.players[index].shop.GetShopInfo(ref gameHandler, index);
 

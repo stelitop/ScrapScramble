@@ -316,6 +316,34 @@ namespace ScrapScramble.Game.Cards.Mechs
             return ret;
         }
     }
+
+    [UpgradeAttribute]
+    public class ChaosPrism : Mech
+    {
+        private int spellbursts = 3;
+
+        public ChaosPrism()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Chaos Prism";
+            this.cardText = "Taunt x3. Spellburst: Gain \"Spellburst: Gain 'Spellburst: Gain Poisonous.'\"";
+            this.writtenEffect = "Spellburst: Gain \"Spellburst: Gain 'Spellburst: Gain Poisonous.'\"";
+            this.creatureData = new CreatureData(6, 2, 2);
+            this.creatureData.staticKeywords[StaticKeyword.Taunt] = 3;
+        }
+
+        public override void OnSpellCast(Card spell, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            spellbursts--;
+            if (spellbursts == 2) this.writtenEffect = "Spellburst: Gain 'Spellburst: Gain Poisonous'";
+            else if (spellbursts == 1) this.writtenEffect = "Spellburst: Gain Poisonous.";
+            else if (spellbursts == 0)
+            {
+                this.writtenEffect = string.Empty;
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Poisonous] = 1;
+            }
+        }
+    }
 }
 
 /*
