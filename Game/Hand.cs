@@ -1,4 +1,5 @@
 ﻿using ScrapScramble.Game.Cards;
+using ScrapScramble.Game.Effects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,23 @@ namespace ScrapScramble.Game
     public class Hand
     {
         public List<Card> cards;
+        public int totalSize { get { return cards.Count(); } }
+
+        public int AddCard(Card m)
+        {
+            this.cards.Add(m.DeepCopy());
+
+            return this.cards.Count() - 1;
+        }
+        public Card At(int index)
+        {
+            if (index < 0 || index >= this.cards.Count()) return new BlankUpgrade();
+            else if (this.cards[index].name == BlankUpgrade.name) return new BlankUpgrade();
+            return this.cards[index];
+        }
+
+
+
 
         public Hand()
         {

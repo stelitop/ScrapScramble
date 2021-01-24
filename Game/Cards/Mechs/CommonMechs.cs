@@ -139,12 +139,11 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
 
         public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
-        {            
-            int pos = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
-            gameHandler.players[curPlayer].shop.options[pos].creatureData.attack += 2;
-            gameHandler.players[curPlayer].shop.options[pos].creatureData.health += 2;
-            gameHandler.players[curPlayer].aftermathMessages.Add(
-                $"Your Oilmental gives the {gameHandler.players[curPlayer].shop.options[pos].name} in your shop +2/+2.");
+        {
+            Mech m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
+            m.creatureData.attack += 2;
+            m.creatureData.health += 2;
+            gameHandler.players[curPlayer].aftermathMessages.Add($"Your Oilmental gives the {m.name} in your shop +2/+2.");
         }
     }
 
@@ -536,11 +535,10 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int pos = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
-            gameHandler.players[curPlayer].shop.options[pos].creatureData.attack += 2;
-            gameHandler.players[curPlayer].shop.options[pos].creatureData.health += 2;
-            gameHandler.players[curPlayer].aftermathMessages.Add(
-                $"Your Steamfunk gives the {gameHandler.players[curPlayer].shop.options[pos].name} in your shop +2/+2.");
+            Mech m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
+            m.creatureData.attack += 2;
+            m.creatureData.health += 2;
+            gameHandler.players[curPlayer].aftermathMessages.Add($"Your Steamfunk gives the {m.name} in your shop +2/+2.");
         }
     }
 
@@ -624,7 +622,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             for (int i=0; i<4; i++)
             {
                 int pos = GameHandler.randomGenerator.Next(0, list.Count());
-                gameHandler.players[curPlayer].shop.options.Add((Mech)list[pos].DeepCopy());
+                gameHandler.players[curPlayer].shop.AddUpgrade(list[pos]);
             }
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -655,7 +653,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             for (int i = 0; i < 3; i++)
             {
                 int pos = GameHandler.randomGenerator.Next(0, list.Count());
-                gameHandler.players[curPlayer].shop.options.Add((Mech)list[pos].DeepCopy());
+                gameHandler.players[curPlayer].shop.AddUpgrade(list[pos]);
             }
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -686,7 +684,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             for (int i = 0; i < 2; i++)
             {
                 int pos = GameHandler.randomGenerator.Next(0, list.Count());
-                gameHandler.players[curPlayer].shop.options.Add((Mech)list[pos].DeepCopy());
+                gameHandler.players[curPlayer].shop.AddUpgrade(list[pos]);
             }
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -717,7 +715,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             for (int i = 0; i < 1; i++)
             {
                 int pos = GameHandler.randomGenerator.Next(0, list.Count());
-                gameHandler.players[curPlayer].shop.options.Add((Mech)list[pos].DeepCopy());
+                gameHandler.players[curPlayer].shop.AddUpgrade(list[pos]);
             }
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -823,12 +821,12 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
+            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
             int shopIndex = PlayerInteraction.FreezeUpgradeInShop(ref gameHandler, curPlayer, enemy);
 
-            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.staticKeywords[StaticKeyword.Rush]++;
-            gameHandler.players[curPlayer].shop.options[shopIndex].cardText += " (Rush)";
+            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.staticKeywords[StaticKeyword.Rush]++;
+            gameHandler.players[curPlayer].shop.At(shopIndex).cardText += " (Rush)";
         }
     }
 
@@ -845,14 +843,14 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
+            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
             int shopIndex = PlayerInteraction.FreezeUpgradeInShop(ref gameHandler, curPlayer, enemy);
 
-            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.staticKeywords[StaticKeyword.Taunt]++;
-            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.attack += 3;
-            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.health += 3;
-            gameHandler.players[curPlayer].shop.options[shopIndex].cardText += " (Taunt)";
+            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.staticKeywords[StaticKeyword.Taunt]++;
+            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack += 3;
+            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.health += 3;
+            gameHandler.players[curPlayer].shop.At(shopIndex).cardText += " (Taunt)";
         }
     }
 
@@ -870,12 +868,12 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
+            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
             int shopIndex = PlayerInteraction.FreezeUpgradeInShop(ref gameHandler, curPlayer, enemy);
 
-            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.attack += 2;
-            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.health += 2;
+            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack += 2;
+            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.health += 2;
         }
     }
 

@@ -223,9 +223,11 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             if (curPlayer == enemy) return;
 
-            if (gameHandler.players[enemy].shop.options.Count() == 0) return;
-            int shop = GameHandler.randomGenerator.Next(0, gameHandler.players[enemy].shop.options.Count());
-            gameHandler.players[enemy].shop.options.RemoveAt(shop);
+            if (gameHandler.players[enemy].shop.OptionsCount() == 0) return;
+
+            int index = gameHandler.players[enemy].shop.GetRandomUpgradeIndex();
+            gameHandler.players[enemy].shop.RemoveUpgrade(index);
+            
             gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Mk. IV Super Cobra destroyed a random upgarde in your shop.");
         }
     }
@@ -243,22 +245,24 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].shop.options.Count() <= 2)
+            List<int> upgrades = gameHandler.players[curPlayer].shop.GetAllUpgradeIndexes();
+
+            if (upgrades.Count() <= 2)
             {
-                for (int i = 0; i < gameHandler.players[curPlayer].shop.options.Count(); i++)
+                for (int i = 0; i < upgrades.Count(); i++)
                 {
-                    gameHandler.players[curPlayer].shop.options[i] = new LivewireBramble();
+                    gameHandler.players[curPlayer].shop.TransformUpgrade(upgrades[i], new LivewireBramble());
                 }
             }
             else
             {
                 int pos1, pos2;
-                pos1 = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count());
-                pos2 = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() - 1);
+                pos1 = GameHandler.randomGenerator.Next(0, upgrades.Count());
+                pos2 = GameHandler.randomGenerator.Next(0, upgrades.Count() - 1);
                 if (pos2 >= pos1) pos2++;
 
-                gameHandler.players[curPlayer].shop.options[pos1] = new LivewireBramble();
-                gameHandler.players[curPlayer].shop.options[pos2] = new LivewireBramble();
+                gameHandler.players[curPlayer].shop.TransformUpgrade(upgrades[pos1], new LivewireBramble());
+                gameHandler.players[curPlayer].shop.TransformUpgrade(upgrades[pos2], new LivewireBramble());
             }
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -280,22 +284,29 @@ namespace ScrapScramble.Game.Cards.Mechs
         public override void AftermathEnemy(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (curPlayer == enemy) return;
-
-            List<int> highestCosts = new List<int>();
-            int maxCost = -1;
-            for (int i = 0; i < gameHandler.players[enemy].shop.options.Count(); i++)
+            if (gameHandler.players[enemy].shop.OptionsCount() == 0)
             {
-                if (maxCost < gameHandler.players[enemy].shop.options[i].creatureData.cost) maxCost = gameHandler.players[enemy].shop.options[i].creatureData.cost;
+                gameHandler.players[curPlayer].aftermathMessages.Add("Your opponent's shop is empty.");
+                return;
             }
 
-            for (int i = 0; i < gameHandler.players[enemy].shop.options.Count(); i++)
+            List<Mech> enemyMechs = gameHandler.players[enemy].shop.GetAllUpgrades();
+            List<int> highestCosts = new List<int>();
+            int maxCost = -1;
+
+            for (int i = 0; i < enemyMechs.Count(); i++)
             {
-                if (gameHandler.players[enemy].shop.options[i].creatureData.cost == maxCost) highestCosts.Add(i);
+                if (maxCost < enemyMechs[i].creatureData.cost) maxCost = enemyMechs[i].creatureData.cost;
+            }
+
+            for (int i = 0; i < enemyMechs.Count(); i++)
+            {
+                if (enemyMechs[i].creatureData.cost == maxCost) highestCosts.Add(i);
             }
 
             int pos = GameHandler.randomGenerator.Next(0, highestCosts.Count());
 
-            gameHandler.players[curPlayer].aftermathMessages.Add($"Your Peek-a-Bot tells you the most expensive Upgrade in your opponent's shop is {gameHandler.players[enemy].shop.options[pos].name}");
+            gameHandler.players[curPlayer].aftermathMessages.Add($"Your Peek-a-Bot tells you the most expensive Upgrade in your opponent's shop is {enemyMechs[pos].name}");
         }
     }
 
@@ -313,24 +324,29 @@ namespace ScrapScramble.Game.Cards.Mechs
         public override void AftermathEnemy(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (curPlayer == enemy) return;
+            if (gameHandler.players[enemy].shop.OptionsCount() == 0) return;
 
             List<int> highestCosts = new List<int>();
+            List<int> enemyIndexes = gameHandler.players[enemy].shop.GetAllUpgradeIndexes();
+
             int maxCost = -1;
-            for (int i = 0; i < gameHandler.players[enemy].shop.options.Count(); i++)
+            for (int i = 0; i < enemyIndexes.Count(); i++)
             {
-                if (maxCost < gameHandler.players[enemy].shop.options[i].creatureData.cost) maxCost = gameHandler.players[enemy].shop.options[i].creatureData.cost;
+                if (maxCost < gameHandler.players[enemy].shop.At(enemyIndexes[i]).creatureData.cost) maxCost = gameHandler.players[enemy].shop.At(enemyIndexes[i]).creatureData.cost;
             }
 
-            for (int i = 0; i < gameHandler.players[enemy].shop.options.Count(); i++)
+            for (int i = 0; i < enemyIndexes.Count(); i++)
             {
-                if (gameHandler.players[enemy].shop.options[i].creatureData.cost == maxCost) highestCosts.Add(i);
+                if (gameHandler.players[enemy].shop.At(enemyIndexes[i]).creatureData.cost == maxCost) highestCosts.Add(i);
             }
 
             int pos = GameHandler.randomGenerator.Next(0, highestCosts.Count());
 
-            gameHandler.players[enemy].shop.options[pos] = new LightningWeasel();
+            string oldName = gameHandler.players[enemy].shop.At(enemyIndexes[pos]).name;
+            gameHandler.players[enemy].shop.TransformUpgrade(enemyIndexes[pos], new LightningWeasel());
+
             gameHandler.players[enemy].aftermathMessages.Add(
-                $"{gameHandler.players[curPlayer].name}'s Lightning Weasel replaced your highest-Cost Upgrade with a Lightning Weasel.");
+                $"{gameHandler.players[curPlayer].name}'s Lightning Weasel replaced your highest-Cost Upgrade ({oldName}) with a Lightning Weasel.");
         }
     }
 
@@ -349,12 +365,12 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             if (curPlayer == enemy) return;
 
-            for (int i = 0; i < gameHandler.players[enemy].shop.options.Count(); i++)
+            for (int i = 0; i < gameHandler.players[enemy].shop.totalSize; i++)
             {
-                if (gameHandler.players[enemy].shop.options[i].creatureData.staticKeywords[StaticKeyword.Binary] > 0)
+                if (gameHandler.players[enemy].shop.At(i).creatureData.staticKeywords[StaticKeyword.Binary] > 0)
                 {
-                    gameHandler.players[enemy].shop.options[i].creatureData.staticKeywords[StaticKeyword.Binary] = 0;
-                    gameHandler.players[enemy].shop.options[i].cardText += "(No Binary)";
+                    gameHandler.players[enemy].shop.At(i).creatureData.staticKeywords[StaticKeyword.Binary] = 0;
+                    gameHandler.players[enemy].shop.At(i).cardText += "(No Binary)";
                 }
             }
 
@@ -423,7 +439,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             for (int i = 0; i < 3; i++)
             {
                 int pos = GameHandler.randomGenerator.Next(0, list.Count());
-                gameHandler.players[curPlayer].shop.options.Add((Mech)list[pos].DeepCopy());
+                gameHandler.players[curPlayer].shop.AddUpgrade(list[pos]);
             }
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -446,13 +462,13 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
+            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
-            int shop = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count());
-            gameHandler.players[curPlayer].shop.options[shop].creatureData.attack += 4;
+            Mech m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
+            m.creatureData.attack += 4;
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
-                $"Your Electric Boogaloo gave the {gameHandler.players[curPlayer].shop.options[shop].name} in your shop +4 Attack.");
+                $"Your Electric Boogaloo gave the {m.name} in your shop +4 Attack.");
         }
     }
 
@@ -668,7 +684,7 @@ namespace ScrapScramble.Game.Cards.Mechs
                     for (int i = 0; i < gameHandler.pool.mechs.Count(); i++)
                         if (gameHandler.pool.mechs[i].name.Equals(res, StringComparison.OrdinalIgnoreCase))
                         {
-                            gameHandler.players[curPlayer].shop.options.Add((Mech)gameHandler.pool.mechs[i].DeepCopy());
+                            gameHandler.players[curPlayer].shop.AddUpgrade(gameHandler.pool.mechs[i]);
                             end = true;
                             break;
                         }

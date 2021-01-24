@@ -3,6 +3,7 @@ using ScrapScramble.BotRelated;
 using ScrapScramble.Game;
 using ScrapScramble.Game.Cards;
 using ScrapScramble.Game.Cards.Mechs;
+using ScrapScramble.Game.Effects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,9 @@ namespace ScrapScramble
     {        
         static void Main(string[] args)
         {
+            Mech frog = new BlankUpgrade();
+            Console.WriteLine(frog.name);
+
             var bot = new Bot();            
             bot.RunAsync().GetAwaiter().GetResult();            
 

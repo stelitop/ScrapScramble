@@ -46,9 +46,9 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             int ret = -1;
 
-            for (int i=0; i<gameHandler.players[player].shop.options.Count(); i++)
+            for (int i=0; i<gameHandler.players[player].shop.totalSize; i++)
             {
-                if (gameHandler.players[player].shop.options[i].name.Equals("Mecha'thun"))
+                if (gameHandler.players[player].shop.At(i).name.Equals("Mecha'thun"))
                 {
                     ret = i;
                     break;
@@ -60,8 +60,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         
         public static int AddMechaThun(ref GameHandler gameHandler, int player)
         {
-            gameHandler.players[player].shop.options.Add(new Mechathun());
-            return gameHandler.players[player].shop.options.Count() - 1;
+            return gameHandler.players[player].shop.AddUpgrade(new Mechathun());            
         }
     }
 
@@ -81,9 +80,9 @@ namespace ScrapScramble.Game.Cards.Mechs
             int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
 
-            gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze]--;
-            if (gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
-                gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze] = 0;            
+            gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze]--;
+            if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
+                gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] = 0;            
         }
     }
 
@@ -104,9 +103,9 @@ namespace ScrapScramble.Game.Cards.Mechs
             int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
 
-            gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze]--;
-            if (gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
-                gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
+            gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze]--;
+            if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
+                gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
         }
     }
 
@@ -127,9 +126,9 @@ namespace ScrapScramble.Game.Cards.Mechs
             int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
 
-            gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze]-=2;
-            if (gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
-                gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
+            gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze]-=2;
+            if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
+                gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
         }
     }
 
@@ -150,9 +149,9 @@ namespace ScrapScramble.Game.Cards.Mechs
             int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
 
-            gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze]-=3;
-            if (gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
-                gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
+            gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze]-=3;
+            if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
+                gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
         }
     }
 
@@ -172,8 +171,8 @@ namespace ScrapScramble.Game.Cards.Mechs
             int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
 
-            gameHandler.players[curPlayer].creatureData.attack -= gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze];
-            gameHandler.players[curPlayer].creatureData.health -= gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze];
+            gameHandler.players[curPlayer].creatureData.attack -= gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze];
+            gameHandler.players[curPlayer].creatureData.health -= gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze];
         }
     }
 
@@ -193,7 +192,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
 
-            if (gameHandler.players[curPlayer].shop.options[index].creatureData.staticKeywords[StaticKeyword.Freeze] <= 5)
+            if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] <= 5)
             {
                 gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 16;
             }
@@ -232,7 +231,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             {
                 int card = GameHandler.randomGenerator.Next(0, list.Count());
 
-                gameHandler.players[curPlayer].shop.options.Add((Mech)list[card].DeepCopy());
+                gameHandler.players[curPlayer].shop.AddUpgrade(list[card]);
             }
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -269,8 +268,8 @@ namespace ScrapScramble.Game.Cards.Mechs
                 int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
                 if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
 
-                gameHandler.players[curPlayer].shop.options[index].creatureData.attack += 10;
-                gameHandler.players[curPlayer].shop.options[index].creatureData.health += 10;
+                gameHandler.players[curPlayer].shop.At(index).creatureData.attack += 10;
+                gameHandler.players[curPlayer].shop.At(index).creatureData.health += 10;
             }
         }
     }

@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
 using ScrapScramble.BotRelated;
+using ScrapScramble.Game.Effects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,12 +100,13 @@ namespace ScrapScramble.Game
                 else
                 {
                     int shopIndex = int.Parse(res) - 1;
-                    if (0 <= shopIndex && shopIndex < gameHandler.players[curPlayer].shop.options.Count())
+                    if (0 <= shopIndex && shopIndex < gameHandler.players[curPlayer].shop.totalSize)
                     {
-                        if (gameHandler.players[curPlayer].shop.options[shopIndex].inLimbo) continue;
+                        if (gameHandler.players[curPlayer].shop.At(shopIndex).inLimbo) continue;
+                        if (gameHandler.players[curPlayer].shop.At(shopIndex).name == BlankUpgrade.name) continue;
 
-                        gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.staticKeywords[StaticKeyword.Freeze] =
-                            Math.Max(freezeAmount, gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.staticKeywords[StaticKeyword.Freeze]);
+                        gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.staticKeywords[StaticKeyword.Freeze] =
+                            Math.Max(freezeAmount, gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.staticKeywords[StaticKeyword.Freeze]);
 
                         return shopIndex;
                     }

@@ -156,7 +156,20 @@ namespace ScrapScramble.BotRelated.Commands
         {
             DiscordEmbedBuilder responseMessage;
 
-            if (mechName.Count() == 0) return;
+            if (mechName.Count() == 0)
+            {
+                responseMessage = new DiscordEmbedBuilder
+                {
+                    Title = "Incomplete command",
+                    Description = "You need to follow up the command with the new name of your Mech.",
+                    Color = DiscordColor.Yellow
+                };
+
+                await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+                return;
+            }
+
+
             string name = mechName[0];
             for (int i = 1; i < mechName.Count(); i++) name = name + " " + mechName[i];
 

@@ -40,13 +40,13 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
+            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
-            int shop = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
-            gameHandler.players[curPlayer].shop.options[shop].creatureData.cost -= 4;
-            if (gameHandler.players[curPlayer].shop.options[shop].creatureData.cost < 0) gameHandler.players[curPlayer].shop.options[shop].creatureData.cost = 0;
-            gameHandler.players[curPlayer].aftermathMessages.Add(
-                $"Your Highroller reduces the cost of {gameHandler.players[curPlayer].shop.options[shop].name} in your shop by (4).");
+            Mech m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
+            m.creatureData.cost -= 4;
+            if (m.creatureData.cost < 0) m.creatureData.cost = 0;
+
+            gameHandler.players[curPlayer].aftermathMessages.Add($"Your Highroller reduces the cost of {m.name} in your shop by (4).");
         }
     }
 
@@ -66,13 +66,13 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             for (int i=0; i<6; i++)
             {
-                if (gameHandler.players[curPlayer].shop.options.Count() == 0) break;                
+                if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) break;
 
-                int shop = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
-                gameHandler.players[curPlayer].shop.options.RemoveAt(shop);
+                int index = gameHandler.players[curPlayer].shop.GetRandomUpgradeIndex();
+                Console.WriteLine(index);
+                gameHandler.players[curPlayer].shop.RemoveUpgrade(index);
             }
-            gameHandler.players[curPlayer].aftermathMessages.Add(
-                "Your Fallen Reaver destroys 6 random Upgrades in your shop.");
+            gameHandler.players[curPlayer].aftermathMessages.Add("Your Fallen Reaver destroys 6 random Upgrades in your shop.");
         }
     }
 
@@ -89,10 +89,10 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
+            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
-            int shop = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].shop.options.Count() );
-            gameHandler.players[curPlayer].shop.options[shop] = new Investrotron();
+            int index = gameHandler.players[curPlayer].shop.GetRandomUpgradeIndex();
+            gameHandler.players[curPlayer].shop.TransformUpgrade(index, new Investrotron());
             gameHandler.players[curPlayer].creatureData.attack += 4;
             gameHandler.players[curPlayer].creatureData.health += 4;
 
@@ -227,12 +227,11 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].shop.options.Clear();
+            gameHandler.players[curPlayer].shop.Clear();
 
-            for (int i=0; i<gameHandler.players[enemy].shop.options.Count(); i++)
+            for (int i=0; i<gameHandler.players[enemy].shop.totalSize; i++)
             {
-                gameHandler.players[curPlayer].shop.options.Add(
-                    (Mech)gameHandler.players[enemy].shop.options[i].DeepCopy());
+                gameHandler.players[curPlayer].shop.AddUpgrade(gameHandler.players[enemy].shop.At(i));
             }
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -365,7 +364,9 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void AfterThisAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            GeneralFunctions.Swap<int>(ref gameHandler.players[curPlayer].creatureData.attack, ref gameHandler.players[curPlayer].creatureData.health);            
+            GeneralFunctions.Swap<int>(ref gameHandler.players[curPlayer].creatureData.attack, ref gameHandler.players[curPlayer].creatureData.health);
+            gameHandler.combatOutputCollector.combatHeader.Add(
+                $"{gameHandler.players[curPlayer].name}'s Springloaded Jester swaps its stats, leaving it as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
         }
     }
 }

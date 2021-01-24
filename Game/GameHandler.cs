@@ -91,27 +91,28 @@ namespace ScrapScramble.Game
             gameHandler.players[mech2].destroyed = false;
             
             //-introductionHeader output
-            gameHandler.combatOutputCollector.introductionHeader.Add($"[{gameHandler.players[mech1].name} vs {gameHandler.players[mech2].name}]");
-            gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech1].name} upgraded with:");
+            //gameHandler.combatOutputCollector.introductionHeader.Add($"[{gameHandler.players[mech1].name} vs {gameHandler.players[mech2].name}]");
+
+            //gameHandler.combatOutputCollector.introductionHeader1.Add($"{gameHandler.players[mech1].name} upgraded with:");
             
             if (gameHandler.players[mech1].specificEffects.hideUpgradesInLog)
             {
-                gameHandler.combatOutputCollector.introductionHeader.Add("(Hidden)");
+                gameHandler.combatOutputCollector.introductionHeader1.Add("(Hidden)");
             }
             else for (int i=0; i<gameHandler.players[mech1].attachedMechs.Count(); i++)
             {
-                gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech1].attachedMechs[i].name}");
+                gameHandler.combatOutputCollector.introductionHeader1.Add($"{gameHandler.players[mech1].attachedMechs[i].name}");
             }
             
-            gameHandler.combatOutputCollector.introductionHeader.Add($"\n{gameHandler.players[mech2].name} upgraded with:");
+            //gameHandler.combatOutputCollector.introductionHeader2.Add($"\n{gameHandler.players[mech2].name} upgraded with:");
 
             if (gameHandler.players[mech2].specificEffects.hideUpgradesInLog)
             {
-                gameHandler.combatOutputCollector.introductionHeader.Add("(Hidden)");
+                gameHandler.combatOutputCollector.introductionHeader2.Add("(Hidden)");
             }
             else for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count(); i++)
             {
-                gameHandler.combatOutputCollector.introductionHeader.Add($"{gameHandler.players[mech2].attachedMechs[i].name}");
+                gameHandler.combatOutputCollector.introductionHeader2.Add($"{gameHandler.players[mech2].attachedMechs[i].name}");
             }
             //-introductionHeader output
             
@@ -119,10 +120,9 @@ namespace ScrapScramble.Game
             CreatureData crData1 = gameHandler.players[mech1].creatureData.DeepCopy();
             CreatureData crData2 = gameHandler.players[mech2].creatureData.DeepCopy();
             
-            gameHandler.players[mech1].GetInfoForCombat(ref gameHandler);
-            gameHandler.combatOutputCollector.statsHeader.Add(string.Empty);
-            gameHandler.players[mech2].GetInfoForCombat(ref gameHandler);
-            
+            gameHandler.combatOutputCollector.introductionHeader1.Add("\n" + gameHandler.players[mech1].GetInfoForCombat(ref gameHandler));
+            gameHandler.combatOutputCollector.introductionHeader2.Add("\n" + gameHandler.players[mech2].GetInfoForCombat(ref gameHandler));
+
             int prStat1 = crData1.staticKeywords[StaticKeyword.Rush] - crData1.staticKeywords[StaticKeyword.Taunt];
             int prStat2 = crData2.staticKeywords[StaticKeyword.Rush] - crData2.staticKeywords[StaticKeyword.Taunt];
             

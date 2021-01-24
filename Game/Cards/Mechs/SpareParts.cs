@@ -25,9 +25,9 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].shop.options[shopPos].creatureData.attack += 2;
-            gameHandler.players[curPlayer].shop.options[shopPos].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
-            gameHandler.players[curPlayer].shop.options[shopPos].cardText += " (+4 Spikes)";
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.attack += 2;
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
+            gameHandler.players[curPlayer].shop.At(shopPos).cardText += " (+4 Spikes)";
         }
     }
 
@@ -138,8 +138,8 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             if (pos != -1)
             {
-                gameHandler.players[curPlayer].shop.options[pos].creatureData.attack += 6;
-                gameHandler.players[curPlayer].shop.options[pos].creatureData.health += 6;
+                gameHandler.players[curPlayer].shop.At(pos).creatureData.attack += 6;
+                gameHandler.players[curPlayer].shop.At(pos).creatureData.health += 6;
             }
         }        
     }

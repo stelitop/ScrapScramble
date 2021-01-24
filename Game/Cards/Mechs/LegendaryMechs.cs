@@ -271,12 +271,14 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            for (int i=0; i<gameHandler.players[curPlayer].shop.options.Count(); i++)
+            List<Mech> upgrades = gameHandler.players[curPlayer].shop.GetAllUpgrades();
+
+            for (int i=0; i<upgrades.Count(); i++)
             {
-                if (gameHandler.players[curPlayer].shop.options[i].rarity == this.chosenRarity)
+                if (upgrades[i].rarity == this.chosenRarity)
                 {
-                    gameHandler.players[curPlayer].shop.options[i].creatureData.attack += 2;
-                    gameHandler.players[curPlayer].shop.options[i].creatureData.health += 2;
+                    upgrades[i].creatureData.attack += 2;
+                    upgrades[i].creatureData.health += 2;
                 }
             }
 
@@ -289,13 +291,16 @@ namespace ScrapScramble.Game.Cards.Mechs
             for (int j=0; j<gameHandler.players.Count(); j++)
             {
                 if (j == curPlayer) continue;
+                if (gameHandler.players[j].lives <= 0) continue;
 
-                for (int i = 0; i < gameHandler.players[j].shop.options.Count(); i++)
+                List<Mech> upgrades = gameHandler.players[j].shop.GetAllUpgrades();
+
+                for (int i = 0; i < upgrades.Count(); i++)
                 {
-                    if (gameHandler.players[j].shop.options[i].rarity == this.chosenRarity)
+                    if (upgrades[i].rarity == this.chosenRarity)
                     {
-                        gameHandler.players[j].shop.options[i].creatureData.attack += 2;
-                        gameHandler.players[j].shop.options[i].creatureData.health += 2;
+                        upgrades[i].creatureData.attack += 2;
+                        upgrades[i].creatureData.health += 2;
                     }
                 }
 

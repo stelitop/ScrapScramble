@@ -274,23 +274,31 @@ namespace ScrapScramble.BotRelated.Commands
             GameHandlerMethods.StartBattle(ref BotInfoHandler.gameHandler, pl1, pl2);
 
             var fightMessage = new DiscordEmbedBuilder{
-                Title = "Combat!",
+                Title = $"Combat! {BotInfoHandler.gameHandler.players[pl1].name} vs {BotInfoHandler.gameHandler.players[pl2].name}",
                 Color = DiscordColor.Gold
             };
 
             string msg = string.Empty;
-            for (int i = 0; i < BotInfoHandler.gameHandler.combatOutputCollector.introductionHeader.Count(); i++)
+            for (int i = 0; i < BotInfoHandler.gameHandler.combatOutputCollector.introductionHeader1.Count(); i++)
             {
-                msg = msg + BotInfoHandler.gameHandler.combatOutputCollector.introductionHeader[i] + "\n";
+                msg = msg + BotInfoHandler.gameHandler.combatOutputCollector.introductionHeader1[i] + "\n";
             }            
-            fightMessage.AddField("[The Fighters]", msg);
-            
-            msg = string.Empty;            
-            for (int i = 0; i < BotInfoHandler.gameHandler.combatOutputCollector.statsHeader.Count(); i++)
+            fightMessage.AddField($"{BotInfoHandler.gameHandler.players[pl1].name} upgraded with:", msg, true);
+
+            msg = string.Empty;
+            for (int i = 0; i < BotInfoHandler.gameHandler.combatOutputCollector.introductionHeader2.Count(); i++)
             {
-                msg = msg + BotInfoHandler.gameHandler.combatOutputCollector.statsHeader[i] + "\n";
-            }            
-            fightMessage.AddField("[Stats]", msg);
+                msg = msg + BotInfoHandler.gameHandler.combatOutputCollector.introductionHeader2[i] + "\n";
+            }
+            fightMessage.AddField($"{BotInfoHandler.gameHandler.players[pl2].name} upgraded with:", msg, true);
+
+            //msg = string.Empty;            
+            //for (int i = 0; i < BotInfoHandler.gameHandler.combatOutputCollector.statsHeader.Count(); i++)
+            //{
+            //    msg = msg + BotInfoHandler.gameHandler.combatOutputCollector.statsHeader[i] + "\n";
+            //}            
+
+            //fightMessage.AddField("[Stats]", msg);
 
             msg = string.Empty;
             for (int i = 0; i < BotInfoHandler.gameHandler.combatOutputCollector.preCombatHeader.Count(); i++)
@@ -408,7 +416,7 @@ namespace ScrapScramble.BotRelated.Commands
                             for (int i = 0; i < BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
                                 if (BotInfoHandler.gameHandler.pool.mechs[i].name.Equals(name, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    BotInfoHandler.gameHandler.players[index].shop.options.Add((Mech)BotInfoHandler.gameHandler.pool.mechs[i].DeepCopy());
+                                    BotInfoHandler.gameHandler.players[index].shop.AddUpgrade(BotInfoHandler.gameHandler.pool.mechs[i]);
                                     return true;
                                 }
                             return false;
@@ -479,6 +487,33 @@ namespace ScrapScramble.BotRelated.Commands
             Thread.Sleep(time);
 
             await ctx.RespondAsync("Champ");
+        }
+
+        [Command("playerinfo")]
+        [RequireIngame]
+        [Description("Shows the information about a specfic player")]
+        public async Task PlayerInfo(CommandContext ctx, int index)
+        {
+            if (index < 1 || index > BotInfoHandler.gameHandler.players.Count()) return;
+            index--;
+
+            if (BotInfoHandler.gameHandler.players[index].lives <= 0)
+            {
+                //dead player
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
+                    Title = "This Player is Dead",
+                    Color = DiscordColor.Red
+                }).ConfigureAwait(false);
+            }
+            else
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = $"{BotInfoHandler.gameHandler.players[index].name}'s Info",
+                    Description = BotInfoHandler.gameHandler.players[index].GetInfoForCombat(ref BotInfoHandler.gameHandler),
+                    Color = DiscordColor.Azure
+                }).ConfigureAwait(false);
+            }
         }
     }
 }

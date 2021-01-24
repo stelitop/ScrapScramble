@@ -141,7 +141,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             {
                 int card = GameHandler.randomGenerator.Next(0, list.Count());
 
-                gameHandler.players[curPlayer].shop.options.Add((Mech)list[card].DeepCopy());
+                gameHandler.players[curPlayer].shop.AddUpgrade(list[card]);
             }
         }
     }
@@ -160,13 +160,13 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].shop.options.Count() == 0) return;
+            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
             int shopIndex = PlayerInteraction.FreezeUpgradeInShop(ref gameHandler, curPlayer, enemy);
 
-            gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.attack -= 4;
-            if (gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.attack < 0)
-                gameHandler.players[curPlayer].shop.options[shopIndex].creatureData.attack = 0;
+            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack -= 4;
+            if (gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack < 0)
+                gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack = 0;
         }
     }
 

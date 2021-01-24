@@ -58,7 +58,7 @@ namespace ScrapScramble.BotRelated.Commands
 
             BotInfoHandler.gameHandler.players[index].ctx = ctx;
 
-            if (shopPos >= BotInfoHandler.gameHandler.players[index].shop.options.Count() || shopPos < 0)
+            if (shopPos >= BotInfoHandler.gameHandler.players[index].shop.totalSize || shopPos < 0)
             {
                 //invalid shop position
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);

@@ -67,7 +67,7 @@ namespace ScrapScramble.Game.Cards
 
         public bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].shop.options.Count() <= shopPos) return false;
+            if (gameHandler.players[curPlayer].shop.totalSize <= shopPos) return false;
             if (this.creatureData.cost > gameHandler.players[curPlayer].curMana) return false;
 
             gameHandler.players[curPlayer].curMana -= this.creatureData.cost;
@@ -113,11 +113,11 @@ namespace ScrapScramble.Game.Cards
             ret.cardText = this.cardText;            
             ret.creatureData = this.creatureData.DeepCopy();            
             ret.writtenEffect = this.writtenEffect;            
-            return ret;
+            return ret;            
         }
         public virtual Mech BasicCopy()
         {
             return (Mech)Activator.CreateInstance(this.GetType());
-        }
+        }        
     }
 }

@@ -63,9 +63,10 @@ namespace ScrapScramble.Game
         {
             string ret = string.Empty;
 
-            ret += $"**{this.creatureData.attack}/{this.creatureData.health}**\n";
-            ret += $"Mana: {this.curMana}/{gameHandler.maxMana}";
-            if (this.overloaded > 0) ret += $" ({this.overloaded} Overloaded)";
+            ret += $"**{this.creatureData.attack}/{this.creatureData.health}**";
+            ret += $"\nMana: {this.curMana}/{gameHandler.maxMana}";
+            if (this.overloaded > 0) ret += $"\n ({this.overloaded} Overloaded)";
+            ret += $"\nLives: {this.lives}";
 
             return ret;
         }
@@ -164,7 +165,7 @@ namespace ScrapScramble.Game
 
             if (mech.creatureData.staticKeywords[StaticKeyword.Echo] > 0)
             {
-                gameHandler.players[curPlayer].shop.options.Add(mech.BasicCopy());
+                gameHandler.players[curPlayer].shop.AddUpgrade(mech.BasicCopy());
             }
 
             if (mech.creatureData.staticKeywords[StaticKeyword.Binary] > 0)
@@ -195,26 +196,26 @@ namespace ScrapScramble.Game
 
         public bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (shopPos >= this.shop.options.Count()) return false;
-            if (this.shop.options[shopPos].creatureData.staticKeywords[StaticKeyword.Freeze] > 0) return false;
-            if (this.shop.options[shopPos].inLimbo) return false;
+            if (shopPos >= this.shop.totalSize) return false;
+            if (this.shop.At(shopPos).name == BlankUpgrade.name) return false;
+            if (this.shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Freeze] > 0) return false;
+            if (this.shop.At(shopPos).inLimbo) return false;
 
-            Card card = this.shop.options[shopPos].DeepCopy();
+            Card card = this.shop.At(shopPos).DeepCopy();
 
-            this.shop.options[shopPos].inLimbo = true;
-            bool result = this.shop.options[shopPos].BuyCard(shopPos, ref gameHandler, curPlayer, enemy);
-            this.shop.options[shopPos].inLimbo = false;
+            this.shop.At(shopPos).inLimbo = true;
+            bool result = this.shop.At(shopPos).BuyCard(shopPos, ref gameHandler, curPlayer, enemy);
+            this.shop.At(shopPos).inLimbo = false;
 
             if (result)
             {
                 this.playHistory[this.playHistory.Count() - 1].Add(card.DeepCopy());
                 this.boughtThisTurn.Add((Mech)card.DeepCopy());
 
-                this.shop.options.RemoveAt(shopPos);
+                this.shop.RemoveUpgrade(shopPos);
             }
             return result;
         }
-
         public bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (handPos >= this.hand.cards.Count()) return false;
@@ -307,8 +308,10 @@ namespace ScrapScramble.Game
             return true;
         }
 
-        public void GetInfoForCombat(ref GameHandler gameHandler)
+        public string GetInfoForCombat(ref GameHandler gameHandler)
         {
+            string ret = string.Empty;
+
             bool isVanilla = true;
 
             string preCombatEffects = string.Empty;
@@ -335,20 +338,22 @@ namespace ScrapScramble.Game
 
             if (isVanilla)
             {
-                gameHandler.combatOutputCollector.statsHeader.Add($"{this.name} is a {this.creatureData.attack}/{this.creatureData.health} vanilla.");
+                ret += $"**{this.name} is a {this.creatureData.attack}/{this.creatureData.health} vanilla.**\n";
             }
             else
             {
-                gameHandler.combatOutputCollector.statsHeader.Add($"{this.name} is a {this.creatureData.attack}/{this.creatureData.health} with:");
+                ret += $"**{this.name} is a {this.creatureData.attack}/{this.creatureData.health} with:**\n";
                 foreach (var kw in this.creatureData.staticKeywords)
                 {
                     if (kw.Value == 0) continue;
                     if (kw.Key == StaticKeyword.Overload) continue;
-                    gameHandler.combatOutputCollector.statsHeader.Add($"{kw.Key}: {kw.Value}");
+                    ret += $"{kw.Key}: {kw.Value}\n";
                 }
             }
 
-            if (!preCombatEffects.Equals(string.Empty)) gameHandler.combatOutputCollector.statsHeader.Add(preCombatEffects);
+            if (!preCombatEffects.Equals(string.Empty)) ret += preCombatEffects + "\n";
+
+            return ret;
         }
         public string GetAftermathMessages()
         {

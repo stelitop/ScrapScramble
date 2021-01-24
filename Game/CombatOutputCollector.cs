@@ -8,7 +8,7 @@ namespace ScrapScramble.Game
 {
     public class CombatOutputCollector
     {
-        public List<string> introductionHeader;
+        public List<string> introductionHeader1, introductionHeader2;
         public List<string> statsHeader;
         //priority, startofcombat
         public List<string> preCombatHeader;
@@ -16,7 +16,8 @@ namespace ScrapScramble.Game
 
         public CombatOutputCollector()
         {
-            this.introductionHeader = new List<string>();
+            this.introductionHeader1 = new List<string>();
+            this.introductionHeader2 = new List<string>();
             this.preCombatHeader = new List<string>();
             this.combatHeader = new List<string>();
             this.statsHeader = new List<string>();
@@ -24,7 +25,8 @@ namespace ScrapScramble.Game
 
         public void Clear()
         {
-            this.introductionHeader.Clear();
+            this.introductionHeader1.Clear();
+            this.introductionHeader2.Clear();
             this.preCombatHeader.Clear();
             this.combatHeader.Clear();
             this.statsHeader.Clear();

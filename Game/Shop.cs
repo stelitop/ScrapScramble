@@ -9,7 +9,8 @@ namespace ScrapScramble.Game.Effects
 {   
     public class Shop
     {
-        public List<Mech> options;
+        private List<Mech> options;
+        public int totalSize { get { return options.Count(); } }
 
         public Shop()
         {
@@ -22,21 +23,19 @@ namespace ScrapScramble.Game.Effects
 
             return this.options.Count() - 1;
         }
-
         public Mech At(int index)
         {
             if (index < 0 || index >= this.options.Count()) return new BlankUpgrade();
             else if (this.options[index].name == BlankUpgrade.name) return new BlankUpgrade();
             return this.options[index];
         }
-
         public void RemoveUpgrade(int index)
         {
             if (index < 0 || index >= this.options.Count()) return;
 
             this.options[index] = new BlankUpgrade();
+            this.RemoveBlankLastUpgrades();
         }
-
         public int OptionsCount()
         {
             int ret = 0;
@@ -46,6 +45,69 @@ namespace ScrapScramble.Game.Effects
             }
             return ret;
         }
+        public Mech GetRandomUpgrade()
+        {
+            List<int> indexes = new List<int>();
+            for (int i=0; i<options.Count(); i++)
+            {
+                if (options[i].name != BlankUpgrade.name) indexes.Add(i);
+            }
+
+            if (indexes.Count() == 0) return new BlankUpgrade();
+            return options[indexes[GameHandler.randomGenerator.Next(0, indexes.Count())]];
+        }
+        public int GetRandomUpgradeIndex()
+        {
+            List<int> indexes = new List<int>();
+            for (int i = 0; i < options.Count(); i++)
+            {
+                if (options[i].name != BlankUpgrade.name) indexes.Add(i);
+            }
+
+            if (indexes.Count() == 0) return -1;
+            return indexes[GameHandler.randomGenerator.Next(0, indexes.Count())];
+        }
+        public void TransformUpgrade(int index, Mech m)
+        {
+            if (index < 0 || index >= this.options.Count()) return;
+            else if (this.options[index].name == BlankUpgrade.name) return;
+
+            this.options[index] = (Mech)m.DeepCopy();
+        }
+        public List<Mech> GetAllUpgrades()
+        {
+            List<Mech> ret = new List<Mech>();
+            for (int i=0; i<options.Count(); i++)
+            {
+                if (options[i].name != BlankUpgrade.name) ret.Add(options[i]);
+            }
+            return ret;
+        }
+        public List<int> GetAllUpgradeIndexes()
+        {
+            List<int> ret = new List<int>();
+            for (int i = 0; i < options.Count(); i++)
+            {
+                if (options[i].name != BlankUpgrade.name) ret.Add(i);
+            }
+            return ret;
+        }
+        public void Clear()
+        {
+            this.options.Clear();
+        } 
+        private void RemoveBlankLastUpgrades()
+        {
+            for (int i=totalSize-1; i>=0; i--)
+            {
+                if (options[i].name == BlankUpgrade.name)
+                {
+                    options.RemoveAt(i);
+                }
+                else return;
+            }
+        }
+
 
         public void Refresh(MinionPool pool, int maxMana)
         {
@@ -118,10 +180,13 @@ namespace ScrapScramble.Game.Effects
             }
 
             string ret = string.Empty;
-            for (int i = 0; i < this.options.Count(); i++)
+            bool lastBlank = false;
+
+            for (int i = 0; i < this.totalSize; i++)
             {
                 string newBit = $"{i + 1}) " + this.options[i].GetInfo(ref gameHandler, player);
-                //ret += $"{i+1}) " + this.options[i].GetInfo();
+                if (this.At(i).name == BlankUpgrade.name) newBit = string.Empty;
+                
                 if (ret.Length + newBit.Length > 1020)
                 {
                     retList.Add(ret);
@@ -129,7 +194,9 @@ namespace ScrapScramble.Game.Effects
                 }
 
                 ret += newBit;
-                if (i != this.options.Count() - 1) ret += '\n';
+                if (i != this.totalSize - 1 && !(lastBlank && newBit == string.Empty)) ret += '\n';
+
+                lastBlank = (this.At(i).name == BlankUpgrade.name);
             }
             retList.Add(ret);
             return retList;
@@ -139,12 +206,15 @@ namespace ScrapScramble.Game.Effects
     public class BlankUpgrade : Mech
     {
         public new const string name = "Blank";
+
         public BlankUpgrade()
         {
+            base.name = BlankUpgrade.name;
+
             this.inLimbo = true;
             this.cardText = string.Empty;
             this.rarity = Rarity.NO_RARITY;
-            this.creatureData = new CreatureData();            
+            this.creatureData = new CreatureData();
         }
 
         public override string GetInfo(ref GameHandler gameHandler, int player)
