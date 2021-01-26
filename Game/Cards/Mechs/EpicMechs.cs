@@ -227,6 +227,8 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
+            if (curPlayer == enemy) return;
+
             gameHandler.players[curPlayer].shop.Clear();
 
             for (int i=0; i<gameHandler.players[enemy].shop.totalSize; i++)
@@ -305,7 +307,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].hand.cards.Add(new LightningBloom());
+            gameHandler.players[curPlayer].hand.AddCard(new LightningBloom());
         }
     }
 
@@ -329,7 +331,7 @@ namespace ScrapScramble.Game.Cards.Mechs
                 spellburst = false;
                 this.writtenEffect = string.Empty;
 
-                gameHandler.players[curPlayer].hand.cards.Add(spell.DeepCopy());
+                gameHandler.players[curPlayer].hand.AddCard(spell);
             }
         }
     }
@@ -367,6 +369,88 @@ namespace ScrapScramble.Game.Cards.Mechs
             GeneralFunctions.Swap<int>(ref gameHandler.players[curPlayer].creatureData.attack, ref gameHandler.players[curPlayer].creatureData.health);
             gameHandler.combatOutputCollector.combatHeader.Add(
                 $"{gameHandler.players[curPlayer].name}'s Springloaded Jester swaps its stats, leaving it as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
+        }
+    }
+
+    [UpgradeAttribute]
+    public class FortuneWheel : Mech
+    {
+        public FortuneWheel()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Fortune Wheel";
+            this.cardText = this.writtenEffect = "Aftermath: Cast 3 random Spare Parts with random targets.";
+            this.creatureData = new CreatureData(3, 3, 3);
+        }
+
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            string aftermathMsg = "Your Fortune Wheel casted ";
+
+            for (int i=0; i<3; i++)
+            {
+                Spell sparePart = (Spell)gameHandler.pool.spareparts[GameHandler.randomGenerator.Next(0, gameHandler.pool.spareparts.Count())].DeepCopy();
+
+                if (i == 0) aftermathMsg += $"{sparePart.name}";
+                else if (i == 1) aftermathMsg += $", {sparePart.name}";
+                else if (i == 2) aftermathMsg += $" and {sparePart.name}";
+
+                if (sparePart.name == "Mana Capsule")
+                {
+                    sparePart.OnPlay(ref gameHandler, curPlayer, enemy);
+                }
+                else
+                {
+                    int index = gameHandler.players[curPlayer].shop.GetRandomUpgradeIndex();
+                    sparePart.CastOnUpgradeInShop(index, ref gameHandler, curPlayer, enemy);
+                    aftermathMsg += $"({gameHandler.players[curPlayer].shop.At(index).name})";
+                }
+            }
+
+            aftermathMsg += " on random targets.";
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(aftermathMsg);
+        }
+    }
+
+    [UpgradeAttribute]
+    public class DungeonDragonling : Mech
+    {
+        public DungeonDragonling()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Dungeon Dragonling";
+            this.cardText = this.writtenEffect = "Whenever you would take damage, roll a d20. You take that much less damage.";
+            this.creatureData = new CreatureData(20, 4, 12);
+        }
+
+        public override void BeforeTakingDamage(ref int damage, ref GameHandler gameHandler, int curPlayer, int enemy, ref string msg)
+        {
+            int red = GameHandler.randomGenerator.Next(1, 21);
+            damage -= red;
+            if (damage < 0) damage = 0;
+            msg += $"reduced to {damage} by Dungeon Dragonling(rolled {red}), ";
+        }
+    }
+
+    [UpgradeAttribute]
+    public class DeflectOShield : Mech
+    {
+        public DeflectOShield()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Deflect-o-Shield";
+            this.cardText = this.writtenEffect = "Prevent any damage to your Mech that would deal 2 or less damage.";
+            this.creatureData = new CreatureData(4, 2, 2);
+        }
+
+        public override void BeforeTakingDamage(ref int damage, ref GameHandler gameHandler, int curPlayer, int enemy, ref string msg)
+        {
+            if (1 <= damage && damage <= 2)
+            {
+                damage = 0;
+                msg += "prevented by Deflect-o-Shield, ";
+            }
         }
     }
 }

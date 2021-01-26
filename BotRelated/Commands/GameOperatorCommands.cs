@@ -515,5 +515,33 @@ namespace ScrapScramble.BotRelated.Commands
                 }).ConfigureAwait(false);
             }
         }
+
+        [Command("setmanacap")]
+        [Description("Sets the maximum mana reachable in a game.")]
+        public async Task SetManaCap(CommandContext ctx, int mana)
+        {
+            if (mana < 0) mana = -1;
+
+            BotInfoHandler.gameHandler.maxManaCap = mana;
+
+            if (mana != -1)
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Maximum Mana Cap Changed",
+                    Description = $"The maximum mana cap has been changed to {mana}.",
+                    Color = DiscordColor.Green
+                }).ConfigureAwait(false);
+            }
+            else
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Maximum Mana Cap Removed",
+                    Description = $"The maximum mana cap has been removed.",
+                    Color = DiscordColor.Green
+                }).ConfigureAwait(false);
+            }
+        }
     }
 }

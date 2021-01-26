@@ -162,8 +162,8 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].hand.cards.Count();
-            gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].hand.cards.Count();
+            gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].hand.OptionsCount();
+            gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].hand.OptionsCount();
         }
     }
 
@@ -306,7 +306,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             int pos = GameHandler.randomGenerator.Next(0, highestCosts.Count());
 
-            gameHandler.players[curPlayer].aftermathMessages.Add($"Your Peek-a-Bot tells you the most expensive Upgrade in your opponent's shop is {enemyMechs[pos].name}");
+            gameHandler.players[curPlayer].aftermathMessages.Add($"Your Peek-a-Bot tells you the most expensive Upgrade in your opponent's shop is {enemyMechs[highestCosts[pos]].name}");
         }
     }
 
@@ -330,9 +330,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             List<int> enemyIndexes = gameHandler.players[enemy].shop.GetAllUpgradeIndexes();
 
             int maxCost = -1;
-            for (int i = 0; i < enemyIndexes.Count(); i++)
+            for (int i = 0; i < enemyIndexes.Count; i++)
             {
-                if (maxCost < gameHandler.players[enemy].shop.At(enemyIndexes[i]).creatureData.cost) maxCost = gameHandler.players[enemy].shop.At(enemyIndexes[i]).creatureData.cost;
+                if (maxCost < gameHandler.players[enemy].shop.At(enemyIndexes[i]).creatureData.cost) 
+                    maxCost = gameHandler.players[enemy].shop.At(enemyIndexes[i]).creatureData.cost;
             }
 
             for (int i = 0; i < enemyIndexes.Count(); i++)
@@ -342,8 +343,8 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             int pos = GameHandler.randomGenerator.Next(0, highestCosts.Count());
 
-            string oldName = gameHandler.players[enemy].shop.At(enemyIndexes[pos]).name;
-            gameHandler.players[enemy].shop.TransformUpgrade(enemyIndexes[pos], new LightningWeasel());
+            string oldName = gameHandler.players[enemy].shop.At(highestCosts[pos]).name;
+            gameHandler.players[enemy].shop.TransformUpgrade(highestCosts[pos], new LightningWeasel());
 
             gameHandler.players[enemy].aftermathMessages.Add(
                 $"{gameHandler.players[curPlayer].name}'s Lightning Weasel replaced your highest-Cost Upgrade ({oldName}) with a Lightning Weasel.");
@@ -928,6 +929,67 @@ namespace ScrapScramble.Game.Cards.Mechs
             meatk = enemyatk = activated = false;
         }
     }
+
+    //[UpgradeAttribute]
+    public class FuriousRelic : Mech
+    {
+        bool triggered = false;
+
+        public FuriousRelic()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Furious Relic";
+            this.cardText = this.writtenEffect = "Start of Combat: The next time your Mech attacks, it attacks twice in a row.";
+            this.creatureData = new CreatureData(6, 2, 2);
+        }
+
+        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (!triggered)
+            {
+                triggered = true;
+
+                int dmg = gameHandler.players[curPlayer].AttackMech(ref gameHandler, curPlayer, enemy);
+
+                if (!gameHandler.players[curPlayer].IsAlive() || !gameHandler.players[enemy].IsAlive()) return;
+
+                for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count() && gameHandler.players[curPlayer].IsAlive() && gameHandler.players[enemy].IsAlive(); i++)
+                {
+                    gameHandler.players[curPlayer].attachedMechs[i].AfterThisAttacks(dmg, ref gameHandler, curPlayer, enemy);
+                }
+
+                for (int i = 0; i < gameHandler.players[enemy].attachedMechs.Count() && gameHandler.players[curPlayer].IsAlive() && gameHandler.players[enemy].IsAlive(); i++)
+                {
+                    gameHandler.players[enemy].attachedMechs[i].AfterTheEnemyAttacks(dmg, ref gameHandler, curPlayer, enemy);
+                }
+            }
+        }
+    }
+
+    //[UpgradeAttribute]
+    public class DivineRelic : Mech
+    {
+        private bool triggered = false;
+        public DivineRelic()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Divine Relic";
+            this.cardText = this.writtenEffect = "Start of Combat: The next time your Mech would take damage this turn, ignore it.";
+            this.creatureData = new CreatureData(6, 2, 2);
+        }
+
+        public override void BeforeTakingDamage(ref int damage, ref GameHandler gameHandler, int curPlayer, int enemy, ref string msg)
+        {
+            if (triggered) return;
+
+            if (damage <= 0) return;
+
+            triggered = true;
+            damage = 0;
+            msg += $"prevented by Divine Relic, ";
+        }
+    }
+
 }
 
 /*

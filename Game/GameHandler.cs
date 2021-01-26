@@ -19,6 +19,7 @@ namespace ScrapScramble.Game
 
         public int currentRound = 1;
         public int startingLives = 3;
+        public int maxManaCap = -1;
 
         public GameHandler()
         {
@@ -80,7 +81,6 @@ namespace ScrapScramble.Game
         public static void StartBattle(ref GameHandler gameHandler, int mech1, int mech2)
         {
             //check for any exceptions
-
             
             if (Math.Max(mech1, mech2) >= gameHandler.players.Count()) return;
             //if (mech1 == mech2) { Console.WriteLine($"{gameHandler.players[mech1].name} tried to fight itself."); return; }
@@ -99,9 +99,13 @@ namespace ScrapScramble.Game
             {
                 gameHandler.combatOutputCollector.introductionHeader1.Add("(Hidden)");
             }
-            else for (int i=0; i<gameHandler.players[mech1].attachedMechs.Count(); i++)
+            else 
             {
-                gameHandler.combatOutputCollector.introductionHeader1.Add($"{gameHandler.players[mech1].attachedMechs[i].name}");
+                for (int i = 0; i < gameHandler.players[mech1].attachedMechs.Count(); i++) 
+                    gameHandler.combatOutputCollector.introductionHeader1.Add($"{gameHandler.players[mech1].attachedMechs[i].name}");
+
+                for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count() - gameHandler.players[mech1].attachedMechs.Count(); i++)
+                    gameHandler.combatOutputCollector.introductionHeader1.Add(string.Empty);
             }
             
             //gameHandler.combatOutputCollector.introductionHeader2.Add($"\n{gameHandler.players[mech2].name} upgraded with:");
@@ -110,9 +114,13 @@ namespace ScrapScramble.Game
             {
                 gameHandler.combatOutputCollector.introductionHeader2.Add("(Hidden)");
             }
-            else for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count(); i++)
+            else 
             {
-                gameHandler.combatOutputCollector.introductionHeader2.Add($"{gameHandler.players[mech2].attachedMechs[i].name}");
+                for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count(); i++)
+                    gameHandler.combatOutputCollector.introductionHeader2.Add($"{gameHandler.players[mech2].attachedMechs[i].name}");
+
+                for (int i = 0; i < gameHandler.players[mech1].attachedMechs.Count() - gameHandler.players[mech2].attachedMechs.Count(); i++)
+                    gameHandler.combatOutputCollector.introductionHeader2.Add(string.Empty);
             }
             //-introductionHeader output
             
@@ -170,7 +178,9 @@ namespace ScrapScramble.Game
                 }
             }
             else gameHandler.combatOutputCollector.preCombatHeader.Add($"{gameHandler.players[mech1].name} wins the coinflip for Attack Priority.");
-            
+
+            gameHandler.combatOutputCollector.goingFirst = mech1;
+
             //trigger Start of Combat effects
             for (int multiplier = 0; multiplier < gameHandler.players[mech1].specificEffects.multiplierStartOfCombat; multiplier++)
                 for (int i = 0; i < gameHandler.players[mech1].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
@@ -205,12 +215,12 @@ namespace ScrapScramble.Game
 
                 if (!gameHandler.players[mech1].IsAlive() || !gameHandler.players[mech2].IsAlive()) break;
 
-                for (int i=0; i<gameHandler.players[attacker].attachedMechs.Count(); i++)
+                for (int i = 0; i < gameHandler.players[attacker].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
                     gameHandler.players[attacker].attachedMechs[i].AfterThisAttacks(dmg, ref gameHandler, attacker, defender);
                 }
 
-                for (int i = 0; i < gameHandler.players[defender].attachedMechs.Count(); i++)
+                for (int i = 0; i < gameHandler.players[defender].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
                     gameHandler.players[defender].attachedMechs[i].AfterTheEnemyAttacks(dmg, ref gameHandler, attacker, defender);
                 }
@@ -250,6 +260,7 @@ namespace ScrapScramble.Game
         public static void NextRound(ref GameHandler gameHandler)
         {
             gameHandler.maxMana += 5;
+            if (gameHandler.maxManaCap > 0) gameHandler.maxMana = Math.Min(gameHandler.maxMana, gameHandler.maxManaCap);
             //delete aftermath msgs which haven't been implemented yet Lol!
 
             for (int i = 0; i < gameHandler.players.Count(); i++)
@@ -291,6 +302,7 @@ namespace ScrapScramble.Game
             for (int i=0; i<gameHandler.players.Count(); i++)
             {
                 gameHandler.players[i].attachedMechs.Clear();
+                gameHandler.players[i].hand.RemoveAllBlankUpgrades();
                 gameHandler.players[i].specificEffects = new SpecificEffects();
             }
         }

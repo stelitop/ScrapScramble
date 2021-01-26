@@ -14,6 +14,8 @@ namespace ScrapScramble.Game
         public List<string> preCombatHeader;
         public List<string> combatHeader;
 
+        public int goingFirst;
+
         public CombatOutputCollector()
         {
             this.introductionHeader1 = new List<string>();
@@ -21,6 +23,7 @@ namespace ScrapScramble.Game
             this.preCombatHeader = new List<string>();
             this.combatHeader = new List<string>();
             this.statsHeader = new List<string>();
+            this.goingFirst = -1;
         }
 
         public void Clear()
@@ -30,6 +33,7 @@ namespace ScrapScramble.Game
             this.preCombatHeader.Clear();
             this.combatHeader.Clear();
             this.statsHeader.Clear();
+            this.goingFirst = -1;
         }
     }
 }

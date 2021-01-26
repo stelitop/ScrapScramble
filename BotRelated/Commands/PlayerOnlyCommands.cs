@@ -89,7 +89,7 @@ namespace ScrapScramble.BotRelated.Commands
 
             BotInfoHandler.gameHandler.players[index].ctx = ctx;
 
-            if (handPos >= BotInfoHandler.gameHandler.players[index].hand.cards.Count() || handPos < 0)
+            if (handPos >= BotInfoHandler.gameHandler.players[index].hand.totalSize || handPos < 0)
             {
                 //invalid hand position
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);

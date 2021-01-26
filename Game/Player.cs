@@ -66,7 +66,8 @@ namespace ScrapScramble.Game
             ret += $"**{this.creatureData.attack}/{this.creatureData.health}**";
             ret += $"\nMana: {this.curMana}/{gameHandler.maxMana}";
             if (this.overloaded > 0) ret += $"\n ({this.overloaded} Overloaded)";
-            ret += $"\nLives: {this.lives}";
+            if (this.lives > 1) ret += $"\nLives: {this.lives}";
+            else ret += "\nLives: **1** (!)";
 
             return ret;
         }
@@ -177,7 +178,7 @@ namespace ScrapScramble.Game
                 binaryLessCopy.creatureData.staticKeywords[StaticKeyword.Binary]--;
 
                 //the copy should have basic stats
-                gameHandler.players[curPlayer].hand.cards.Add(binaryLessCopy);
+                gameHandler.players[curPlayer].hand.AddCard(binaryLessCopy);
 
             }
             mech.creatureData.staticKeywords[StaticKeyword.Binary] = 0;
@@ -218,16 +219,17 @@ namespace ScrapScramble.Game
         }
         public bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (handPos >= this.hand.cards.Count()) return false;
-            Card card = this.hand.cards[handPos].DeepCopy();
+            if (handPos >= this.hand.totalSize) return false;
+            if (this.hand.At(handPos).name == BlankUpgrade.name) return false;
+            Card card = this.hand.At(handPos).DeepCopy();
 
-            bool result = this.hand.cards[handPos].PlayCard(handPos, ref gameHandler, curPlayer, enemy);
+            bool result = this.hand.At(handPos).PlayCard(handPos, ref gameHandler, curPlayer, enemy);
 
             if (result)
             {
                 this.playHistory[this.playHistory.Count() - 1].Add(card.DeepCopy());
 
-                this.hand.cards.RemoveAt(handPos);
+                this.hand.RemoveCard(handPos);
             }
             return result;
         }
@@ -265,6 +267,11 @@ namespace ScrapScramble.Game
 
         public int TakeDamage(int damage, ref GameHandler gameHandler, int attacker, int defender, string msg)
         {
+            for (int i=0; i<this.attachedMechs.Count(); i++)
+            {
+                this.attachedMechs[i].BeforeTakingDamage(ref damage, ref gameHandler, defender, attacker, ref msg);
+            }
+
             this.creatureData.health -= damage;
 
             if (this.creatureData.health > 0)

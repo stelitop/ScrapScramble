@@ -16,9 +16,6 @@ namespace ScrapScramble
     {        
         static void Main(string[] args)
         {
-            Mech frog = new BlankUpgrade();
-            Console.WriteLine(frog.name);
-
             var bot = new Bot();            
             bot.RunAsync().GetAwaiter().GetResult();            
 

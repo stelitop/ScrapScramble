@@ -56,7 +56,8 @@ namespace ScrapScramble.Game.Cards
 
         public override bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].hand.cards.Count <= handPos) return false;
+            if (gameHandler.players[curPlayer].hand.OptionsCount() <= handPos) return false;
+            if (gameHandler.players[curPlayer].hand.At(handPos).name == BlankUpgrade.name) return false;
             if (this.creatureData.cost > gameHandler.players[curPlayer].curMana) return false;
 
             gameHandler.players[curPlayer].curMana -= this.creatureData.cost;
@@ -96,6 +97,7 @@ namespace ScrapScramble.Game.Cards
         public virtual void AfterThisTakesDamage(int damage, ref GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void AfterThisAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void AfterTheEnemyAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void BeforeTakingDamage(ref int damage, ref GameHandler gameHandler, int curPlayer, int enemy, ref string msg) {}
 
         public int CompareTo(Mech other)
         {

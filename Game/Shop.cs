@@ -34,7 +34,7 @@ namespace ScrapScramble.Game.Effects
             if (index < 0 || index >= this.options.Count()) return;
 
             this.options[index] = new BlankUpgrade();
-            this.RemoveBlankLastUpgrades();
+            this.RemoveLeadingBlankUpgrades();
         }
         public int OptionsCount()
         {
@@ -96,7 +96,7 @@ namespace ScrapScramble.Game.Effects
         {
             this.options.Clear();
         } 
-        private void RemoveBlankLastUpgrades()
+        private void RemoveLeadingBlankUpgrades()
         {
             for (int i=totalSize-1; i>=0; i--)
             {

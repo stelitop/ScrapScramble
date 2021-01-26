@@ -349,6 +349,42 @@ namespace ScrapScramble.Game.Cards.Mechs
             }
         }
     }
+
+    [UpgradeAttribute]
+    public class NeatoMagnetMagneto : Mech
+    {
+        private bool spellburst = true;
+
+        public NeatoMagnetMagneto()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Neato Magnet Magneto";
+            this.cardText = this.writtenEffect = "Spellburst: If the spell is a Spare Part other than Mana Capsule, apply its effect to all Upgrades in your shop.";
+            this.creatureData = new CreatureData(9, 8, 6);
+        }
+
+        public override void OnSpellCast(Card spell, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (!spellburst) return;           
+
+            spellburst = false;
+            this.writtenEffect = string.Empty;
+
+            if(Attribute.IsDefined(spell.GetType(), typeof(SparePartAttribute)))
+            {
+                Spell sparePart = (Spell)spell;
+
+                if (sparePart.name.Equals("Mana Capsule")) return;
+
+                List<int> upgrades = gameHandler.players[curPlayer].shop.GetAllUpgradeIndexes();
+
+                for (int i=0; i<upgrades.Count(); i++)
+                {
+                    sparePart.CastOnUpgradeInShop(upgrades[i], ref gameHandler, curPlayer, enemy);
+                }
+            }            
+        }
+    }
 }
 
 /*

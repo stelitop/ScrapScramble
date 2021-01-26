@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScrapScramble.Game.Effects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,7 +39,8 @@ namespace ScrapScramble.Game.Cards
 
         public override bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].hand.cards.Count <= handPos) return false;
+            if (gameHandler.players[curPlayer].hand.totalSize <= handPos) return false;
+            if (gameHandler.players[curPlayer].hand.At(handPos).name == BlankUpgrade.name) return false;
             if (this.cost > gameHandler.players[curPlayer].curMana) return false;
 
             gameHandler.players[curPlayer].curMana -= this.cost;

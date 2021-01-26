@@ -100,7 +100,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Venture Co. Flamethrower";
             this.cardText = this.writtenEffect = "Start of Combat: Deal 2 damage to the enemy Mech for each Venture Co. Upgrade you've played this game.";
-            this.creatureData = new CreatureData(5, 2, 2);            
+            this.creatureData = new CreatureData(4, 2, 2);            
         }
 
         public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)

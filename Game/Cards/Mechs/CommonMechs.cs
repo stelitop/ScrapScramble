@@ -988,7 +988,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             int pos = GameHandler.randomGenerator.Next(0, gameHandler.pool.spareparts.Count());
 
-            gameHandler.players[curPlayer].hand.cards.Add(gameHandler.pool.spareparts[pos].DeepCopy());
+            gameHandler.players[curPlayer].hand.AddCard(gameHandler.pool.spareparts[pos]);
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
                 $"Your Circus Circuit added a {gameHandler.pool.spareparts[pos].name} to your hand.");
@@ -1017,6 +1017,114 @@ namespace ScrapScramble.Game.Cards.Mechs
                 gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
                 gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
             }
+        }
+    }
+
+    [UpgradeAttribute]
+    public class BootPolisher : Mech
+    {
+        public BootPolisher()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Boot Polisher";
+            this.cardText = this.writtenEffect = "Start of Combat: If the enemy Mech has Attack Priority, gain +4 Shields.";
+            this.creatureData = new CreatureData(3, 2, 3);
+        }
+
+        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.combatOutputCollector.goingFirst == enemy)
+            {
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Boot Polisher triggers, giving it +4 Shields, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields]} Shields.");
+            }
+            else
+            {
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Boot Polisher fails to trigger.");
+            }
+        }
+    }
+
+    [UpgradeAttribute]
+    public class CutleryDispencer : Mech
+    {
+        public CutleryDispencer()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Cutlery Dispencer";
+            this.cardText = this.writtenEffect = "Start of Combat: If your Mech has Attack Priority, gain +4 Spikes.";
+            this.creatureData = new CreatureData(3, 3, 2);
+        }
+
+        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.combatOutputCollector.goingFirst == curPlayer)
+            {
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Cutlery Dispencer triggers, giving it +4 Spikes, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes]} Spikes.");
+            }
+            else
+            {
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Cutlery Dispencer fails to trigger.");
+            }
+        }
+    }
+
+    [UpgradeAttribute]
+    public class SurveillanceBird : Mech
+    {
+        public SurveillanceBird()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Surveillance Bird";
+            this.cardText = this.writtenEffect = "Aftermath: Gain 2 Mana this turn only.";
+            this.creatureData = new CreatureData(3, 2, 2);
+        }
+
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].curMana += 2;
+            gameHandler.players[curPlayer].aftermathMessages.Add("Your Surveillance Bird gave you +2 Mana this turn only.");
+        }
+    }
+
+    [UpgradeAttribute]
+    public class OnyxCrowbot : Mech
+    {
+        public OnyxCrowbot()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Onyx Crowbot";
+            this.cardText = this.writtenEffect = "Aftermath: Gain 4 Mana this turn only.";
+            this.creatureData = new CreatureData(5, 4, 4);
+        }
+
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].curMana += 4;
+            gameHandler.players[curPlayer].aftermathMessages.Add("Your Onyx Crowbot gave you +4 Mana this turn only.");
+        }
+    }
+
+    [UpgradeAttribute]
+    public class SulfurNanoPhoenix : Mech
+    {
+        public SulfurNanoPhoenix()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Sulfur Nano-Phoenix";
+            this.cardText = this.writtenEffect = "Aftermath: Gain 6 Mana this turn only.";
+            this.creatureData = new CreatureData(7, 6, 6);
+        }
+
+        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].curMana += 6;
+            gameHandler.players[curPlayer].aftermathMessages.Add("Your Sulfur Nano-Phoenix gave you +6 Mana this turn only.");
         }
     }
 }

@@ -47,6 +47,13 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].creatureData.health += 2;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
         }
+
+        public override void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.health += 2;
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Shields] += 4;
+            gameHandler.players[curPlayer].shop.At(shopPos).cardText += " (+4 Shields)";
+        }
     }
 
     [SparePartAttribute]
@@ -66,6 +73,12 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].creatureData.attack = gameHandler.players[curPlayer].creatureData.health;
             gameHandler.players[curPlayer].creatureData.health = mid;
         }
+
+        public override void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            Mech m = gameHandler.players[curPlayer].shop.At(shopPos);
+            GeneralFunctions.Swap<int>(ref m.creatureData.attack, ref m.creatureData.health);
+        }
     }
 
     [SparePartAttribute]
@@ -82,6 +95,12 @@ namespace ScrapScramble.Game.Cards.Mechs
         public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush]++;
+        }
+
+        public override void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {            
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Rush] += 1;
+            gameHandler.players[curPlayer].shop.At(shopPos).cardText += " (Rush)";
         }
     }
 
@@ -101,6 +120,14 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Taunt]++;
             gameHandler.players[curPlayer].creatureData.attack += 3;
             gameHandler.players[curPlayer].creatureData.health += 3;
+        }
+
+        public override void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.attack += 3;
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.health += 3;
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Taunt] += 1;
+            gameHandler.players[curPlayer].shop.At(shopPos).cardText += " (Taunt)";
         }
     }
 
@@ -141,7 +168,15 @@ namespace ScrapScramble.Game.Cards.Mechs
                 gameHandler.players[curPlayer].shop.At(pos).creatureData.attack += 6;
                 gameHandler.players[curPlayer].shop.At(pos).creatureData.health += 6;
             }
-        }        
+        }
+
+        public override void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.attack += 6;
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.health += 6;
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Freeze] =
+                Math.Max(1, gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Freeze]);
+        }
     }
 }
 

@@ -143,7 +143,7 @@ namespace ScrapScramble.Game
                     int index = int.Parse(res) - 1;
                     if (0 <= index && index < gameHandler.pool.spareparts.Count())
                     {
-                        gameHandler.players[curPlayer].hand.cards.Add(gameHandler.pool.spareparts[index].DeepCopy());
+                        gameHandler.players[curPlayer].hand.AddCard(gameHandler.pool.spareparts[index]);
                         return index;
                     }
                     else continue;
