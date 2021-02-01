@@ -78,7 +78,7 @@ namespace ScrapScramble.Game
 
     public class GameHandlerMethods
     {
-        public static void StartBattle(ref GameHandler gameHandler, int mech1, int mech2)
+        public static void StartBattle(GameHandler gameHandler, int mech1, int mech2)
         {
             //check for any exceptions
             
@@ -128,8 +128,8 @@ namespace ScrapScramble.Game
             CreatureData crData1 = gameHandler.players[mech1].creatureData.DeepCopy();
             CreatureData crData2 = gameHandler.players[mech2].creatureData.DeepCopy();
             
-            gameHandler.combatOutputCollector.introductionHeader1.Add("\n" + gameHandler.players[mech1].GetInfoForCombat(ref gameHandler));
-            gameHandler.combatOutputCollector.introductionHeader2.Add("\n" + gameHandler.players[mech2].GetInfoForCombat(ref gameHandler));
+            gameHandler.combatOutputCollector.introductionHeader1.Add("\n" + gameHandler.players[mech1].GetInfoForCombat(gameHandler));
+            gameHandler.combatOutputCollector.introductionHeader2.Add("\n" + gameHandler.players[mech2].GetInfoForCombat(gameHandler));
 
             int prStat1 = crData1.staticKeywords[StaticKeyword.Rush] - crData1.staticKeywords[StaticKeyword.Taunt];
             int prStat2 = crData2.staticKeywords[StaticKeyword.Rush] - crData2.staticKeywords[StaticKeyword.Taunt];
@@ -185,13 +185,13 @@ namespace ScrapScramble.Game
             for (int multiplier = 0; multiplier < gameHandler.players[mech1].specificEffects.multiplierStartOfCombat; multiplier++)
                 for (int i = 0; i < gameHandler.players[mech1].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
-                    gameHandler.players[mech1].attachedMechs[i].StartOfCombat(ref gameHandler, mech1, mech2);
+                    gameHandler.players[mech1].attachedMechs[i].StartOfCombat(gameHandler, mech1, mech2);
                 }
 
             for (int multiplier = 0; multiplier < gameHandler.players[mech2].specificEffects.multiplierStartOfCombat; multiplier++)
                 for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
-                    gameHandler.players[mech2].attachedMechs[i].StartOfCombat(ref gameHandler, mech2, mech1);
+                    gameHandler.players[mech2].attachedMechs[i].StartOfCombat(gameHandler, mech2, mech1);
                 }
             //-preCombat header
 
@@ -211,18 +211,18 @@ namespace ScrapScramble.Game
                     defender = mech1;
                 }
 
-                int dmg = gameHandler.players[attacker].AttackMech(ref gameHandler, attacker, defender);
+                int dmg = gameHandler.players[attacker].AttackMech(gameHandler, attacker, defender);
 
                 if (!gameHandler.players[mech1].IsAlive() || !gameHandler.players[mech2].IsAlive()) break;
 
                 for (int i = 0; i < gameHandler.players[attacker].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
-                    gameHandler.players[attacker].attachedMechs[i].AfterThisAttacks(dmg, ref gameHandler, attacker, defender);
+                    gameHandler.players[attacker].attachedMechs[i].AfterThisAttacks(dmg, gameHandler, attacker, defender);
                 }
 
                 for (int i = 0; i < gameHandler.players[defender].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
-                    gameHandler.players[defender].attachedMechs[i].AfterTheEnemyAttacks(dmg, ref gameHandler, attacker, defender);
+                    gameHandler.players[defender].attachedMechs[i].AfterTheEnemyAttacks(dmg, gameHandler, attacker, defender);
                 }
             }
 
@@ -257,7 +257,7 @@ namespace ScrapScramble.Game
             gameHandler.players[mech2].destroyed = false;
         }
 
-        public static void NextRound(ref GameHandler gameHandler)
+        public static void NextRound(GameHandler gameHandler)
         {
             gameHandler.maxMana += 5;
             if (gameHandler.maxManaCap > 0) gameHandler.maxMana = Math.Min(gameHandler.maxMana, gameHandler.maxManaCap);
@@ -287,7 +287,7 @@ namespace ScrapScramble.Game
             {
                 for (int j = 0; j < gameHandler.players[i].attachedMechs.Count(); j++)
                 {
-                    gameHandler.players[i].attachedMechs[j].AftermathMe(ref gameHandler, i, gameHandler.pairsHandler.opponents[i]);
+                    gameHandler.players[i].attachedMechs[j].AftermathMe(gameHandler, i, gameHandler.pairsHandler.opponents[i]);
                 }
             }
 
@@ -295,7 +295,7 @@ namespace ScrapScramble.Game
             {
                 for (int j = 0; j < gameHandler.players[i].attachedMechs.Count(); j++)
                 {
-                    gameHandler.players[i].attachedMechs[j].AftermathEnemy(ref gameHandler, i, gameHandler.pairsHandler.opponents[i]);
+                    gameHandler.players[i].attachedMechs[j].AftermathEnemy(gameHandler, i, gameHandler.pairsHandler.opponents[i]);
                 }
             }
 

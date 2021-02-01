@@ -109,7 +109,7 @@ namespace ScrapScramble.Game.Effects
         }
 
 
-        public void Refresh(MinionPool pool, int maxMana)
+        public void Refresh(MinionPool pool, int maxMana, bool decreaseFreeze = true)
         {
             int commons = 4, rares = 3, epics = 2, legendaries = 1;
 
@@ -119,8 +119,8 @@ namespace ScrapScramble.Game.Effects
             {
                 if (this.options[i].creatureData.staticKeywords[StaticKeyword.Freeze] > 0)
                 {                    
-                    this.options[i].creatureData.staticKeywords[StaticKeyword.Freeze]--;
-                    Console.WriteLine("Frog");
+                    if (decreaseFreeze) this.options[i].creatureData.staticKeywords[StaticKeyword.Freeze]--;
+                    
                     kept.Add((Mech)this.options[i].DeepCopy());
                     
                     if (this.options[i].rarity == Rarity.Common) commons--;
@@ -169,7 +169,7 @@ namespace ScrapScramble.Game.Effects
             this.options.Sort();
         }
 
-        public List<string> GetShopInfo(ref GameHandler gameHandler, int player)
+        public List<string> GetShopInfo(GameHandler gameHandler, int player)
         {
             List<string> retList = new List<string>();
 
@@ -184,7 +184,7 @@ namespace ScrapScramble.Game.Effects
 
             for (int i = 0; i < this.totalSize; i++)
             {
-                string newBit = $"{i + 1}) " + this.options[i].GetInfo(ref gameHandler, player);
+                string newBit = $"{i + 1}) " + this.options[i].GetInfo(gameHandler, player);
                 if (this.At(i).name == BlankUpgrade.name) newBit = string.Empty;
                 
                 if (ret.Length + newBit.Length > 1020)
@@ -217,7 +217,7 @@ namespace ScrapScramble.Game.Effects
             this.creatureData = new CreatureData();
         }
 
-        public override string GetInfo(ref GameHandler gameHandler, int player)
+        public override string GetInfo(GameHandler gameHandler, int player)
         {
             return string.Empty;
         }

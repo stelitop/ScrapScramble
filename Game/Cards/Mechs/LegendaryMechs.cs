@@ -30,7 +30,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(6, 5, 5);
         }
 
-        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack = gameHandler.players[curPlayer].creatureData.health;
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -54,7 +54,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.triggered = false;
         }
 
-        public override void OnBuyingAMech(Mech m, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (triggered == false)
             {
@@ -85,7 +85,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             return false;
         }
 
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {            
             List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, this.Criteria);
 
@@ -111,9 +111,9 @@ namespace ScrapScramble.Game.Cards.Mechs
             }    
         }
 
-        public override string GetInfo(ref GameHandler gameHandler, int player)
+        public override string GetInfo(GameHandler gameHandler, int player)
         {
-            string ret = base.GetInfo(ref gameHandler, player);
+            string ret = base.GetInfo(gameHandler, player);
 
             List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, this.Criteria);
 
@@ -159,7 +159,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.printEffectInCombat = false;
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.AlivePlayers() <= 1) return;
 
@@ -197,9 +197,10 @@ namespace ScrapScramble.Game.Cards.Mechs
                 break;
             }
         }
-        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (this.bet == -1) return;
+            if (this.bet == -1)
+            if (gameHandler.pairsHandler.playerResults.Count() < 2) return;
 
             if (gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count() - 2][this.bet] == FightResult.WIN)
             {
@@ -239,7 +240,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(3, 3, 3);
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             var prompt = new PlayerInteraction("Name a Rarity", "Common, Rare, Epic or Legendary", "Capitalisation is ignored", AnswerType.StringAnswer);
 
@@ -269,7 +270,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             }
         }
 
-        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Mech> upgrades = gameHandler.players[curPlayer].shop.GetAllUpgrades();
 
@@ -286,7 +287,7 @@ namespace ScrapScramble.Game.Cards.Mechs
                 $"Your Hat Chucker 8000 gave your {this.chosenRarity} Upgrades +2/+2.");
         }
 
-        public override void AftermathEnemy(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
         {
             for (int j=0; j<gameHandler.players.Count(); j++)
             {
@@ -337,7 +338,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 3;
         }
 
-        public override void OnSpellCast(Card spell, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
         {
             spellbursts--;
             if (spellbursts == 2) this.writtenEffect = "Spellburst: Gain 'Spellburst: Gain Poisonous'";
@@ -363,7 +364,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(9, 8, 6);
         }
 
-        public override void OnSpellCast(Card spell, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (!spellburst) return;           
 
@@ -380,9 +381,27 @@ namespace ScrapScramble.Game.Cards.Mechs
 
                 for (int i=0; i<upgrades.Count(); i++)
                 {
-                    sparePart.CastOnUpgradeInShop(upgrades[i], ref gameHandler, curPlayer, enemy);
+                    sparePart.CastOnUpgradeInShop(upgrades[i], gameHandler, curPlayer, enemy);
                 }
             }            
+        }
+    }
+
+    //[UpgradeAttribute]
+    public class ParadoxEngine : Mech
+    {        
+        public ParadoxEngine()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Paradox Engine";
+            this.cardText = "Battlecry: This turn, after you buy an upgrade, refresh your shop.";
+            this.writtenEffect = "After you buy an upgrade, refresh your shop.";
+            this.creatureData = new CreatureData(12, 10, 10);
+        }
+
+        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
+        {            
+            gameHandler.players[curPlayer].shop.Refresh(gameHandler.pool, gameHandler.maxMana, false);
         }
     }
 }

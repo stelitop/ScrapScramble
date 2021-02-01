@@ -23,7 +23,7 @@ namespace ScrapScramble.BotRelated.Commands
         //    DiscordEmbedBuilder responseMessage = new DiscordEmbedBuilder
         //    {
         //        Title = "Your Mech's Data",
-        //        Description = BotInfoHandler.gameHandler.players[index].PrintInfo(ref BotInfoHandler.gameHandler),
+        //        Description = BotInfoHandler.gameHandler.players[index].PrintInfo(BotInfoHandler.gameHandler),
         //        Color = DiscordColor.Brown
         //    };
 
@@ -40,7 +40,7 @@ namespace ScrapScramble.BotRelated.Commands
                 Title = $"Round {BotInfoHandler.gameHandler.currentRound} Shop",               
                 Color = DiscordColor.Azure
             };
-            List<string> shopList = BotInfoHandler.gameHandler.players[index].shop.GetShopInfo(ref BotInfoHandler.gameHandler, index);
+            List<string> shopList = BotInfoHandler.gameHandler.players[index].shop.GetShopInfo(BotInfoHandler.gameHandler, index);
             for (int i=0; i<shopList.Count(); i++)
             {
                 shopEmbed.AddField("Shop", shopList[i]);
@@ -63,7 +63,7 @@ namespace ScrapScramble.BotRelated.Commands
                 //invalid shop position
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
             }
-            else if (!BotInfoHandler.gameHandler.players[index].BuyCard(shopPos, ref BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.pairsHandler.opponents[index]))
+            else if (!BotInfoHandler.gameHandler.players[index].BuyCard(shopPos, BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.pairsHandler.opponents[index]))
             {
                 //upgrade is too expensive
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
@@ -94,7 +94,7 @@ namespace ScrapScramble.BotRelated.Commands
                 //invalid hand position
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
             }
-            else if (!BotInfoHandler.gameHandler.players[index].PlayCard(handPos, ref BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.pairsHandler.opponents[index]))
+            else if (!BotInfoHandler.gameHandler.players[index].PlayCard(handPos, BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.pairsHandler.opponents[index]))
             {
                 //upgrade is too expensive
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);

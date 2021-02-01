@@ -82,7 +82,7 @@ namespace ScrapScramble.Game
             }
         }
 
-        public static int FreezeUpgradeInShop(ref GameHandler gameHandler, int curPlayer, int enemy, int freezeAmount = 1)
+        public static int FreezeUpgradeInShop(GameHandler gameHandler, int curPlayer, int enemy, int freezeAmount = 1)
         {
             PlayerInteraction freeze = new PlayerInteraction("Choose an Upgrade in your shop to Freeze", string.Empty, "Write the corresponding index", AnswerType.IntAnswer);
             string res;
@@ -115,13 +115,13 @@ namespace ScrapScramble.Game
             }
         }
 
-        public static int ActivateMagnetic(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public static int ActivateMagnetic(GameHandler gameHandler, int curPlayer, int enemy)
         {
             PlayerInteraction magnetic = new PlayerInteraction("Write the number of a Spare Part", string.Empty, "Write the corresponding index", AnswerType.IntAnswer);
             
             for (int i=0; i<gameHandler.pool.spareparts.Count(); i++)
             {
-                magnetic.description += $"{i+1}) {gameHandler.pool.spareparts[i].GetInfo(ref gameHandler, curPlayer)}";
+                magnetic.description += $"{i+1}) {gameHandler.pool.spareparts[i].GetInfo(gameHandler, curPlayer)}";
                 if (i != gameHandler.pool.spareparts.Count() - 1) magnetic.description += "\n";
             }
 
@@ -143,7 +143,7 @@ namespace ScrapScramble.Game
                     int index = int.Parse(res) - 1;
                     if (0 <= index && index < gameHandler.pool.spareparts.Count())
                     {
-                        gameHandler.players[curPlayer].hand.AddCard(gameHandler.pool.spareparts[index]);
+                        gameHandler.players[curPlayer].hand.AddCard(gameHandler.pool.spareparts[index]);                        
                         return index;
                     }
                     else continue;

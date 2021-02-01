@@ -29,7 +29,7 @@ namespace ScrapScramble.Game.Cards
             return ret;
         }
 
-        public override string GetInfo(ref GameHandler gameHandler, int player)
+        public override string GetInfo(GameHandler gameHandler, int player)
         {
             string ret = string.Empty;
             if (this.rarity == SpellRarity.Spare_Part) ret = $"{this.name} - Spare Part - {this.cost} - {this.cardText}";
@@ -37,7 +37,7 @@ namespace ScrapScramble.Game.Cards
             return ret;
         }
 
-        public override bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override bool PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].hand.totalSize <= handPos) return false;
             if (gameHandler.players[curPlayer].hand.At(handPos).name == BlankUpgrade.name) return false;
@@ -47,14 +47,14 @@ namespace ScrapScramble.Game.Cards
 
             for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
             {
-                gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, ref gameHandler, curPlayer, enemy);
+                gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, gameHandler, curPlayer, enemy);
             }
 
-            this.OnPlay(ref gameHandler, curPlayer, enemy);
+            this.OnPlay(gameHandler, curPlayer, enemy);
 
             return true;
         }
 
-        public virtual void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy) { }
     }
 }

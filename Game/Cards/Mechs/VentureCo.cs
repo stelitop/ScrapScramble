@@ -16,9 +16,9 @@ namespace ScrapScramble.Game.Cards.Mechs
 
     public class VentureCoMechNaming : Mech
     {
-        public override string GetInfo(ref GameHandler gameHandler, int player)
+        public override string GetInfo(GameHandler gameHandler, int player)
         {
-            return base.GetInfo(ref gameHandler, player) + $" *({CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, VentureCo.Criteria).Count})*";
+            return base.GetInfo(gameHandler, player) + $" *({CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, VentureCo.Criteria).Count})*";
         }
     }
 
@@ -45,7 +45,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(2, 1, 1);
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
             gameHandler.players[curPlayer].creatureData.attack += list.Count();
@@ -64,7 +64,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
             gameHandler.players[curPlayer].creatureData.attack += list.Count();
@@ -84,7 +84,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
             gameHandler.players[curPlayer].creatureData.attack += list.Count();
@@ -103,11 +103,11 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(4, 2, 2);            
         }
 
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
 
-            gameHandler.players[enemy].TakeDamage(2*list.Count(), ref gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Venture Co. Flamethrower deals {2*list.Count()} damage, ");
+            gameHandler.players[enemy].TakeDamage(2*list.Count(), gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Venture Co. Flamethrower deals {2*list.Count()} damage, ");
         }
     }
 
@@ -124,7 +124,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
 
-        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, VentureCo.Criteria);
 
@@ -158,11 +158,11 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
-            int shopIndex = PlayerInteraction.FreezeUpgradeInShop(ref gameHandler, curPlayer, enemy);
+            int shopIndex = PlayerInteraction.FreezeUpgradeInShop(gameHandler, curPlayer, enemy);
 
             gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack -= 4;
             if (gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack < 0)
@@ -181,7 +181,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(3, 1, 2);
         }
 
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[enemy].playHistory, VentureCo.Criteria);
 

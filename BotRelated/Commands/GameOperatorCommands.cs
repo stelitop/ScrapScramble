@@ -182,7 +182,7 @@ namespace ScrapScramble.BotRelated.Commands
             {
                 BotInfoHandler.UIMessages[i] = null;
             }
-            GameHandlerMethods.NextRound(ref BotInfoHandler.gameHandler);
+            GameHandlerMethods.NextRound(BotInfoHandler.gameHandler);
 
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
@@ -271,7 +271,7 @@ namespace ScrapScramble.BotRelated.Commands
             if (BotInfoHandler.gameHandler.players[pl1].lives <= 0) return;
             if (BotInfoHandler.gameHandler.players[pl2].lives <= 0) return;
 
-            GameHandlerMethods.StartBattle(ref BotInfoHandler.gameHandler, pl1, pl2);
+            GameHandlerMethods.StartBattle(BotInfoHandler.gameHandler, pl1, pl2);
 
             var fightMessage = new DiscordEmbedBuilder{
                 Title = $"Combat! {BotInfoHandler.gameHandler.players[pl1].name} vs {BotInfoHandler.gameHandler.players[pl2].name}",
@@ -406,19 +406,34 @@ namespace ScrapScramble.BotRelated.Commands
                     }
                 case "shop":
                     if (arguments.Count() < 3) break;
-                    string name = arguments[2];
-                    for (int i = 3; i < arguments.Count(); i++) name = name + $" {arguments[i]}";
+                    string shopName = arguments[2];
+                    for (int i = 3; i < arguments.Count(); i++) shopName = shopName + $" {arguments[i]}";
 
                     switch (arguments[1])
                     {
                         case "+=":
 
                             for (int i = 0; i < BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
-                                if (BotInfoHandler.gameHandler.pool.mechs[i].name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                                if (BotInfoHandler.gameHandler.pool.mechs[i].name.Equals(shopName, StringComparison.OrdinalIgnoreCase))
                                 {
                                     BotInfoHandler.gameHandler.players[index].shop.AddUpgrade(BotInfoHandler.gameHandler.pool.mechs[i]);
                                     return true;
                                 }
+                            return false;
+
+                        default:
+                            return false;
+                    }
+
+                case "name":
+                    if (arguments.Count() < 3) break;
+                    string playerName = arguments[2];
+                    for (int i = 3; i < arguments.Count(); i++) playerName = playerName + $" {arguments[i]}";
+
+                    switch (arguments[1])
+                    {
+                        case "=":
+                            BotInfoHandler.gameHandler.players[index].name = playerName;                                
                             return false;
 
                         default:
@@ -453,6 +468,8 @@ namespace ScrapScramble.BotRelated.Commands
                 if (msgResult.Result.Content.ToLower().Equals("end"))
                 {
                     msgResult.Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":+1:")).ConfigureAwait(false);
+                    BotInfoHandler.RefreshUI(ctx, index);
+
                     break;
                 }
 
@@ -474,7 +491,7 @@ namespace ScrapScramble.BotRelated.Commands
         [Description("Generaters the opponents for the next round")]
         public async Task NextPairs(CommandContext ctx)
         {            
-            BotInfoHandler.gameHandler.pairsHandler.NextRoundPairs(ref BotInfoHandler.gameHandler);
+            BotInfoHandler.gameHandler.pairsHandler.NextRoundPairs(BotInfoHandler.gameHandler);
 
             await GetPairsList(ctx);
         }
@@ -510,7 +527,7 @@ namespace ScrapScramble.BotRelated.Commands
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = $"{BotInfoHandler.gameHandler.players[index].name}'s Info",
-                    Description = BotInfoHandler.gameHandler.players[index].GetInfoForCombat(ref BotInfoHandler.gameHandler),
+                    Description = BotInfoHandler.gameHandler.players[index].GetInfoForCombat(BotInfoHandler.gameHandler),
                     Color = DiscordColor.Azure
                 }).ConfigureAwait(false);
             }

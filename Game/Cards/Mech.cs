@@ -33,7 +33,7 @@ namespace ScrapScramble.Game.Cards
         //    this.writtenEffect = string.Empty;
         //}        
 
-        public override string GetInfo(ref GameHandler gameHandler, int player)
+        public override string GetInfo(GameHandler gameHandler, int player)
         {
             string ret = string.Empty; 
             if (this.cardText.Equals(string.Empty) ) ret = $"{this.name} - {this.rarity} - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health}";
@@ -54,19 +54,19 @@ namespace ScrapScramble.Game.Cards
         //    this.name = mechJson.name;         
         //}
 
-        public override bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override bool PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].hand.OptionsCount() <= handPos) return false;
+            if (gameHandler.players[curPlayer].hand.totalSize <= handPos) return false;
             if (gameHandler.players[curPlayer].hand.At(handPos).name == BlankUpgrade.name) return false;
             if (this.creatureData.cost > gameHandler.players[curPlayer].curMana) return false;
 
             gameHandler.players[curPlayer].curMana -= this.creatureData.cost;
 
-            gameHandler.players[curPlayer].AttachMech(this, ref gameHandler, curPlayer, enemy);
+            gameHandler.players[curPlayer].AttachMech(this, gameHandler, curPlayer, enemy);
             return true;
         }
 
-        public bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public bool BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].shop.totalSize <= shopPos) return false;
             if (this.creatureData.cost > gameHandler.players[curPlayer].curMana) return false;
@@ -75,10 +75,10 @@ namespace ScrapScramble.Game.Cards
 
             for (int i=0; i<gameHandler.players[curPlayer].attachedMechs.Count(); i++)
             {                
-                gameHandler.players[curPlayer].attachedMechs[i].OnBuyingAMech(this, ref gameHandler, curPlayer, enemy);
+                gameHandler.players[curPlayer].attachedMechs[i].OnBuyingAMech(this, gameHandler, curPlayer, enemy);
             }
 
-            gameHandler.players[curPlayer].AttachMech(this, ref gameHandler, curPlayer, enemy);
+            gameHandler.players[curPlayer].AttachMech(this, gameHandler, curPlayer, enemy);
             return true;
         }
 
@@ -87,17 +87,17 @@ namespace ScrapScramble.Game.Cards
         //    Console.WriteLine($"{this.name}: {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health} {} - \"{this.cardText}\"");
         //}
 
-        public virtual void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy) { }
-        public virtual void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy) { }
-        public virtual void AftermathEnemy(ref GameHandler gameHandler, int curPlayer, int enemy) { }
-        public virtual void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy) { }
-        public virtual void OnBuyingAMech(Mech m, ref GameHandler gameHandler, int curPlayer, int enemy) { }
-        public virtual void OnSpellCast(Card spell, ref GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void Battlecry(GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy) { }
 
-        public virtual void AfterThisTakesDamage(int damage, ref GameHandler gameHandler, int curPlayer, int enemy) { }
-        public virtual void AfterThisAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy) { }
-        public virtual void AfterTheEnemyAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy) { }
-        public virtual void BeforeTakingDamage(ref int damage, ref GameHandler gameHandler, int curPlayer, int enemy, ref string msg) {}
+        public virtual void AfterThisTakesDamage(int damage, GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void AfterThisAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void AfterTheEnemyAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void BeforeTakingDamage(ref int damage, GameHandler gameHandler, int curPlayer, int enemy, ref string msg) {}
 
         public int CompareTo(Mech other)
         {

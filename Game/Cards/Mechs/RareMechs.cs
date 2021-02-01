@@ -17,7 +17,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(3, 3, 2);
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields];
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] = 0;
@@ -35,7 +35,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(5, 4, 5);
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes];
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] = 0;
@@ -53,7 +53,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(4, 4, 4);
         }
 
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].creatureData.attack == gameHandler.players[curPlayer].creatureData.health)
             {
@@ -81,7 +81,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(6, 5, 5);
         }
 
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += gameHandler.players[enemy].creatureData.attack % 10;
             gameHandler.combatOutputCollector.preCombatHeader.Add(
@@ -100,7 +100,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(3, 3, 1);
         }
 
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.health += 2 * gameHandler.players[curPlayer].curMana;
             gameHandler.combatOutputCollector.preCombatHeader.Add(
@@ -119,7 +119,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(3, 1, 3);
         }
 
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += 2 * gameHandler.players[curPlayer].curMana;
             gameHandler.combatOutputCollector.preCombatHeader.Add(
@@ -138,7 +138,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(4, 3, 3);
         }
 
-        public override void AftermathEnemy(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (curPlayer == enemy) return;
 
@@ -160,7 +160,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(4, 2, 4);
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].hand.OptionsCount();
             gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].hand.OptionsCount();
@@ -178,7 +178,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(1, 0, 6);
         }
 
-        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.health -= 6;
             gameHandler.players[curPlayer].aftermathMessages.Add("Your Offbrand Shoe deals 6 damage to you.");
@@ -196,7 +196,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(7, 6, 6);
         }
 
-        public override void AftermathEnemy(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (curPlayer == enemy) return;
 
@@ -219,7 +219,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
         }
 
-        public override void AftermathEnemy(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (curPlayer == enemy) return;
 
@@ -243,7 +243,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(0, 2, 1);
         }
 
-        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<int> upgrades = gameHandler.players[curPlayer].shop.GetAllUpgradeIndexes();
 
@@ -281,7 +281,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(1, 1, 1);
         }
 
-        public override void AftermathEnemy(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (curPlayer == enemy) return;
             if (gameHandler.players[enemy].shop.OptionsCount() == 0)
@@ -321,7 +321,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(2, 1, 1);
         }
 
-        public override void AftermathEnemy(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (curPlayer == enemy) return;
             if (gameHandler.players[enemy].shop.OptionsCount() == 0) return;
@@ -362,7 +362,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(4, 1, 6);
         }
 
-        public override void AftermathEnemy(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (curPlayer == enemy) return;
 
@@ -391,10 +391,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(4, 4, 2);
         }
 
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[enemy].TakeDamage(1, ref gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Silicon Grenade Belt deals 1 damage, ");
-            gameHandler.players[enemy].TakeDamage(1, ref gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Silicon Grenade Belt deals 1 damage, ");
+            gameHandler.players[enemy].TakeDamage(1, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Silicon Grenade Belt deals 1 damage, ");
+            gameHandler.players[enemy].TakeDamage(1, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Silicon Grenade Belt deals 1 damage, ");
         }
     }
 
@@ -410,7 +410,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(8, 4, 4);
         }
 
-        public override void OnBuyingAMech(Mech m, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += 2;
             gameHandler.players[curPlayer].creatureData.health += 2;
@@ -433,7 +433,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             if (m.creatureData.attack == 0) return true;
             return false;
         }
-        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
 
@@ -461,7 +461,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Echo] = 1;
         }
 
-        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
@@ -486,7 +486,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 2;
         }
 
-        public override void AfterThisTakesDamage(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AfterThisTakesDamage(int damage, GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].destroyed = true;
             gameHandler.combatOutputCollector.combatHeader.Add(
@@ -507,12 +507,12 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.triggered = false;
         }
 
-        public override void AfterThisTakesDamage(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AfterThisTakesDamage(int damage, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (!this.triggered)
             {
                 this.triggered = true;
-                gameHandler.players[enemy].TakeDamage(damage, ref gameHandler, curPlayer, enemy,
+                gameHandler.players[enemy].TakeDamage(damage, gameHandler, curPlayer, enemy,
                     $"{gameHandler.players[curPlayer].name}'s Prismatic Reflectotron triggers, dealing {damage} damage, ");
             }
         }
@@ -534,7 +534,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             return m.name.Equals("Robo-Rabbit");
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, this.Criteria);
 
@@ -542,9 +542,9 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].creatureData.health += 2 * list.Count();
         }
 
-        public override string GetInfo(ref GameHandler gameHandler, int player)
+        public override string GetInfo(GameHandler gameHandler, int player)
         {
-            return base.GetInfo(ref gameHandler, player) + $" *({CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, Criteria).Count})*";
+            return base.GetInfo(gameHandler, player) + $" *({CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, Criteria).Count})*";
         }
     }
 
@@ -559,7 +559,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(4, 4, 4);
         }
 
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].boughtThisTurn.Count() < gameHandler.players[enemy].boughtThisTurn.Count())
             {
@@ -598,7 +598,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.attacks = 0;
         }
 
-        public override void AfterThisTakesDamage(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AfterThisTakesDamage(int damage, GameHandler gameHandler, int curPlayer, int enemy)
         {
             attacks++;
             if (attacks < 4)
@@ -621,7 +621,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(6, 4, 4);
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
         }
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             PlayerInteraction chooseOne = new PlayerInteraction("Choose One", "1) Gain +6 Spikes\n2) Gain +6 Shields", "Write the corresponding number", AnswerType.IntAnswer);
             string res;
@@ -663,7 +663,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(5, 0, 7);
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             var playerInteraction = new PlayerInteraction("Name an Upgrade", string.Empty, "Capitalisation is ignored", AnswerType.StringAnswer);
 
@@ -707,11 +707,11 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(2, 1, 3);
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
             {
-                gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, ref gameHandler, curPlayer, enemy);
+                gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, gameHandler, curPlayer, enemy);
             }
         }
     }
@@ -727,7 +727,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(3, 3, 3);
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.hideUpgradesInLog = true;
         }
@@ -744,7 +744,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(4, 1, 1);
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.invertAttackPriority = true;
         }
@@ -761,7 +761,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(5, 3,4);
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.ignoreSpikes = true;
         }
@@ -778,7 +778,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(5, 4, 3);
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.ignoreShields = true;
         }
@@ -795,7 +795,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(9, 3, 3);
         }
 
-        public override void AfterThisAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AfterThisAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
         {
             int stolenat = Math.Min(gameHandler.players[enemy].creatureData.attack - 1, 2);
             int stolenhp = Math.Min(gameHandler.players[enemy].creatureData.health, 2);
@@ -823,7 +823,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(3, 2, 4);
         }
 
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<string> found = new List<string>();
             int buff = 0;
@@ -860,7 +860,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(2, 1, 2);
         }        
 
-        private void Effect(ref GameHandler gameHandler, int curPlayer, int enemy)
+        private void Effect(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (!activated)
             {
@@ -871,18 +871,18 @@ namespace ScrapScramble.Game.Cards.Mechs
             }   
         }
 
-        public override void AfterThisAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AfterThisAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
         {
             meatk = true;
-            if (meatk && enemyatk) this.Effect(ref gameHandler, curPlayer, enemy);
+            if (meatk && enemyatk) this.Effect(gameHandler, curPlayer, enemy);
         }
 
-        public override void AfterTheEnemyAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AfterTheEnemyAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
         {
             enemyatk = true;
-            if (meatk && enemyatk) this.Effect(ref gameHandler, curPlayer, enemy);
+            if (meatk && enemyatk) this.Effect(gameHandler, curPlayer, enemy);
         }
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             meatk = enemyatk = activated = false;
         }
@@ -903,28 +903,28 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(3, 2, 3);
         }
 
-        private void Effect(ref GameHandler gameHandler, int curPlayer, int enemy)
+        private void Effect(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (!activated)
             {
                 activated = true;
                 gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 8;
-                gameHandler.players[enemy].TakeDamage(4, ref gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Brawler's Plating triggers and deals 4 damage, ");                
+                gameHandler.players[enemy].TakeDamage(4, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Brawler's Plating triggers and deals 4 damage, ");                
             }
         }
 
-        public override void AfterThisAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AfterThisAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
         {
             meatk = true;
-            if (meatk && enemyatk) this.Effect(ref gameHandler, curPlayer, enemy);
+            if (meatk && enemyatk) this.Effect(gameHandler, curPlayer, enemy);
         }
 
-        public override void AfterTheEnemyAttacks(int damage, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AfterTheEnemyAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
         {
             enemyatk = true;
-            if (meatk && enemyatk) this.Effect(ref gameHandler, curPlayer, enemy);
+            if (meatk && enemyatk) this.Effect(gameHandler, curPlayer, enemy);
         }
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             meatk = enemyatk = activated = false;
         }
@@ -943,24 +943,24 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(6, 2, 2);
         }
 
-        public override void StartOfCombat(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (!triggered)
             {
                 triggered = true;
 
-                int dmg = gameHandler.players[curPlayer].AttackMech(ref gameHandler, curPlayer, enemy);
+                int dmg = gameHandler.players[curPlayer].AttackMech(gameHandler, curPlayer, enemy);
 
                 if (!gameHandler.players[curPlayer].IsAlive() || !gameHandler.players[enemy].IsAlive()) return;
 
                 for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count() && gameHandler.players[curPlayer].IsAlive() && gameHandler.players[enemy].IsAlive(); i++)
                 {
-                    gameHandler.players[curPlayer].attachedMechs[i].AfterThisAttacks(dmg, ref gameHandler, curPlayer, enemy);
+                    gameHandler.players[curPlayer].attachedMechs[i].AfterThisAttacks(dmg, gameHandler, curPlayer, enemy);
                 }
 
                 for (int i = 0; i < gameHandler.players[enemy].attachedMechs.Count() && gameHandler.players[curPlayer].IsAlive() && gameHandler.players[enemy].IsAlive(); i++)
                 {
-                    gameHandler.players[enemy].attachedMechs[i].AfterTheEnemyAttacks(dmg, ref gameHandler, curPlayer, enemy);
+                    gameHandler.players[enemy].attachedMechs[i].AfterTheEnemyAttacks(dmg, gameHandler, curPlayer, enemy);
                 }
             }
         }
@@ -978,7 +978,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(6, 2, 2);
         }
 
-        public override void BeforeTakingDamage(ref int damage, ref GameHandler gameHandler, int curPlayer, int enemy, ref string msg)
+        public override void BeforeTakingDamage(ref int damage, GameHandler gameHandler, int curPlayer, int enemy, ref string msg)
         {
             if (triggered) return;
 

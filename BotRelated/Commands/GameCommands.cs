@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ScrapScramble.BotRelated.Commands
-{
+{    
     public class GameCommands : BaseCommandModule
     {
         [Command("signup")]
@@ -440,7 +440,7 @@ namespace ScrapScramble.BotRelated.Commands
 
             for (int i=0; i < BotInfoHandler.gameHandler.pool.spareparts.Count(); i++)
             {
-                msg += $"{i+1}) {BotInfoHandler.gameHandler.pool.spareparts[i].GetInfo(ref BotInfoHandler.gameHandler, -1)}";
+                msg += $"{i+1}) {BotInfoHandler.gameHandler.pool.spareparts[i].GetInfo(BotInfoHandler.gameHandler, -1)}";
                 if (i != BotInfoHandler.gameHandler.pool.spareparts.Count() - 1) msg += "\n";
             }
 

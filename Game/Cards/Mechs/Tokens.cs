@@ -17,7 +17,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.cost = 0;
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].curMana += 2;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload] += 2;

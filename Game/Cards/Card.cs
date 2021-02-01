@@ -13,10 +13,10 @@ namespace ScrapScramble.Game.Cards
 
         public bool inLimbo = false;
 
-        public abstract bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy);
-        public abstract string GetInfo(ref GameHandler gameHandler, int player);
+        public abstract bool PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy);
+        public abstract string GetInfo(GameHandler gameHandler, int player);
         public abstract Card DeepCopy();
 
-        public virtual void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void OnPlay(GameHandler gameHandler, int curPlayer, int enemy) { }
     }
 }

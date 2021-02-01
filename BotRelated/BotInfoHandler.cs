@@ -47,7 +47,7 @@ namespace ScrapScramble.BotRelated
             //if (UIMessages[index] != null) { await UIMessages[index].DeleteAsync().ConfigureAwait(false); UIMessages[index] = null; }
             UIMessages[index] = null;
 
-            if (!ctx.Channel.IsPrivate) 
+            if (!ctx.Channel.IsPrivate)                 
             {
                 var member = await ctx.Guild.GetMemberAsync(participantsDiscordIds[index]).ConfigureAwait(false);
                 var userdm = await member.CreateDmChannelAsync().ConfigureAwait(false);
@@ -60,7 +60,7 @@ namespace ScrapScramble.BotRelated
 
             await RefreshUI(ctx, index);
         }
-
+        
         public static async Task RefreshUI(CommandContext ctx, int index)
         {
             if (UIMessages[index] == null)
@@ -79,19 +79,19 @@ namespace ScrapScramble.BotRelated
             string aftermathMsg = gameHandler.players[index].GetAftermathMessages();            
             if (!aftermathMsg.Equals(string.Empty)) msg.AddField("[Aftermath]", aftermathMsg);
 
-            msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfoGeneral(ref BotInfoHandler.gameHandler) + "\n", true);                       
-            msg.AddField("[Keywords]", gameHandler.players[index].PrintInfoKeywords(ref BotInfoHandler.gameHandler) + "\n", true);
-            msg.AddField("[Upgrades]", gameHandler.players[index].PrintInfoUpgrades(ref BotInfoHandler.gameHandler) + "\n", true);
-            msg.AddField("[Effects]", gameHandler.players[index].PrintInfoEffects(ref BotInfoHandler.gameHandler) + "\n");
+            msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfoGeneral(BotInfoHandler.gameHandler) + "\n", true);                       
+            msg.AddField("[Keywords]", gameHandler.players[index].PrintInfoKeywords(BotInfoHandler.gameHandler) + "\n", true);
+            msg.AddField("[Upgrades]", gameHandler.players[index].PrintInfoUpgrades(BotInfoHandler.gameHandler) + "\n", true);
+            msg.AddField("[Effects]", gameHandler.players[index].PrintInfoEffects(BotInfoHandler.gameHandler) + "\n");
 
-            List<string> shopValue = gameHandler.players[index].shop.GetShopInfo(ref gameHandler, index);
+            List<string> shopValue = gameHandler.players[index].shop.GetShopInfo(gameHandler, index);
 
             for (int i=0; i<shopValue.Count(); i++)
             {
                 msg.AddField($"[Round {BotInfoHandler.gameHandler.currentRound} Shop]", shopValue[i]);
             }
 
-            List<string> handValue = gameHandler.players[index].hand.GetHandInfo(ref BotInfoHandler.gameHandler, index);
+            List<string> handValue = gameHandler.players[index].hand.GetHandInfo(BotInfoHandler.gameHandler, index);
 
             for (int i=0; i<handValue.Count(); i++)
             {

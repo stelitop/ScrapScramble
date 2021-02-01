@@ -57,9 +57,9 @@ namespace ScrapScramble.Game
         public Player(string name) : this()
         {
             this.name = name;
-        }
+        }        
 
-        public string PrintInfoGeneral(ref GameHandler gameHandler)
+        public string PrintInfoGeneral(GameHandler gameHandler)
         {
             string ret = string.Empty;
 
@@ -71,7 +71,7 @@ namespace ScrapScramble.Game
 
             return ret;
         }
-        public string PrintInfoKeywords(ref GameHandler gameHandler)
+        public string PrintInfoKeywords(GameHandler gameHandler)
         {
             string ret = string.Empty;
 
@@ -90,7 +90,7 @@ namespace ScrapScramble.Game
             if (ret.Equals(string.Empty)) return "(none)";
             return ret;
         }
-        public string PrintInfoEffects(ref GameHandler gameHandler)
+        public string PrintInfoEffects(GameHandler gameHandler)
         {
             string ret = string.Empty;
 
@@ -106,7 +106,7 @@ namespace ScrapScramble.Game
             if (ret.Equals(string.Empty)) return "(none)";
             return ret;
         }
-        public string PrintInfoUpgrades(ref GameHandler gameHandler)
+        public string PrintInfoUpgrades(GameHandler gameHandler)
         {
             string ret = string.Empty;
 
@@ -120,7 +120,7 @@ namespace ScrapScramble.Game
             return ret;
         }
 
-        public string PrintInfo(ref GameHandler gameHandler)
+        public string PrintInfo(GameHandler gameHandler)
         {   
             string ret = string.Empty;
 
@@ -152,15 +152,15 @@ namespace ScrapScramble.Game
             return ret;
         }
 
-        public void AttachMech(Mech mech, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public void AttachMech(Mech mech, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            mech.OnPlay(ref gameHandler, curPlayer, enemy);
+            mech.OnPlay(gameHandler, curPlayer, enemy);
 
             if (mech.creatureData.staticKeywords[StaticKeyword.Magnetic] > 0)
             {
                 for (int i = 0; i < mech.creatureData.staticKeywords[StaticKeyword.Magnetic]; i++)
                 {
-                    PlayerInteraction.ActivateMagnetic(ref gameHandler, curPlayer, enemy);
+                    PlayerInteraction.ActivateMagnetic(gameHandler, curPlayer, enemy);
                 }
             }
 
@@ -190,12 +190,12 @@ namespace ScrapScramble.Game
             this.creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 0;
 
-            mech.Battlecry(ref gameHandler, curPlayer, enemy);
+            mech.Battlecry(gameHandler, curPlayer, enemy);
 
             this.attachedMechs.Add((Mech)mech.DeepCopy());
         }
 
-        public bool BuyCard(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public bool BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (shopPos >= this.shop.totalSize) return false;
             if (this.shop.At(shopPos).name == BlankUpgrade.name) return false;
@@ -205,7 +205,7 @@ namespace ScrapScramble.Game
             Card card = this.shop.At(shopPos).DeepCopy();
 
             this.shop.At(shopPos).inLimbo = true;
-            bool result = this.shop.At(shopPos).BuyCard(shopPos, ref gameHandler, curPlayer, enemy);
+            bool result = this.shop.At(shopPos).BuyCard(shopPos, gameHandler, curPlayer, enemy);
             this.shop.At(shopPos).inLimbo = false;
 
             if (result)
@@ -217,13 +217,13 @@ namespace ScrapScramble.Game
             }
             return result;
         }
-        public bool PlayCard(int handPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public bool PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (handPos >= this.hand.totalSize) return false;
             if (this.hand.At(handPos).name == BlankUpgrade.name) return false;
             Card card = this.hand.At(handPos).DeepCopy();
 
-            bool result = this.hand.At(handPos).PlayCard(handPos, ref gameHandler, curPlayer, enemy);
+            bool result = this.hand.At(handPos).PlayCard(handPos, gameHandler, curPlayer, enemy);
 
             if (result)
             {
@@ -234,7 +234,7 @@ namespace ScrapScramble.Game
             return result;
         }
 
-        public int AttackMech(ref GameHandler gameHandler, int attacker, int defender)
+        public int AttackMech(GameHandler gameHandler, int attacker, int defender)
         {
             string msg = $"{this.name} attacks for {this.creatureData.attack} damage, ";
             int damage = this.creatureData.attack;
@@ -262,14 +262,14 @@ namespace ScrapScramble.Game
 
             if (!gameHandler.players[defender].specificEffects.ignoreSpikes) this.creatureData.staticKeywords[StaticKeyword.Spikes] = 0;
 
-            return gameHandler.players[defender].TakeDamage(damage, ref gameHandler, attacker, defender, msg);
+            return gameHandler.players[defender].TakeDamage(damage, gameHandler, attacker, defender, msg);
         }
 
-        public int TakeDamage(int damage, ref GameHandler gameHandler, int attacker, int defender, string msg)
+        public int TakeDamage(int damage, GameHandler gameHandler, int attacker, int defender, string msg)
         {
             for (int i=0; i<this.attachedMechs.Count(); i++)
             {
-                this.attachedMechs[i].BeforeTakingDamage(ref damage, ref gameHandler, defender, attacker, ref msg);
+                this.attachedMechs[i].BeforeTakingDamage(ref damage, gameHandler, defender, attacker, ref msg);
             }
 
             this.creatureData.health -= damage;
@@ -301,7 +301,7 @@ namespace ScrapScramble.Game
 
                 for (int i=0; i<this.attachedMechs.Count() && gameHandler.players[attacker].IsAlive() && gameHandler.players[defender].IsAlive(); i++)
                 {
-                    this.attachedMechs[i].AfterThisTakesDamage(damage, ref gameHandler, defender, attacker);
+                    this.attachedMechs[i].AfterThisTakesDamage(damage, gameHandler, defender, attacker);
                 }
             }
 
@@ -315,7 +315,7 @@ namespace ScrapScramble.Game
             return true;
         }
 
-        public string GetInfoForCombat(ref GameHandler gameHandler)
+        public string GetInfoForCombat(GameHandler gameHandler)
         {
             string ret = string.Empty;
 

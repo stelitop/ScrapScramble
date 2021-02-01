@@ -17,13 +17,13 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += 2;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
         }
 
-        public override void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].shop.At(shopPos).creatureData.attack += 2;
             gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
@@ -42,13 +42,13 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.health += 2;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
         }
 
-        public override void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].shop.At(shopPos).creatureData.health += 2;
             gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Shields] += 4;
@@ -67,14 +67,14 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int mid = gameHandler.players[curPlayer].creatureData.attack;
             gameHandler.players[curPlayer].creatureData.attack = gameHandler.players[curPlayer].creatureData.health;
             gameHandler.players[curPlayer].creatureData.health = mid;
         }
 
-        public override void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
             Mech m = gameHandler.players[curPlayer].shop.At(shopPos);
             GeneralFunctions.Swap<int>(ref m.creatureData.attack, ref m.creatureData.health);
@@ -92,12 +92,12 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush]++;
         }
 
-        public override void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {            
             gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Rush] += 1;
             gameHandler.players[curPlayer].shop.At(shopPos).cardText += " (Rush)";
@@ -115,14 +115,14 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Taunt]++;
             gameHandler.players[curPlayer].creatureData.attack += 3;
             gameHandler.players[curPlayer].creatureData.health += 3;
         }
 
-        public override void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].shop.At(shopPos).creatureData.attack += 3;
             gameHandler.players[curPlayer].shop.At(shopPos).creatureData.health += 3;
@@ -142,7 +142,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].curMana += 2;
         }
@@ -155,25 +155,25 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.cost = 1;
             this.name = "Emergency Coolant";
-            this.cardText = "Freeze an Upgrade. Give it +6/+6.";
+            this.cardText = "Freeze an Upgrade. Give it +4/+4.";
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int pos = PlayerInteraction.FreezeUpgradeInShop(ref gameHandler, curPlayer, enemy, 1);
+            int pos = PlayerInteraction.FreezeUpgradeInShop(gameHandler, curPlayer, enemy, 1);
 
             if (pos != -1)
             {
-                gameHandler.players[curPlayer].shop.At(pos).creatureData.attack += 6;
-                gameHandler.players[curPlayer].shop.At(pos).creatureData.health += 6;
+                gameHandler.players[curPlayer].shop.At(pos).creatureData.attack += 4;
+                gameHandler.players[curPlayer].shop.At(pos).creatureData.health += 4;
             }
         }
 
-        public override void CastOnUpgradeInShop(int shopPos, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.attack += 6;
-            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.health += 6;
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.attack += 4;
+            gameHandler.players[curPlayer].shop.At(shopPos).creatureData.health += 4;
             gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Freeze] =
                 Math.Max(1, gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Freeze]);
         }
@@ -194,9 +194,9 @@ public class SP : Spell
         this.rarity = SpellRarity.Spare_Part;
     }
 
-    public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+    public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
     {
-        base.OnPlay(ref gameHandler, curPlayer, enemy);
+        base.OnPlay(gameHandler, curPlayer, enemy);
     }
 }
  

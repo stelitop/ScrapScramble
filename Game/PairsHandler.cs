@@ -49,27 +49,23 @@ namespace ScrapScramble.Game
             this.opponents[b] = a;
         }
 
-        public void NextRoundPairs(ref GameHandler gameHandler, int times = 0)
+        public void NextRoundPairs(GameHandler gameHandler, int times = 0)
         {
             this.playerResults.Add(new List<FightResult>());
             for (int i=0; i<gameHandler.players.Count(); i++)
             {
                 this.playerResults[this.playerResults.Count() - 1].Add(FightResult.BYE);
             }
-
-            Console.WriteLine(".1");
+             
             List<int> players = new List<int>();
             List<int> newOpponents = new List<int>();
-            Console.WriteLine(".2");
+            
             for (int i = 0; i < gameHandler.players.Count(); i++)
             {
                 newOpponents.Add(i);
                 if (gameHandler.players[i].lives > 0) players.Add(i);
             }
-            
-            Console.WriteLine(".3");
-            players = players.OrderBy(x => GameHandler.randomGenerator.Next()).ToList();
-            Console.WriteLine(".4");
+                        
             if (players.Count() == 1)
             {
                 newOpponents[players[0]] = players[0];
@@ -83,17 +79,24 @@ namespace ScrapScramble.Game
             {
                 if (players.Count()%2 == 1)
                 {
-                    if (players[players.Count()-1] == opponents[players[players.Count() - 1]] && times < 8)
+                    players.Sort((x, y) => gameHandler.players[x].lives.CompareTo(gameHandler.players[y].lives));
+
+                    for (int i=0; i<players.Count(); i++)
                     {
-                        NextRoundPairs(ref gameHandler, times+1);
-                        return;
+                        if (opponents[players[i]] == players[i]) continue;
+                        newOpponents[i] = i;
+                        players.RemoveAt(i);
+                        break;
                     }
-                    newOpponents[players[players.Count() - 1]] = players[players.Count() - 1];
+
+                    players = players.OrderBy(x => GameHandler.randomGenerator.Next()).ToList();
+                    
                     for (int i=0; i<players.Count()-1; i+=2)
                     {
                         if (this.opponents[players[i]] == players[i+1] && times < 8)
                         {
-                            NextRoundPairs(ref gameHandler, times+1);
+                            this.playerResults.RemoveAt(this.playerResults.Count() - 1);
+                            NextRoundPairs(gameHandler, times+1);
                             return;
                         }
                         newOpponents[players[i]] = players[i+1];
@@ -102,11 +105,14 @@ namespace ScrapScramble.Game
                 }
                 else
                 {
+                    players = players.OrderBy(x => GameHandler.randomGenerator.Next()).ToList();
+
                     for (int i = 0; i < players.Count(); i += 2)
                     {
                         if (this.opponents[players[i]] == players[i+1] && times < 8)
                         {
-                            NextRoundPairs(ref gameHandler, times+1);
+                            this.playerResults.RemoveAt(this.playerResults.Count() - 1);
+                            NextRoundPairs(gameHandler, times+1);
                             return;
                         }
                         newOpponents[players[i]] = players[i+1];
@@ -114,7 +120,7 @@ namespace ScrapScramble.Game
                     }
                 }
             }
-            Console.WriteLine(".5");
+            
             this.opponents.Clear();
             for (int i = 0; i < newOpponents.Count(); i++) this.opponents.Add(newOpponents[i]);
             BotInfoHandler.pairsReady = true;

@@ -18,7 +18,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Freeze] = 10;
         }
 
-        public override string GetInfo(ref GameHandler gameHandler, int player)
+        public override string GetInfo(GameHandler gameHandler, int player)
         {
             string ret = string.Empty;
             if (this.cardText.Equals(string.Empty)) ret = $"{this.name} - {this.rarity} - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health}";
@@ -42,7 +42,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         /// <param name="gameHandler"></param>
         /// <param name="player"></param>
         /// <returns></returns>
-        public static int FindInShop(ref GameHandler gameHandler, int player)
+        public static int FindInShop(GameHandler gameHandler, int player)
         {
             int ret = -1;
 
@@ -58,7 +58,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             return ret;            
         }    
         
-        public static int AddMechaThun(ref GameHandler gameHandler, int player)
+        public static int AddMechaThun(GameHandler gameHandler, int player)
         {
             return gameHandler.players[player].shop.AddUpgrade(new Mechathun());            
         }
@@ -75,10 +75,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(2, 1, 2);
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
-            if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
+            int index = Mechathun.FindInShop(gameHandler, curPlayer);
+            if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
 
             gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze]--;
             if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
@@ -98,10 +98,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
-            if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
+            int index = Mechathun.FindInShop(gameHandler, curPlayer);
+            if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
 
             gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze]--;
             if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
@@ -121,10 +121,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
-            if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
+            int index = Mechathun.FindInShop(gameHandler, curPlayer);
+            if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
 
             gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze]-=2;
             if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
@@ -144,10 +144,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
-            if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
+            int index = Mechathun.FindInShop(gameHandler, curPlayer);
+            if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
 
             gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze]-=3;
             if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
@@ -166,10 +166,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(4, 12, 12);
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
-            if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
+            int index = Mechathun.FindInShop(gameHandler, curPlayer);
+            if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
 
             gameHandler.players[curPlayer].creatureData.attack -= gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze];
             gameHandler.players[curPlayer].creatureData.health -= gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze];
@@ -187,10 +187,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(8, 8, 8);
         }
 
-        public override void Battlecry(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
-            if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
+            int index = Mechathun.FindInShop(gameHandler, curPlayer);
+            if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
 
             if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] <= 5)
             {
@@ -210,10 +210,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(5, 2, 5);
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
-            if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
+            int index = Mechathun.FindInShop(gameHandler, curPlayer);
+            if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
         }
 
         private bool Criteria(Mech mech)
@@ -223,7 +223,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             return mech.name.StartsWith("Mecha'thun");
         }
 
-        public override void AftermathMe(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
 
@@ -252,21 +252,21 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData = new CreatureData(10, 10, 10);
         }
 
-        public override void OnPlay(ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
-            if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
+            int index = Mechathun.FindInShop(gameHandler, curPlayer);
+            if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
         }
 
-        public override void OnSpellCast(Card spell, ref GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (spellburst)
             {
                 spellburst = false;
                 this.writtenEffect = string.Empty;
 
-                int index = Mechathun.FindInShop(ref gameHandler, curPlayer);
-                if (index == -1) index = Mechathun.AddMechaThun(ref gameHandler, curPlayer);
+                int index = Mechathun.FindInShop(gameHandler, curPlayer);
+                if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
 
                 gameHandler.players[curPlayer].shop.At(index).creatureData.attack += 10;
                 gameHandler.players[curPlayer].shop.At(index).creatureData.health += 10;
