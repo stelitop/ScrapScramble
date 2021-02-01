@@ -9,8 +9,7 @@ namespace ScrapScramble.Game.Cards
 {
     public class Spell : Card
     {
-        public SpellRarity rarity = SpellRarity.Spell;
-        public int cost;
+        public SpellRarity rarity = SpellRarity.Spell;        
 
         public Spell()
         {

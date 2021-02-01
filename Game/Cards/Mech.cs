@@ -10,7 +10,7 @@ namespace ScrapScramble.Game.Cards
     [Serializable]
     public class Mech : Card, IComparable<Mech>
     {       
-        public CreatureData creatureData;
+        public CreatureData creatureData = new CreatureData();
         public Rarity rarity;
 
         public bool printEffectInCombat = true;
@@ -18,15 +18,21 @@ namespace ScrapScramble.Game.Cards
 
         public Mech()
         {
-            this.creatureData = new CreatureData();
             this.rarity = Rarity.NO_RARITY;
             this.name = string.Empty;
             this.cardText = string.Empty;
             this.writtenEffect = string.Empty;
         }
+
+        protected void SetStats(int cost, int attack, int health)
+        {
+            this.creatureData.attack = attack;
+            this.creatureData.health = health;
+            this.cost = cost;
+        }
         //public Mech(string name, string cardText, int cost, int attack, int health, Rarity rarity)
         //{
-        //    this.creatureData = new CreatureData(cost, attack, health);            
+        //    this.SetStats(cost, attack, health);            
         //    this.rarity = rarity;
         //    this.name = name;
         //    this.cardText = cardText;
@@ -36,8 +42,8 @@ namespace ScrapScramble.Game.Cards
         public override string GetInfo(GameHandler gameHandler, int player)
         {
             string ret = string.Empty; 
-            if (this.cardText.Equals(string.Empty) ) ret = $"{this.name} - {this.rarity} - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health}";
-            else ret = $"{this.name} - {this.rarity} - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
+            if (this.cardText.Equals(string.Empty) ) ret = $"{this.name} - {this.rarity} - {this.cost}/{this.creatureData.attack}/{this.creatureData.health}";
+            else ret = $"{this.name} - {this.rarity} - {this.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
 
             if (this.creatureData.staticKeywords[StaticKeyword.Freeze] == 1) ret = $"(Frozen for 1 turn) {ret}";
             else if (this.creatureData.staticKeywords[StaticKeyword.Freeze] > 1) ret = $"(Frozen for {this.creatureData.staticKeywords[StaticKeyword.Freeze]} turns) {ret}";
@@ -46,7 +52,7 @@ namespace ScrapScramble.Game.Cards
 
         //public Mech(MechJsonTemplate mechJson)
         //{
-        //    this.creatureData = new CreatureData();
+        //    this.SetStats();
         //    this.creatureData.cost = mechJson.cost;
         //    this.cardText = mechJson.cardText;
         //    this.creatureData.attack = mechJson.attack;
@@ -58,9 +64,9 @@ namespace ScrapScramble.Game.Cards
         {
             if (gameHandler.players[curPlayer].hand.totalSize <= handPos) return false;
             if (gameHandler.players[curPlayer].hand.At(handPos).name == BlankUpgrade.name) return false;
-            if (this.creatureData.cost > gameHandler.players[curPlayer].curMana) return false;
+            if (this.cost > gameHandler.players[curPlayer].curMana) return false;
 
-            gameHandler.players[curPlayer].curMana -= this.creatureData.cost;
+            gameHandler.players[curPlayer].curMana -= this.cost;
 
             gameHandler.players[curPlayer].AttachMech(this, gameHandler, curPlayer, enemy);
             return true;
@@ -68,10 +74,7 @@ namespace ScrapScramble.Game.Cards
 
         public bool BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].shop.totalSize <= shopPos) return false;
-            if (this.creatureData.cost > gameHandler.players[curPlayer].curMana) return false;
-
-            gameHandler.players[curPlayer].curMana -= this.creatureData.cost;
+            gameHandler.players[curPlayer].curMana -= this.cost;
 
             for (int i=0; i<gameHandler.players[curPlayer].attachedMechs.Count(); i++)
             {                
@@ -79,6 +82,17 @@ namespace ScrapScramble.Game.Cards
             }
 
             gameHandler.players[curPlayer].AttachMech(this, gameHandler, curPlayer, enemy);
+            return true;
+        }
+
+        public virtual bool CanBeBought(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (shopPos >= gameHandler.players[curPlayer].shop.totalSize) return false;
+            if (this.name == BlankUpgrade.name) return false;
+            if (this.creatureData.staticKeywords[StaticKeyword.Freeze] > 0) return false;
+            if (this.inLimbo) return false;
+            if (this.cost > gameHandler.players[curPlayer].curMana) return false;
+
             return true;
         }
 

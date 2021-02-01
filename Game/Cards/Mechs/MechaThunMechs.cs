@@ -14,15 +14,15 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Token;
             this.name = "Mecha'thun";
             this.cardText = string.Empty;
-            this.creatureData = new CreatureData(0, 50, 50);
+            this.SetStats(0, 50, 50);
             this.creatureData.staticKeywords[StaticKeyword.Freeze] = 10;
         }
 
         public override string GetInfo(GameHandler gameHandler, int player)
         {
             string ret = string.Empty;
-            if (this.cardText.Equals(string.Empty)) ret = $"{this.name} - {this.rarity} - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health}";
-            else ret = $"{this.name} - {this.rarity} - {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
+            if (this.cardText.Equals(string.Empty)) ret = $"{this.name} - {this.rarity} - {this.cost}/{this.creatureData.attack}/{this.creatureData.health}";
+            else ret = $"{this.name} - {this.rarity} - {this.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
 
             if (this.creatureData.staticKeywords[StaticKeyword.Freeze] == 1) ret = $"(Thaws in 1 turn) {ret}";
             else if (this.creatureData.staticKeywords[StaticKeyword.Freeze] > 1) ret = $"(Thaws in {this.creatureData.staticKeywords[StaticKeyword.Freeze]} turns) {ret}";
@@ -72,7 +72,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Mecha'thun's Seeker";
             this.cardText = "Battlecry: Your Mecha'thun thaws 1 turn sooner.";
-            this.creatureData = new CreatureData(2, 1, 2);
+            this.SetStats(2, 1, 2);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -94,7 +94,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Mecha'thun's Slayer";
             this.cardText = "Rush. Battlecry: Your Mecha'thun thaws 1 turn sooner.";
-            this.creatureData = new CreatureData(6, 3, 4);
+            this.SetStats(6, 3, 4);
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
         }
 
@@ -117,7 +117,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Mecha'thun's Harbinger";
             this.cardText = "Taunt. Battlecry: Your Mecha'thun thaws 2 turns sooner.";
-            this.creatureData = new CreatureData(10, 9, 9);
+            this.SetStats(10, 9, 9);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
 
@@ -140,7 +140,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Mecha'thun's Liege";
             this.cardText = "Battlecry: Your Mecha'thun thaws 3 turns sooner. Overload: (3).";
-            this.creatureData = new CreatureData(12, 12, 12);
+            this.SetStats(12, 12, 12);
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
 
@@ -163,7 +163,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Rare;
             this.name = "Mecha'thun's Elder";
             this.cardText = "Battlecry: Give your Mech -1/-1 for each turn your Mecha'thun has left to thaw.";
-            this.creatureData = new CreatureData(4, 12, 12);
+            this.SetStats(4, 12, 12);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -184,7 +184,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Rare;
             this.name = "Mecha'thun's Lynchpin";
             this.cardText = "Battlecry: If your Mecha'thun has 5 or fewer turns left to thaw, gain +16 Shields.";
-            this.creatureData = new CreatureData(8, 8, 8);
+            this.SetStats(8, 8, 8);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -207,7 +207,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Rare;
             this.name = "Mecha'thun's Generator";
             this.cardText = this.writtenEffect = "Aftermath: Add 3 other random Mecha'thun Cultists to your shop.";
-            this.creatureData = new CreatureData(5, 2, 5);
+            this.SetStats(5, 2, 5);
         }
 
         public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
@@ -249,7 +249,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Mecha'thun's Lord";
             this.cardText = this.writtenEffect = "Spellburst: Give your Mecha'thun +10/+10.";
-            this.creatureData = new CreatureData(10, 10, 10);
+            this.SetStats(10, 10, 10);
         }
 
         public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)

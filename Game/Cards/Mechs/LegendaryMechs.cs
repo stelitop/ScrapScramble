@@ -14,7 +14,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Legendary;
             this.name = "Cheap Filler Legendary";
             this.cardText = "Binary. This card is for testing purposes only";
-            this.creatureData = new CreatureData(5, 5, 5);
+            this.SetStats(5, 5, 5);
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
         }
     }
@@ -27,7 +27,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Legendary;
             this.name = "Lady in Byte";
             this.cardText = this.writtenEffect = "Aftermath: Set your Mech's Attack equal to its Health.";
-            this.creatureData = new CreatureData(6, 5, 5);
+            this.SetStats(6, 5, 5);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -50,7 +50,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.cardText = "Battlecry: The next Upgrade you buy this turn has Binary.";
             this.writtenEffect = "The next Upgrade you buy this turn has Binary.";
             this.printEffectInCombat = false;
-            this.creatureData = new CreatureData(4, 2, 2);
+            this.SetStats(4, 2, 2);
             this.triggered = false;
         }
 
@@ -73,7 +73,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Legendary;
             this.name = "Exotron the Forbidden";
             this.cardText = this.writtenEffect = "Start of Combat: If you've bought all 5 parts of Exotron this game, destroy the enemy Mech.";
-            this.creatureData = new CreatureData(15, 15, 15);
+            this.SetStats(15, 15, 15);
         }
 
         private bool Criteria(Card m)
@@ -155,7 +155,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Legendary;
             this.name = "Lord Barox";
             this.cardText = "Battlecry: Name ANY other Mech. Aftermath: If it won last round, gain 5 Mana this turn only.";
-            this.creatureData = new CreatureData(5, 4, 4);
+            this.SetStats(5, 4, 4);
             this.printEffectInCombat = false;
         }
 
@@ -237,7 +237,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Legendary;
             this.name = "Hat Chucker 8000";
             this.cardText = "Battlecry: Name a Rarity. Aftermath: Give all players' Upgrades of that rarity +2/+2.";
-            this.creatureData = new CreatureData(3, 3, 3);
+            this.SetStats(3, 3, 3);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -334,7 +334,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.name = "Chaos Prism";
             this.cardText = "Taunt x3. Spellburst: Gain \"Spellburst: Gain 'Spellburst: Gain Poisonous.'\"";
             this.writtenEffect = "Spellburst: Gain \"Spellburst: Gain 'Spellburst: Gain Poisonous.'\"";
-            this.creatureData = new CreatureData(6, 2, 2);
+            this.SetStats(6, 2, 2);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 3;
         }
 
@@ -361,7 +361,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Legendary;
             this.name = "Neato Magnet Magneto";
             this.cardText = this.writtenEffect = "Spellburst: If the spell is a Spare Part other than Mana Capsule, apply its effect to all Upgrades in your shop.";
-            this.creatureData = new CreatureData(9, 8, 6);
+            this.SetStats(9, 8, 6);
         }
 
         public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
@@ -387,7 +387,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    //[UpgradeAttribute]
+    [UpgradeAttribute]
     public class ParadoxEngine : Mech
     {        
         public ParadoxEngine()
@@ -396,12 +396,12 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.name = "Paradox Engine";
             this.cardText = "Battlecry: This turn, after you buy an upgrade, refresh your shop.";
             this.writtenEffect = "After you buy an upgrade, refresh your shop.";
-            this.creatureData = new CreatureData(12, 10, 10);
+            this.SetStats(12, 10, 10);
         }
 
         public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
         {            
-            gameHandler.players[curPlayer].shop.Refresh(gameHandler.pool, gameHandler.maxMana, false);
+            gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.maxMana, false);
         }
     }
 }
@@ -416,7 +416,7 @@ public class NextMech : Mech
         this.rarity = Rarity.Legendary;
         this.name = "";
         this.cardText = "";
-        this.creatureData = new CreatureData(0, 0, 0);
+        this.SetStats(0, 0, 0);
     }
 }
 

@@ -307,7 +307,7 @@ namespace ScrapScramble.BotRelated.Commands
                 responseMessage = new DiscordEmbedBuilder
                 {
                     Title = $"{mech.name}",
-                    Description = $"{mech.creatureData.cost}/{mech.creatureData.attack}/{mech.creatureData.health} - {mech.rarity} Upgrade",
+                    Description = $"{mech.cost}/{mech.creatureData.attack}/{mech.creatureData.health} - {mech.rarity} Upgrade",
                     Color = DiscordColor.Green
                 };
 
@@ -446,6 +446,37 @@ namespace ScrapScramble.BotRelated.Commands
 
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder{
                 Title = "List of Spare Parts",
+                Description = msg,
+                Color = DiscordColor.Azure
+            }).ConfigureAwait(false);
+        }
+
+        [Command("gameinfo")]
+        [Description("Displays information about the current game or the future game's setup.")]
+        public async Task GameInfo(CommandContext ctx)
+        {
+            string msg = string.Empty;
+
+            msg += $"Amount of Players: {BotInfoHandler.gameHandler.players.Count()}";
+            msg += $"\nStarting Lives: {BotInfoHandler.gameHandler.startingLives}";
+            if (BotInfoHandler.gameHandler.maxManaCap >= 0) msg += $"\nMana Cap: {BotInfoHandler.gameHandler.maxManaCap}";
+            else msg += "\nMana Cap: None";
+            msg += $"\n\nShop Rarity Breakdown:\n";
+            msg += $"C-R-E-L: ";
+            msg += $"{BotInfoHandler.gameHandler.shopRarities.common}-";
+            msg += $"{BotInfoHandler.gameHandler.shopRarities.rare}-";
+            msg += $"{BotInfoHandler.gameHandler.shopRarities.epic}-";
+            msg += $"{BotInfoHandler.gameHandler.shopRarities.legendary}";
+            
+            msg += $"\n\nUpgrade Pool Rarity Breakdown:\n";
+            msg += $"C-R-E-L: ";
+            msg += $"{CardsFilter.FilterList<Mech>(ref BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Common).Count()}-";
+            msg += $"{CardsFilter.FilterList<Mech>(ref BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Rare).Count()}-";
+            msg += $"{CardsFilter.FilterList<Mech>(ref BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Epic).Count()}-";
+            msg += $"{CardsFilter.FilterList<Mech>(ref BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary).Count()}";
+
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
+                Title = "Game Info",
                 Description = msg,
                 Color = DiscordColor.Azure
             }).ConfigureAwait(false);

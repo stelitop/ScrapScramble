@@ -6,6 +6,19 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game
 {
+    public struct RarityBreakdown
+    {
+        public int common, rare, epic, legendary;
+        
+        public RarityBreakdown(int c, int r, int e, int l)
+        {
+            this.common = c;
+            this.rare = r;
+            this.epic = e;
+            this.legendary = l;
+        }
+    };
+
     public class GameHandler
     {
         public static Random randomGenerator = new Random();
@@ -19,7 +32,9 @@ namespace ScrapScramble.Game
 
         public int currentRound = 1;
         public int startingLives = 3;
-        public int maxManaCap = -1;
+        public int maxManaCap = 40;
+
+        public RarityBreakdown shopRarities;
 
         public GameHandler()
         {
@@ -27,6 +42,7 @@ namespace ScrapScramble.Game
             this.pool = new MinionPool();
             this.pairsHandler = new PairsHandler();
             this.combatOutputCollector = new CombatOutputCollector();
+            this.shopRarities = new RarityBreakdown(4, 3, 2, 1);
         }
 
         public void AddPlayer(string name)
@@ -55,7 +71,7 @@ namespace ScrapScramble.Game
             {                
                 this.players[i] = new Player(this.players[i].name);                
 
-                this.players[i].shop.Refresh(this.pool, this.maxMana);
+                this.players[i].shop.Refresh(this, this.maxMana);
                 this.players[i].curMana = this.maxMana;
                 this.players[i].lives = this.startingLives;
 
@@ -246,9 +262,6 @@ namespace ScrapScramble.Game
             //-combat header
 
 
-            Console.WriteLine("Frog2");
-
-
             //revert to before the fight
             gameHandler.players[mech1].creatureData = crData1.DeepCopy();
             gameHandler.players[mech2].creatureData = crData2.DeepCopy();
@@ -269,7 +282,7 @@ namespace ScrapScramble.Game
 
                 gameHandler.players[i].aftermathMessages.Clear();
 
-                gameHandler.players[i].shop.Refresh(gameHandler.pool, gameHandler.maxMana);
+                gameHandler.players[i].shop.Refresh(gameHandler, gameHandler.maxMana);
 
                 gameHandler.players[i].overloaded = gameHandler.players[i].creatureData.staticKeywords[StaticKeyword.Overload];
                 gameHandler.players[i].curMana = gameHandler.maxMana - gameHandler.players[i].overloaded;

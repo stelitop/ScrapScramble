@@ -109,7 +109,7 @@ namespace ScrapScramble.Game.Effects
         }
 
 
-        public void Refresh(MinionPool pool, int maxMana, bool decreaseFreeze = true)
+        public void Refresh(GameHandler gameHandler, int maxMana, bool decreaseFreeze = true)
         {
             int commons = 4, rares = 3, epics = 2, legendaries = 1;
 
@@ -135,7 +135,7 @@ namespace ScrapScramble.Game.Effects
 
             List<Mech> subList = new List<Mech>();            
 
-            for (int i = 0; i < pool.mechs.Count(); i++) if (pool.mechs[i].rarity == Rarity.Legendary && pool.mechs[i].creatureData.cost <= maxMana - 5) subList.Add(pool.mechs[i]);
+            for (int i = 0; i < gameHandler.pool.mechs.Count(); i++) if (gameHandler.pool.mechs[i].rarity == Rarity.Legendary && gameHandler.pool.mechs[i].cost <= maxMana - 5) subList.Add(gameHandler.pool.mechs[i]);
             for (int i = 0; i < legendaries; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
@@ -143,7 +143,7 @@ namespace ScrapScramble.Game.Effects
             }
 
             subList.Clear();
-            for (int i = 0; i < pool.mechs.Count(); i++) if (pool.mechs[i].rarity == Rarity.Epic && pool.mechs[i].creatureData.cost <= maxMana - 5) subList.Add(pool.mechs[i]);
+            for (int i = 0; i < gameHandler.pool.mechs.Count(); i++) if (gameHandler.pool.mechs[i].rarity == Rarity.Epic && gameHandler.pool.mechs[i].cost <= maxMana - 5) subList.Add(gameHandler.pool.mechs[i]);
             for (int i = 0; i < epics; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
@@ -151,7 +151,7 @@ namespace ScrapScramble.Game.Effects
             }
 
             subList.Clear();
-            for (int i = 0; i < pool.mechs.Count(); i++) if (pool.mechs[i].rarity == Rarity.Rare && pool.mechs[i].creatureData.cost <= maxMana - 5) subList.Add(pool.mechs[i]);
+            for (int i = 0; i < gameHandler.pool.mechs.Count(); i++) if (gameHandler.pool.mechs[i].rarity == Rarity.Rare && gameHandler.pool.mechs[i].cost <= maxMana - 5) subList.Add(gameHandler.pool.mechs[i]);
             for (int i = 0; i < rares; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
@@ -159,7 +159,7 @@ namespace ScrapScramble.Game.Effects
             }
 
             subList.Clear();
-            for (int i = 0; i < pool.mechs.Count(); i++) if (pool.mechs[i].rarity == Rarity.Common && pool.mechs[i].creatureData.cost <= maxMana - 5) subList.Add(pool.mechs[i]);
+            for (int i = 0; i < gameHandler.pool.mechs.Count(); i++) if (gameHandler.pool.mechs[i].rarity == Rarity.Common && gameHandler.pool.mechs[i].cost <= maxMana - 5) subList.Add(gameHandler.pool.mechs[i]);
             for (int i = 0; i < commons; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
@@ -214,7 +214,7 @@ namespace ScrapScramble.Game.Effects
             this.inLimbo = true;
             this.cardText = string.Empty;
             this.rarity = Rarity.NO_RARITY;
-            this.creatureData = new CreatureData();
+            this.SetStats(0, 0, 0);
         }
 
         public override string GetInfo(GameHandler gameHandler, int player)

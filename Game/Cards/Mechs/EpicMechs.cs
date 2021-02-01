@@ -15,7 +15,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.name = "Naptron";
             this.cardText = "Taunt x2. Aftermath: Give your Mech Rush x2.";
             this.writtenEffect = "Aftermath: Give your Mech Rush x2.";
-            this.creatureData = new CreatureData(4, 1, 10);
+            this.SetStats(4, 1, 10);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] += 2;
         }
 
@@ -35,7 +35,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "High Roller";
             this.cardText = this.writtenEffect = "Aftermath: Reduce the Cost of a random Upgrade in your shop by (4).";
-            this.creatureData = new CreatureData(4, 3, 3);
+            this.SetStats(4, 3, 3);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -43,8 +43,8 @@ namespace ScrapScramble.Game.Cards.Mechs
             if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
             Mech m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
-            m.creatureData.cost -= 4;
-            if (m.creatureData.cost < 0) m.creatureData.cost = 0;
+            m.cost -= 4;
+            if (m.cost < 0) m.cost = 0;
 
             gameHandler.players[curPlayer].aftermathMessages.Add($"Your Highroller reduces the cost of {m.name} in your shop by (4).");
         }
@@ -58,7 +58,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Fallen Reaver";
             this.cardText = this.writtenEffect = "Aftermath: Destroy 6 random Upgrades in your shop.";
-            this.creatureData = new CreatureData(5, 8, 8);
+            this.SetStats(5, 8, 8);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -84,7 +84,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Investotron";
             this.cardText = this.writtenEffect = "Aftermath: Transform a random Upgrade in your shop into an Investotron. Give your Mech +4/+4.";
-            this.creatureData = new CreatureData(5, 4, 4);
+            this.SetStats(5, 4, 4);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -109,7 +109,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Mass Accelerator";
             this.cardText = this.writtenEffect = "Start of Combat: If you're Overloaded, deal 5 damage to the enemy Mech.";
-            this.creatureData = new CreatureData(6, 5, 5);
+            this.SetStats(6, 5, 5);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
@@ -135,7 +135,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Panic Button";
             this.cardText = this.writtenEffect = "After your Mech is reduced to 5 or less Health, deal 10 damage to the enemy Mech.";
-            this.creatureData = new CreatureData(5, 3, 3);
+            this.SetStats(5, 3, 3);
             this.triggered = false;
         }
 
@@ -161,7 +161,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.name = "Bibliobot";
             this.cardText = "Battlecry: Name a letter. This round, after you buy an Upgrade that starts with that letter, gain +2 Attack.";
             this.writtenEffect = "Not Frog";
-            this.creatureData = new CreatureData(5, 5, 3);
+            this.SetStats(5, 5, 3);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -209,7 +209,6 @@ namespace ScrapScramble.Game.Cards.Mechs
             ret.creatureData = this.creatureData.DeepCopy();
             ret.writtenEffect = this.writtenEffect;
             ret.letter = this.letter;
-            Console.WriteLine("Frog " + this.letter);
             return ret;
         }
     }
@@ -222,7 +221,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Mirrordome";
             this.cardText = this.writtenEffect = "Aftermath: This turn, your shop is a copy of your opponent's.";
-            this.creatureData = new CreatureData(4, 0, 8);
+            this.SetStats(4, 0, 8);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -249,7 +248,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Super Scooper";
             this.cardText = this.writtenEffect = "Start of Combat: Steal the stats of the lowest-Cost Upgrade your opponent bought last turn from their Mech.";
-            this.creatureData = new CreatureData(8, 3, 7);
+            this.SetStats(8, 3, 7);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
@@ -259,9 +258,9 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             for (int i=0; i<gameHandler.players[enemy].boughtThisTurn.Count(); i++)
             {
-                if (gameHandler.players[enemy].boughtThisTurn[i].creatureData.cost < lowestCost && gameHandler.players[enemy].boughtThisTurn[i].creatureData.attack != 0 && gameHandler.players[enemy].boughtThisTurn[i].creatureData.health != 0)
+                if (gameHandler.players[enemy].boughtThisTurn[i].cost < lowestCost && gameHandler.players[enemy].boughtThisTurn[i].creatureData.attack != 0 && gameHandler.players[enemy].boughtThisTurn[i].creatureData.health != 0)
                 {
-                    lowestCost = gameHandler.players[enemy].boughtThisTurn[i].creatureData.cost;
+                    lowestCost = gameHandler.players[enemy].boughtThisTurn[i].cost;
                     upgradesList.Clear();
                     upgradesList.Add(gameHandler.players[enemy].boughtThisTurn[i]);
                 }
@@ -302,7 +301,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Titanium Bloomer";
             this.cardText = "Battlecry: Add a Lightning Bloom to your hand.";
-            this.creatureData = new CreatureData(4, 4, 2);
+            this.SetStats(4, 4, 2);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -321,7 +320,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Spell Printer";
             this.cardText = this.writtenEffect = "Spellburst: Add a copy of the spell to your hand.";
-            this.creatureData = new CreatureData(5, 4, 5);
+            this.SetStats(5, 4, 5);
         }
 
         public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
@@ -344,7 +343,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Copper Commander";
             this.cardText = this.writtenEffect = "Your Start of Combat effects trigger twice.";
-            this.creatureData = new CreatureData(4, 3, 3);
+            this.SetStats(4, 3, 3);
         }
 
         public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
@@ -361,7 +360,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Springloaded Jester";
             this.cardText = this.writtenEffect = "After this attacks, swap your Mech's Attack and Health.";
-            this.creatureData = new CreatureData(2, 1, 1);
+            this.SetStats(2, 1, 1);
         }
 
         public override void AfterThisAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
@@ -380,7 +379,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Fortune Wheel";
             this.cardText = this.writtenEffect = "Aftermath: Cast 3 random Spare Parts with random targets.";
-            this.creatureData = new CreatureData(3, 3, 3);
+            this.SetStats(3, 3, 3);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -421,7 +420,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Dungeon Dragonling";
             this.cardText = this.writtenEffect = "Whenever you would take damage, roll a d20. You take that much less damage.";
-            this.creatureData = new CreatureData(20, 4, 12);
+            this.SetStats(20, 4, 12);
         }
 
         public override void BeforeTakingDamage(ref int damage, GameHandler gameHandler, int curPlayer, int enemy, ref string msg)
@@ -441,7 +440,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Deflect-o-Shield";
             this.cardText = this.writtenEffect = "Prevent any damage to your Mech that would deal 2 or less damage.";
-            this.creatureData = new CreatureData(4, 2, 2);
+            this.SetStats(4, 2, 2);
         }
 
         public override void BeforeTakingDamage(ref int damage, GameHandler gameHandler, int curPlayer, int enemy, ref string msg)
@@ -465,7 +464,7 @@ public class NextMech : Mech
         this.rarity = Rarity.Epic;
         this.name = "";
         this.cardText = "";
-        this.creatureData = new CreatureData(0, 0, 0);
+        this.SetStats(0, 0, 0);
     }
 }
 

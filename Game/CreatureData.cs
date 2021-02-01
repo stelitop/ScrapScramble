@@ -8,7 +8,7 @@ namespace ScrapScramble.Game
 {    
     public class CreatureData
     {
-        public int attack, health, cost;
+        public int attack, health;
         public Dictionary<StaticKeyword, int> staticKeywords;
 
         public void InitStaticKeywordsDictionary()
@@ -22,16 +22,15 @@ namespace ScrapScramble.Game
 
         public CreatureData()
         {
-            this.attack = this.health = this.cost = 1;
+            this.attack = this.health = 1;
             this.staticKeywords = new Dictionary<StaticKeyword, int>();
             this.InitStaticKeywordsDictionary();
         }
 
-        public CreatureData(int cost, int attack, int health)
+        public CreatureData(int attack, int health)
         {
             this.attack = attack;
             this.health = health;
-            this.cost = cost;
             this.staticKeywords = new Dictionary<StaticKeyword, int>();
             this.InitStaticKeywordsDictionary();
         }
@@ -42,14 +41,14 @@ namespace ScrapScramble.Game
 
         public CreatureData DeepCopy()
         {
-            CreatureData ret = new CreatureData(this.cost, this.attack, this.health);
+            CreatureData ret = new CreatureData(this.attack, this.health);
             ret.staticKeywords = new Dictionary<StaticKeyword, int>(this.staticKeywords);
             return ret;
         }
 
         public static CreatureData operator +(CreatureData a, CreatureData b)
         {
-            CreatureData ret = new CreatureData(a.cost + b.cost, a.attack + b.attack, a.health + b.health)
+            CreatureData ret = new CreatureData(a.attack + b.attack, a.health + b.health)
             {
                 staticKeywords = a.staticKeywords
             };

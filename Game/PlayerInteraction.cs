@@ -43,7 +43,9 @@ namespace ScrapScramble.Game
 
         public async Task<string> SendInteractionAsync(int index, bool showEmbed = true)
         {
-            if (index < 0 || index >= BotInfoHandler.gameHandler.players.Count()) return string.Empty;            
+            if (index < 0 || index >= BotInfoHandler.gameHandler.players.Count()) return string.Empty;
+
+            BotInfoHandler.RefreshUI(BotInfoHandler.gameHandler.players[index].ctx, index);
 
             var interactivity = BotInfoHandler.gameHandler.players[index].ctx.Client.GetInteractivity();
 

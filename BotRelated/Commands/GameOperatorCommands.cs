@@ -560,5 +560,22 @@ namespace ScrapScramble.BotRelated.Commands
                 }).ConfigureAwait(false);
             }
         }
+
+        [Command("setshoprarity")]
+        [Description("Sets the breakdown by rarities of what upgrades you get in shop each turn.")]
+        public async Task SetShopRarity(CommandContext ctx, int c, int r, int e, int l)
+        {
+            BotInfoHandler.gameHandler.shopRarities.common = c;
+            BotInfoHandler.gameHandler.shopRarities.rare = r;
+            BotInfoHandler.gameHandler.shopRarities.epic = e;
+            BotInfoHandler.gameHandler.shopRarities.legendary = l;
+
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = "Shop Rarity Breakdown Changed",
+                Description = $"The new breakdown is {c}-{r}-{e}-{l}.",
+                Color = DiscordColor.Azure
+            }).ConfigureAwait(false);
+        }
     }
 }

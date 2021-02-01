@@ -15,7 +15,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Hard Puncher";
             this.cardText = string.Empty;
-            this.creatureData = new CreatureData(2, 3, 1);
+            this.SetStats(2, 3, 1);
         }
     }
 
@@ -27,7 +27,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Springed Smilebot";
             this.cardText = "Rush";
-            this.creatureData = new CreatureData(4, 3, 1);
+            this.SetStats(4, 3, 1);
             this.creatureData.staticKeywords[StaticKeyword.Rush] += 1;
         }
     }
@@ -40,7 +40,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Runaway Tire";
             this.cardText = "Rush x2";
-            this.creatureData = new CreatureData(5, 1, 1);
+            this.SetStats(5, 1, 1);
             this.creatureData.staticKeywords[StaticKeyword.Rush] += 2;
         }
     }
@@ -53,7 +53,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Medieval Tire";
             this.cardText = "Battlecry: Gain +4 Spikes and +4 Shields";
-            this.creatureData = new CreatureData(7, 5, 5);
+            this.SetStats(7, 5, 5);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -71,7 +71,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Heavy-Duty Plating";
             this.cardText = "Taunt x2";
-            this.creatureData = new CreatureData(3, 5, 5);
+            this.SetStats(3, 5, 5);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] += 2;
         }
     }
@@ -84,7 +84,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Refurbished Plating";
             this.cardText = "Battlecry: Gain Shields equal to twice your Taunt.";
-            this.creatureData = new CreatureData(2, 0, 2);
+            this.SetStats(2, 0, 2);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -101,7 +101,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Healthbox";
             this.cardText = this.writtenEffect = "Start of Combat: Give the enemy Mech +8 Health.";
-            this.creatureData = new CreatureData(0, 0, 8);
+            this.SetStats(0, 0, 8);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
@@ -120,7 +120,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Microchip";
             this.cardText = "Overload: (2)";
-            this.creatureData = new CreatureData(0, 1, 1);
+            this.SetStats(0, 1, 1);
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 2;
         }
     }
@@ -134,7 +134,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.name = "Oilmental";
             this.cardText = "Aftermath: Give a random Upgrade in your shop +2/+2. Overload: (3)";
             this.writtenEffect = "Aftermath: Give a random Upgrade in your shop +2/+2.";
-            this.creatureData = new CreatureData(1, 2, 2);
+            this.SetStats(1, 2, 2);
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
 
@@ -155,7 +155,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Rusted Junkwarden";
             this.cardText = "Taunt";
-            this.creatureData = new CreatureData(1, 1, 3);
+            this.SetStats(1, 1, 3);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
     }
@@ -168,7 +168,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Swindler's Coin";
             this.cardText = "Binary, Tiebreaker. Overload: (1)";
-            this.creatureData = new CreatureData(1, 0, 1);
+            this.SetStats(1, 0, 1);
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Tiebreaker] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
@@ -183,7 +183,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Arm of Exotron";
             this.cardText = "Battlecry: Gain +2 Spikes.";
-            this.creatureData = new CreatureData(2, 2, 1);
+            this.SetStats(2, 2, 1);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -211,7 +211,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Leg of Exotron";
             this.cardText = "Battlecry: Gain +2 Shields.";
-            this.creatureData = new CreatureData(2, 1, 2);
+            this.SetStats(2, 1, 2);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -239,7 +239,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Motherboard of Exotron";
             this.cardText = "Tiebreaker. Overload: (1)";
-            this.creatureData = new CreatureData(2, 2, 2);
+            this.SetStats(2, 2, 2);
             this.creatureData.staticKeywords[StaticKeyword.Tiebreaker] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
         }
@@ -264,7 +264,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Wheel of Exotron";
             this.cardText = "Battlecry: Gain +2 Spikes and +2 Shields.";
-            this.creatureData = new CreatureData(2, 1, 1);
+            this.SetStats(2, 1, 1);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -293,7 +293,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Chain Mail";
             this.cardText = "Binary. Battlecry: Gain +2 Shields. Overload: (1)";
-            this.creatureData = new CreatureData(2, 1, 2);
+            this.SetStats(2, 1, 2);
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
         }
@@ -312,7 +312,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Traffic Cone";
             this.cardText = "Binary. Battlecry: Gain +2 Spikes. Overload: (1)";
-            this.creatureData = new CreatureData(2, 2, 1);
+            this.SetStats(2, 2, 1);
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
         }
@@ -331,7 +331,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Metalgill Snapper";
             this.cardText = "Overload: (2)";
-            this.creatureData = new CreatureData(2, 4, 2);
+            this.SetStats(2, 4, 2);
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 2;
         }
     }    
@@ -344,7 +344,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Protective Firewall";
             this.cardText = "Binary, Taunt";
-            this.creatureData = new CreatureData(2, 2, 3);
+            this.SetStats(2, 2, 3);
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
@@ -358,7 +358,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Riveted Trinked";
             this.cardText = "Binary. Battlecry: Gain +2 Shields.";
-            this.creatureData = new CreatureData(2, 1, 1);
+            this.SetStats(2, 1, 1);
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
         }
 
@@ -376,7 +376,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Tank Treads";
             this.cardText = "Taunt. Battlecry: Gain +4 Shields. Overload: (3)";
-            this.creatureData = new CreatureData(2, 3, 4);
+            this.SetStats(2, 3, 4);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
@@ -396,7 +396,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.name = "Malfunctioning Puncher";
             this.cardText = "Start of Combat: Your Mech loses -4 Attack. Overload: (1)";
             this.writtenEffect = "Start of Combat: Your Mech loses -4 Attack.";
-            this.creatureData = new CreatureData(4, 4, 8);
+            this.SetStats(4, 4, 8);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
@@ -417,7 +417,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Helicopter Blades";
             this.cardText = "Rush. Battlecry: Gain +4 Spikes. Overload: (3)";
-            this.creatureData = new CreatureData(5, 4, 3);
+            this.SetStats(5, 4, 3);
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
@@ -437,7 +437,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.name = "Shieldbot Clanker";
             this.cardText = "Battlecry and Aftermath: Gain +8 Shields.";
             this.writtenEffect = "Aftermath: Gain +8 Shields.";
-            this.creatureData = new CreatureData(5, 2, 3);
+            this.SetStats(5, 2, 3);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -461,7 +461,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.name = "Spikebot Shanker";
             this.cardText = "Battlecry and Aftermath: Gain +8 Spikes.";
             this.writtenEffect = "Aftermath: Gain +8 Spikes.";
-            this.creatureData = new CreatureData(5, 3, 2);
+            this.SetStats(5, 3, 2);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -484,7 +484,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Speedy Processor";
             this.cardText = "Binary, Rush";
-            this.creatureData = new CreatureData(5, 3, 2);
+            this.SetStats(5, 3, 2);
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
         }
@@ -498,7 +498,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Lead Head";
             this.cardText = "Taunt x2";
-            this.creatureData = new CreatureData(6, 6, 10);
+            this.SetStats(6, 6, 10);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 2;
         }
     }
@@ -511,7 +511,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "One Hit Wonder";
             this.cardText = this.writtenEffect = "Start of Combat: Gain +8 Attack.";
-            this.creatureData = new CreatureData(7, 1, 5);
+            this.SetStats(7, 1, 5);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
@@ -530,7 +530,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Steamfunk";
             this.cardText = this.writtenEffect = "Aftermath: Give a random Upgrade in your shop +2/+2.";
-            this.creatureData = new CreatureData(7, 7, 7);
+            this.SetStats(7, 7, 7);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -550,7 +550,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Prismatic Barrier";
             this.cardText = this.writtenEffect = "Start of Combat: Gain +10 Shields.";
-            this.creatureData = new CreatureData(8, 5, 6);
+            this.SetStats(8, 5, 6);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
@@ -569,7 +569,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Sixpistol Constable";
             this.cardText = "Rush x6";
-            this.creatureData = new CreatureData(15, 6, 6);
+            this.SetStats(15, 6, 6);
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 6;
         }
     }
@@ -582,7 +582,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Two-Headed Colossus";
             this.cardText = "Tiebreaker";
-            this.creatureData = new CreatureData(11, 11, 11);
+            this.SetStats(11, 11, 11);
             this.creatureData.staticKeywords[StaticKeyword.Tiebreaker] = 1;
         }
     }
@@ -595,7 +595,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Orbital Mechanosphere";
             this.cardText = string.Empty;
-            this.creatureData = new CreatureData(30, 50, 50);            
+            this.SetStats(30, 50, 50);            
         }
     }
 
@@ -607,7 +607,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Bronze Bruiser";
             this.cardText = this.writtenEffect = "Aftermath: Add 4 random Common Upgrades to your shop.";
-            this.creatureData = new CreatureData(2, 1, 2);
+            this.SetStats(2, 1, 2);
         }
 
         private bool Criteria(Mech m)
@@ -638,7 +638,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Silver Shogun";
             this.cardText = this.writtenEffect = "Aftermath: Add 3 random Rare Upgrades to your shop.";
-            this.creatureData = new CreatureData(3, 2, 3);
+            this.SetStats(3, 2, 3);
         }
 
         private bool Criteria(Mech m)
@@ -669,7 +669,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Golden Gunner";
             this.cardText = this.writtenEffect = "Aftermath: Add 2 random Epic Upgrades to your shop.";
-            this.creatureData = new CreatureData(4, 3, 4);
+            this.SetStats(4, 3, 4);
         }
 
         private bool Criteria(Mech m)
@@ -700,7 +700,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Platinum Paragon";
             this.cardText = this.writtenEffect = "Aftermath: Add 1 random Legendary Upgrade to your shop.";
-            this.creatureData = new CreatureData(5, 4, 5);
+            this.SetStats(5, 4, 5);
         }
 
         private bool Criteria(Mech m)
@@ -731,7 +731,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Three-Faced Emojitron";
             this.cardText = "Choose One - Gain Rush; or +2/+2.";
-            this.creatureData = new CreatureData(5, 4, 2);
+            this.SetStats(5, 4, 2);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -774,7 +774,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Corroded Bastion";
             this.cardText = "Choose One - Gain Taunt; or Overload: (2).";
-            this.creatureData = new CreatureData(2, 2, 4);
+            this.SetStats(2, 2, 4);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -816,7 +816,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "System Rebooter";
             this.cardText = "Battlecry: Freeze an Upgrade. Give it Rush.";
-            this.creatureData = new CreatureData(4, 3, 3);
+            this.SetStats(4, 3, 3);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -838,7 +838,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Big Fan";
             this.cardText = "Battlecry: Freeze an Upgrade. Give it +3/+3 and Taunt.";
-            this.creatureData = new CreatureData(4, 3, 3);
+            this.SetStats(4, 3, 3);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -862,7 +862,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Synthetic Snowball";
             this.cardText = "Echo. Battlecry: Freeze an Upgrade. Give it +2/+2.";
-            this.creatureData = new CreatureData(3, 2, 2);
+            this.SetStats(3, 2, 2);
             this.creatureData.staticKeywords[StaticKeyword.Echo] = 1;
         }
 
@@ -885,7 +885,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Magnet Ball";
             this.cardText = "Magnetic, Taunt. Overload: (4).";
-            this.creatureData = new CreatureData(2, 4, 5);
+            this.SetStats(2, 4, 5);
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
@@ -900,7 +900,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Shieldmobile";
             this.cardText = "Magnetic. Battlecry: Gain +6 Shields. Overload: (4).";
-            this.creatureData = new CreatureData(2, 2, 6);
+            this.SetStats(2, 2, 6);
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
         }
@@ -919,7 +919,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Boomerang Magnet";
             this.cardText = "Magnetic, Rush. Overload: (4)";
-            this.creatureData = new CreatureData(5, 5, 3);
+            this.SetStats(5, 5, 3);
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
@@ -934,7 +934,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Djinni Decelerator";
             this.cardText = "Magnetic, Taunt x2";
-            this.creatureData = new CreatureData(5, 6, 6);
+            this.SetStats(5, 6, 6);
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 2;            
         }
@@ -948,7 +948,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Trash Cube";
             this.cardText = "Echo, Magnetic";
-            this.creatureData = new CreatureData(5, 4, 4);
+            this.SetStats(5, 4, 4);
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Echo] = 1;
         }
@@ -962,7 +962,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Spikecycle";
             this.cardText = "Magnetic. Battlecry: Gain +6 Spikes. Overload: (4).";
-            this.creatureData = new CreatureData(2, 6, 2);
+            this.SetStats(2, 6, 2);
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
         }
@@ -981,7 +981,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Circus Circuit";
             this.cardText = "Aftermath: Add a random Spare Part to your hand.";
-            this.creatureData = new CreatureData(3, 2, 3);
+            this.SetStats(3, 2, 3);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -1005,7 +1005,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Tinkerpet";
             this.cardText = this.writtenEffect = "Spellburst: Give your Mech +4 Spikes and +4 Shields.";
-            this.creatureData = new CreatureData(2, 1, 1);
+            this.SetStats(2, 1, 1);
         }
 
         public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
@@ -1028,7 +1028,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Boot Polisher";
             this.cardText = this.writtenEffect = "Start of Combat: If the enemy Mech has Attack Priority, gain +4 Shields.";
-            this.creatureData = new CreatureData(3, 2, 3);
+            this.SetStats(3, 2, 3);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
@@ -1055,7 +1055,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Cutlery Dispencer";
             this.cardText = this.writtenEffect = "Start of Combat: If your Mech has Attack Priority, gain +4 Spikes.";
-            this.creatureData = new CreatureData(3, 3, 2);
+            this.SetStats(3, 3, 2);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
@@ -1082,7 +1082,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Surveillance Bird";
             this.cardText = this.writtenEffect = "Aftermath: Gain 2 Mana this turn only.";
-            this.creatureData = new CreatureData(3, 2, 2);
+            this.SetStats(3, 2, 2);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -1100,7 +1100,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Onyx Crowbot";
             this.cardText = this.writtenEffect = "Aftermath: Gain 4 Mana this turn only.";
-            this.creatureData = new CreatureData(5, 4, 4);
+            this.SetStats(5, 4, 4);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -1118,7 +1118,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Sulfur Nano-Phoenix";
             this.cardText = this.writtenEffect = "Aftermath: Gain 6 Mana this turn only.";
-            this.creatureData = new CreatureData(7, 6, 6);
+            this.SetStats(7, 6, 6);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -1139,7 +1139,7 @@ public class NextMech : Mech
         this.rarity = Rarity.Common;
         this.name = "";
         this.cardText = "";
-        this.creatureData = new CreatureData(0, 0, 0);
+        this.SetStats(0, 0, 0);
     }
 }
 

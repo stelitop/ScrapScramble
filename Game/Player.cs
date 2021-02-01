@@ -197,24 +197,20 @@ namespace ScrapScramble.Game
 
         public bool BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (shopPos >= this.shop.totalSize) return false;
-            if (this.shop.At(shopPos).name == BlankUpgrade.name) return false;
-            if (this.shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Freeze] > 0) return false;
-            if (this.shop.At(shopPos).inLimbo) return false;
+            bool result = this.shop.At(shopPos).CanBeBought(shopPos, gameHandler, curPlayer, enemy);
+            if (!result) return false;
 
             Card card = this.shop.At(shopPos).DeepCopy();
 
+            this.shop.RemoveUpgrade(shopPos);
+
             this.shop.At(shopPos).inLimbo = true;
-            bool result = this.shop.At(shopPos).BuyCard(shopPos, gameHandler, curPlayer, enemy);
+            ((Mech)card).BuyCard(shopPos, gameHandler, curPlayer, enemy);
             this.shop.At(shopPos).inLimbo = false;
 
-            if (result)
-            {
-                this.playHistory[this.playHistory.Count() - 1].Add(card.DeepCopy());
-                this.boughtThisTurn.Add((Mech)card.DeepCopy());
-
-                this.shop.RemoveUpgrade(shopPos);
-            }
+            this.playHistory[this.playHistory.Count() - 1].Add(card.DeepCopy());
+            this.boughtThisTurn.Add((Mech)card.DeepCopy());
+            
             return result;
         }
         public bool PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy)

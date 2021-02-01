@@ -11,6 +11,8 @@ namespace ScrapScramble.Game.Cards
         public string name;
         public string cardText;
 
+        public int cost;
+
         public bool inLimbo = false;
 
         public abstract bool PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy);
