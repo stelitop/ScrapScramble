@@ -105,41 +105,22 @@ namespace ScrapScramble.Game
             
             gameHandler.players[mech1].destroyed = false;
             gameHandler.players[mech2].destroyed = false;
+
+            //-introductionHeader output
+
+            int rows1 = 0, rows2 = 0;
+
+            gameHandler.combatOutputCollector.introductionHeader1.Add(gameHandler.players[mech1].GetUpgradesList(out rows1));
+            gameHandler.combatOutputCollector.introductionHeader2.Add(gameHandler.players[mech2].GetUpgradesList(out rows2));         
+
+            for (int i = 0; i < rows2 - rows1; i++)
+                gameHandler.combatOutputCollector.introductionHeader1.Add(string.Empty);
+
+            for (int i = 0; i < rows1 - rows2; i++)
+                gameHandler.combatOutputCollector.introductionHeader2.Add(string.Empty);
             
             //-introductionHeader output
-            //gameHandler.combatOutputCollector.introductionHeader.Add($"[{gameHandler.players[mech1].name} vs {gameHandler.players[mech2].name}]");
 
-            //gameHandler.combatOutputCollector.introductionHeader1.Add($"{gameHandler.players[mech1].name} upgraded with:");
-            
-            if (gameHandler.players[mech1].specificEffects.hideUpgradesInLog)
-            {
-                gameHandler.combatOutputCollector.introductionHeader1.Add("(Hidden)");
-            }
-            else 
-            {
-                for (int i = 0; i < gameHandler.players[mech1].attachedMechs.Count(); i++) 
-                    gameHandler.combatOutputCollector.introductionHeader1.Add($"{gameHandler.players[mech1].attachedMechs[i].name}");
-
-                for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count() - gameHandler.players[mech1].attachedMechs.Count(); i++)
-                    gameHandler.combatOutputCollector.introductionHeader1.Add(string.Empty);
-            }
-            
-            //gameHandler.combatOutputCollector.introductionHeader2.Add($"\n{gameHandler.players[mech2].name} upgraded with:");
-
-            if (gameHandler.players[mech2].specificEffects.hideUpgradesInLog)
-            {
-                gameHandler.combatOutputCollector.introductionHeader2.Add("(Hidden)");
-            }
-            else 
-            {
-                for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count(); i++)
-                    gameHandler.combatOutputCollector.introductionHeader2.Add($"{gameHandler.players[mech2].attachedMechs[i].name}");
-
-                for (int i = 0; i < gameHandler.players[mech1].attachedMechs.Count() - gameHandler.players[mech2].attachedMechs.Count(); i++)
-                    gameHandler.combatOutputCollector.introductionHeader2.Add(string.Empty);
-            }
-            //-introductionHeader output
-            
             //save the data so it reverts after combat
             CreatureData crData1 = gameHandler.players[mech1].creatureData.DeepCopy();
             CreatureData crData2 = gameHandler.players[mech2].creatureData.DeepCopy();

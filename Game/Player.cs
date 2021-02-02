@@ -108,15 +108,10 @@ namespace ScrapScramble.Game
         }
         public string PrintInfoUpgrades(GameHandler gameHandler)
         {
-            string ret = string.Empty;
+            int filler = 0;
+            string ret = this.GetUpgradesList(out filler, false);
 
-            foreach (var upgrade in this.attachedMechs)
-            {
-                if (ret.Equals(string.Empty)) ret += $"{upgrade.name}";
-                else ret += $"\n{upgrade.name}";
-            }
-
-            if (ret.Equals(string.Empty)) return "(none)";
+            if (ret.Equals(string.Empty) || filler == 0) return "(none)";
             return ret;
         }
 
@@ -355,6 +350,40 @@ namespace ScrapScramble.Game
             }
 
             if (!preCombatEffects.Equals(string.Empty)) ret += preCombatEffects + "\n";
+
+            return ret;
+        }
+
+        public string GetUpgradesList(out int rows, bool respectHidden = true)
+        {
+            if (respectHidden && this.specificEffects.hideUpgradesInLog)
+            {
+                rows = 1;
+                return "(Hidden)";
+            }
+
+            string ret = string.Empty;
+            rows = 0;
+
+            for (int i = 0; i < this.attachedMechs.Count(); i++)
+            {
+                if (this.attachedMechs[i].name == BlankUpgrade.name) continue;
+                int mult = 1;
+                ret += $"{this.attachedMechs[i].name}";
+
+                for (int j=i+1; j<this.attachedMechs.Count(); j++)
+                {
+                    if (this.attachedMechs[j].name == this.attachedMechs[i].name) mult++;
+                    else break;
+                }
+
+                i += mult - 1;
+
+                rows++;
+
+                if (mult > 1) ret += $" x{mult}";
+                if (i != this.attachedMechs.Count() - 1) ret += "\n";
+            }
 
             return ret;
         }

@@ -111,7 +111,7 @@ namespace ScrapScramble.Game.Effects
 
         public void Refresh(GameHandler gameHandler, int maxMana, bool decreaseFreeze = true)
         {
-            int commons = 4, rares = 3, epics = 2, legendaries = 1;
+            int commons = gameHandler.shopRarities.common, rares = gameHandler.shopRarities.rare, epics = gameHandler.shopRarities.epic, legendaries = gameHandler.shopRarities.legendary;
 
             List<Mech> kept = new List<Mech>();
 

@@ -155,7 +155,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Legendary;
             this.name = "Lord Barox";
             this.cardText = "Battlecry: Name ANY other Mech. Aftermath: If it won last round, gain 5 Mana this turn only.";
-            this.SetStats(5, 4, 4);
+            this.SetStats(3, 3, 2);
             this.printEffectInCombat = false;
         }
 
