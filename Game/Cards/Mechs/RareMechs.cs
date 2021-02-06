@@ -228,7 +228,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             int index = gameHandler.players[enemy].shop.GetRandomUpgradeIndex();
             gameHandler.players[enemy].shop.RemoveUpgrade(index);
             
-            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Mk. IV Super Cobra destroyed a random upgarde in your shop.");
+            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Mk. IV Super Cobra destroyed a random upgrade in your shop.");
         }
     }
 
@@ -435,7 +435,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
+            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
 
             for (int i = 0; i < 3; i++)
             {
@@ -494,7 +494,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [UpgradeAttribute]
+    //[UpgradeAttribute]
     public class PrismaticReflectotron : Mech
     {
         private bool triggered;
@@ -536,7 +536,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, this.Criteria);
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, this.Criteria);
 
             gameHandler.players[curPlayer].creatureData.attack += 2 * list.Count();
             gameHandler.players[curPlayer].creatureData.health += 2 * list.Count();
@@ -544,7 +544,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override string GetInfo(GameHandler gameHandler, int player)
         {
-            return base.GetInfo(gameHandler, player) + $" *({CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, Criteria).Count})*";
+            return base.GetInfo(gameHandler, player) + $" *({CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, Criteria).Count})*";
         }
     }
 
@@ -711,7 +711,12 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
             {
-                gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, gameHandler, curPlayer, enemy);
+                gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, gameHandler, curPlayer, enemy);                
+            }
+
+            foreach (var extraEffect in gameHandler.players[curPlayer].extraUpgradeEffects)
+            {
+                extraEffect.OnSpellCast(this, gameHandler, curPlayer, enemy);
             }
         }
     }
@@ -956,11 +961,25 @@ namespace ScrapScramble.Game.Cards.Mechs
                 for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count() && gameHandler.players[curPlayer].IsAlive() && gameHandler.players[enemy].IsAlive(); i++)
                 {
                     gameHandler.players[curPlayer].attachedMechs[i].AfterThisAttacks(dmg, gameHandler, curPlayer, enemy);
+                    
                 }
+
+                foreach (var extraEffect in gameHandler.players[curPlayer].extraUpgradeEffects)
+                {
+                    if (!(gameHandler.players[curPlayer].IsAlive() && gameHandler.players[enemy].IsAlive())) break;
+                    extraEffect.AfterThisAttacks(dmg, gameHandler, curPlayer, enemy);
+                }
+
 
                 for (int i = 0; i < gameHandler.players[enemy].attachedMechs.Count() && gameHandler.players[curPlayer].IsAlive() && gameHandler.players[enemy].IsAlive(); i++)
                 {
-                    gameHandler.players[enemy].attachedMechs[i].AfterTheEnemyAttacks(dmg, gameHandler, curPlayer, enemy);
+                    gameHandler.players[enemy].attachedMechs[i].AfterTheEnemyAttacks(dmg, gameHandler, curPlayer, enemy);                    
+                }
+
+                foreach (var extraEffect in gameHandler.players[curPlayer].extraUpgradeEffects)
+                {
+                    if (!(gameHandler.players[curPlayer].IsAlive() && gameHandler.players[enemy].IsAlive())) break;
+                    extraEffect.AfterTheEnemyAttacks(dmg, gameHandler, curPlayer, enemy);
                 }
             }
         }
@@ -987,6 +1006,91 @@ namespace ScrapScramble.Game.Cards.Mechs
             triggered = true;
             damage = 0;
             msg += $"prevented by Divine Relic, ";
+        }
+    }
+
+    [UpgradeAttribute]
+    public class CobaltConqueror : Mech
+    {
+        private bool comboTrig = false;
+        private bool effectTrig = false;
+
+        public CobaltConqueror()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Cobalt Conqueror";
+            this.cardText = "Rush. Combo: Give the next Upgrade you buy this turn Rush.";
+            this.printEffectInCombat = false;
+            this.SetStats(10, 9, 7);
+            this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
+            this.effectTrig = false;
+        }
+
+        public override void Combo(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            this.writtenEffect = "Give the next Upgrade you buy this turn Rush.";
+            this.comboTrig = true;
+        }
+
+        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (this.comboTrig && !this.effectTrig)
+            {
+                this.effectTrig = true;
+                this.writtenEffect = string.Empty;
+                m.creatureData.staticKeywords[StaticKeyword.Rush]++;
+            }
+        }
+
+        public override Card DeepCopy()
+        {
+            CobaltConqueror ret = (CobaltConqueror)base.DeepCopy();
+            ret.comboTrig = this.comboTrig;
+            return ret;
+        }
+    }
+
+    public class Microbot : Mech
+    {
+        public Microbot()
+        {
+            this.name = "Microbot";
+            this.rarity = Rarity.NO_RARITY;
+            this.SetStats(1, 1, 1);
+        }
+    }
+
+    public class HiveMindEffect : Mech
+    {
+        public HiveMindEffect()
+        {
+            this.printEffectInCombat = false;
+            this.writtenEffect = "After you buy an Upgrade this turn, add a 1/1 Microbot to your shop.";
+        }
+
+        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].shop.AddUpgrade(new Microbot());
+        }
+    }
+
+    [UpgradeAttribute]
+    public class HiveMind : Mech
+    {
+        public HiveMind()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Hive Mind";
+            this.cardText = this.writtenEffect = "Aftermath: After you buy an Upgrade this turn, add a 1/1 Microbot to your shop.";
+            this.SetStats(2, 2, 2);
+        }
+
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].nextRoundEffects.Add(new HiveMindEffect());
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Due to your {this.name}, after you buy an Upgrade this turn, add a 1/1 Microbot to your shop.");
         }
     }
 

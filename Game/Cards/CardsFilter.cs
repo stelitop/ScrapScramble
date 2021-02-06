@@ -10,20 +10,20 @@ namespace ScrapScramble.Game.Cards
     {
         public delegate bool Criteria<T>(T card) where T: Card;
 
-        public static List<T> FilterList<T>(ref List<T> cards, Criteria<T> criteria) where T: Card
+        public static List<T> FilterList<T>(List<T> cards, Criteria<T> criteria) where T: Card
         {
             List<T> ret = new List<T>();
             for (int i=0; i<cards.Count(); i++)
             {
                 if (criteria(cards[i]))
                 {
-                    ret.Add((T)cards[i].DeepCopy());
+                    ret.Add(cards[i]);
                 }
             }
             return ret;
         }
 
-        public static List<T> FilterList<T>(ref List<List<T> > cards, Criteria<T> criteria) where T : Card
+        public static List<T> FilterList<T>(List<List<T> > cards, Criteria<T> criteria) where T : Card
         {
             List<T> ret = new List<T>();
             for (int i = 0; i < cards.Count(); i++)
@@ -32,7 +32,7 @@ namespace ScrapScramble.Game.Cards
                 {
                     if (criteria(cards[i][j]))
                     {
-                        ret.Add((T)cards[i][j].DeepCopy());
+                        ret.Add(cards[i][j]);
                     }
                 }
             }

@@ -203,35 +203,30 @@ namespace ScrapScramble.BotRelated.Commands
         [RequireIngame]
         public async Task GetPairsList(CommandContext ctx)
         {
-            Console.WriteLine(1);
-            string msg = string.Empty;
-            Console.WriteLine(2);
+            string msg = string.Empty;            
             for (int i=0; i<BotInfoHandler.gameHandler.pairsHandler.opponents.Count(); i++)
             {
                 if (BotInfoHandler.gameHandler.players[i].lives <= 0) continue;
                 Console.WriteLine($"{BotInfoHandler.gameHandler.pairsHandler.opponents.Count()}: {i}, {BotInfoHandler.gameHandler.pairsHandler.opponents[i]}");
                 if (i < BotInfoHandler.gameHandler.pairsHandler.opponents[i]) msg += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} vs {BotInfoHandler.gameHandler.pairsHandler.opponents[i]+1}) {BotInfoHandler.gameHandler.players[BotInfoHandler.gameHandler.pairsHandler.opponents[i]].name}\n";                
-            }
-            Console.WriteLine(3);
+            }            
             for (int i=0; i<BotInfoHandler.gameHandler.pairsHandler.opponents.Count(); i++)
             {
                 if (BotInfoHandler.gameHandler.players[i].lives <= 0) continue;
                 if (i == BotInfoHandler.gameHandler.pairsHandler.opponents[i]) msg += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} gets a bye\n";
-            }
-            Console.WriteLine(4);
+            }            
 
             if (msg.Equals(string.Empty)) msg = "No pairs have been assigned yet.";
             else msg.Trim();
-            Console.WriteLine(5);
+            
             var responseMessage = new DiscordEmbedBuilder
             {
                 Title = "List of Mech Pairs for Combat",
                 Description = msg,
                 Color = DiscordColor.Azure
             };
-            Console.WriteLine(6);
-            await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
-            Console.WriteLine(7);
+            
+            await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);            
         }
 
         [Command("pair")]

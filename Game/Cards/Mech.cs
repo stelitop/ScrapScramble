@@ -78,7 +78,12 @@ namespace ScrapScramble.Game.Cards
 
             for (int i=0; i<gameHandler.players[curPlayer].attachedMechs.Count(); i++)
             {                
-                gameHandler.players[curPlayer].attachedMechs[i].OnBuyingAMech(this, gameHandler, curPlayer, enemy);
+                gameHandler.players[curPlayer].attachedMechs[i].OnBuyingAMech(this, gameHandler, curPlayer, enemy);                
+            }
+
+            foreach (var extraEffect in gameHandler.players[curPlayer].extraUpgradeEffects)
+            {
+                extraEffect.OnBuyingAMech(this, gameHandler, curPlayer, enemy);
             }
 
             gameHandler.players[curPlayer].AttachMech(this, gameHandler, curPlayer, enemy);
@@ -107,6 +112,7 @@ namespace ScrapScramble.Game.Cards
         public virtual void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void Combo(GameHandler gameHandler, int curPlayer, int enemy) { }
 
         public virtual void AfterThisTakesDamage(int damage, GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void AfterThisAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy) { }
@@ -128,7 +134,11 @@ namespace ScrapScramble.Game.Cards
             ret.rarity = this.rarity;
             ret.cardText = this.cardText;            
             ret.creatureData = this.creatureData.DeepCopy();            
-            ret.writtenEffect = this.writtenEffect;            
+            ret.writtenEffect = this.writtenEffect;
+
+            for (int i = 0; i < this.extraUpgradeEffects.Count(); i++)
+                ret.extraUpgradeEffects.Add((Mech)this.extraUpgradeEffects[i].DeepCopy());
+            
             return ret;            
         }
         public virtual Mech BasicCopy()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScrapScramble.Game.Cards;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -180,16 +181,30 @@ namespace ScrapScramble.Game
 
             //trigger Start of Combat effects
             for (int multiplier = 0; multiplier < gameHandler.players[mech1].specificEffects.multiplierStartOfCombat; multiplier++)
+            {
                 for (int i = 0; i < gameHandler.players[mech1].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
                     gameHandler.players[mech1].attachedMechs[i].StartOfCombat(gameHandler, mech1, mech2);
                 }
 
+                foreach (var extraEffect in gameHandler.players[mech1].extraUpgradeEffects)
+                {
+                    extraEffect.StartOfCombat(gameHandler, mech1, mech2);
+                }
+            }
+
             for (int multiplier = 0; multiplier < gameHandler.players[mech2].specificEffects.multiplierStartOfCombat; multiplier++)
+            {
                 for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
-                    gameHandler.players[mech2].attachedMechs[i].StartOfCombat(gameHandler, mech2, mech1);
+                    gameHandler.players[mech2].attachedMechs[i].StartOfCombat(gameHandler, mech2, mech1);                    
                 }
+
+                foreach (var extraEffect in gameHandler.players[mech2].extraUpgradeEffects)
+                {
+                    extraEffect.StartOfCombat(gameHandler, mech2, mech1);
+                }
+            }
             //-preCombat header
 
             //-combat header
@@ -214,12 +229,22 @@ namespace ScrapScramble.Game
 
                 for (int i = 0; i < gameHandler.players[attacker].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
-                    gameHandler.players[attacker].attachedMechs[i].AfterThisAttacks(dmg, gameHandler, attacker, defender);
+                    gameHandler.players[attacker].attachedMechs[i].AfterThisAttacks(dmg, gameHandler, attacker, defender);                    
+                }
+                foreach (var extraEffect in gameHandler.players[attacker].extraUpgradeEffects)
+                {
+                    if (!(gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive())) break;
+                    extraEffect.AfterThisAttacks(dmg, gameHandler, attacker, defender);
                 }
 
                 for (int i = 0; i < gameHandler.players[defender].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
-                    gameHandler.players[defender].attachedMechs[i].AfterTheEnemyAttacks(dmg, gameHandler, attacker, defender);
+                    gameHandler.players[defender].attachedMechs[i].AfterTheEnemyAttacks(dmg, gameHandler, attacker, defender);                    
+                }
+                foreach (var extraEffect in gameHandler.players[defender].extraUpgradeEffects)
+                {
+                    if (!(gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive())) break;
+                    extraEffect.AfterTheEnemyAttacks(dmg, gameHandler, attacker, defender);
                 }
             }
 
@@ -281,7 +306,12 @@ namespace ScrapScramble.Game
             {
                 for (int j = 0; j < gameHandler.players[i].attachedMechs.Count(); j++)
                 {
-                    gameHandler.players[i].attachedMechs[j].AftermathMe(gameHandler, i, gameHandler.pairsHandler.opponents[i]);
+                    gameHandler.players[i].attachedMechs[j].AftermathMe(gameHandler, i, gameHandler.pairsHandler.opponents[i]);                    
+                }
+
+                foreach (var extraEffect in gameHandler.players[i].extraUpgradeEffects)
+                {
+                    extraEffect.AftermathMe(gameHandler, i, gameHandler.pairsHandler.opponents[i]);
                 }
             }
 
@@ -289,8 +319,25 @@ namespace ScrapScramble.Game
             {
                 for (int j = 0; j < gameHandler.players[i].attachedMechs.Count(); j++)
                 {
-                    gameHandler.players[i].attachedMechs[j].AftermathEnemy(gameHandler, i, gameHandler.pairsHandler.opponents[i]);
+                    gameHandler.players[i].attachedMechs[j].AftermathEnemy(gameHandler, i, gameHandler.pairsHandler.opponents[i]);                    
                 }
+
+                foreach (var extraEffect in gameHandler.players[i].extraUpgradeEffects)
+                {
+                    extraEffect.AftermathEnemy(gameHandler, i, gameHandler.pairsHandler.opponents[i]);
+                }
+            }
+
+            for (int i=0; i<gameHandler.players.Count(); i++)
+            {
+                gameHandler.players[i].extraUpgradeEffects.Clear();
+
+                for (int j=0; j<gameHandler.players[i].nextRoundEffects.Count(); j++)
+                {
+                    gameHandler.players[i].extraUpgradeEffects.Add((Mech)gameHandler.players[i].nextRoundEffects[j].DeepCopy());
+                }
+                
+                gameHandler.players[i].nextRoundEffects.Clear();
             }
 
             for (int i=0; i<gameHandler.players.Count(); i++)

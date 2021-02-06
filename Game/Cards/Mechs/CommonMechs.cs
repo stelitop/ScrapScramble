@@ -193,7 +193,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override string GetInfo(GameHandler gameHandler, int player)
         {
-            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, delegate(Card m) { return m.name.Equals(this.name); });
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, delegate(Card m) { return m.name.Equals(this.name); });
 
             string ret = base.GetInfo(gameHandler, player);
 
@@ -221,7 +221,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override string GetInfo(GameHandler gameHandler, int player)
         {
-            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
 
             string ret = base.GetInfo(gameHandler, player);
 
@@ -246,7 +246,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override string GetInfo(GameHandler gameHandler, int player)
         {
-            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
 
             string ret = base.GetInfo(gameHandler, player);
 
@@ -275,7 +275,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override string GetInfo(GameHandler gameHandler, int player)
         {
-            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
 
             string ret = base.GetInfo(gameHandler, player);
 
@@ -617,7 +617,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
+            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
 
             for (int i=0; i<4; i++)
             {
@@ -648,7 +648,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
+            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
 
             for (int i = 0; i < 3; i++)
             {
@@ -679,7 +679,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
+            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
 
             for (int i = 0; i < 2; i++)
             {
@@ -710,7 +710,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, this.Criteria);
+            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
 
             for (int i = 0; i < 1; i++)
             {

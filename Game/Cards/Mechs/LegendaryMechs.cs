@@ -87,7 +87,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {            
-            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, this.Criteria);
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, this.Criteria);
 
             int arm = 0, leg = 0, mb = 0, wheel = 0;
             for (int i=0; i<list.Count(); i++)
@@ -115,7 +115,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             string ret = base.GetInfo(gameHandler, player);
 
-            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, this.Criteria);
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, this.Criteria);
 
             int arm = 0, leg = 0, mb = 0, wheel = 0;
             for (int i = 0; i < list.Count(); i++)
@@ -206,23 +206,18 @@ namespace ScrapScramble.Game.Cards.Mechs
             {
                 gameHandler.players[curPlayer].curMana += 5;
                 gameHandler.players[curPlayer].aftermathMessages.Add(
-                    "The bet on your Lord Barox was correct! You gain 5 Mana this turn only.");
+                    $"The bet on your Lord Barox for {gameHandler.players[this.bet].name} was correct! You gain 5 Mana this turn only.");
             }
             else
             {
                 gameHandler.players[curPlayer].aftermathMessages.Add(
-                    "The bet on your Lord Barox was incorrect.");
+                    $"The bet on your Lord Barox for {gameHandler.players[this.bet].name} was incorrect.");
             }
         }
 
         public override Card DeepCopy()
         {
-            LordBarox ret = (LordBarox)Activator.CreateInstance(this.GetType());
-            ret.name = this.name;
-            ret.rarity = this.rarity;
-            ret.cardText = this.cardText;
-            ret.creatureData = this.creatureData.DeepCopy();
-            ret.writtenEffect = this.writtenEffect;
+            LordBarox ret = (LordBarox)base.DeepCopy();
             ret.bet = this.bet;            
             return ret;
         }
@@ -312,12 +307,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override Card DeepCopy()
         {
-            HatChucker8000 ret = (HatChucker8000)Activator.CreateInstance(this.GetType());
-            ret.name = this.name;
-            ret.rarity = this.rarity;
-            ret.cardText = this.cardText;
-            ret.creatureData = this.creatureData.DeepCopy();
-            ret.writtenEffect = this.writtenEffect;
+            HatChucker8000 ret = (HatChucker8000)base.DeepCopy();
             ret.chosenRarity = this.chosenRarity;
             return ret;
         }
@@ -389,7 +379,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
     [UpgradeAttribute]
     public class ParadoxEngine : Mech
-    {        
+    {
         public ParadoxEngine()
         {
             this.rarity = Rarity.Legendary;
@@ -400,8 +390,80 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
 
         public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
-        {            
+        {
             gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.maxMana, false);
+        }
+    }
+
+    public class HackathaAmalgam : Mech
+    {
+        public HackathaAmalgam()
+        {
+            this.rarity = Rarity.NO_RARITY;
+            this.name = "Amalgam";
+            this.cardText = string.Empty;
+            this.SetStats(5, 5, 5); 
+        }
+    }
+
+    [UpgradeAttribute]
+    public class Hackatha : Mech
+    {
+        public Hackatha()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Hackatha";
+            this.cardText = "Battlecry: Add a 5-Cost 5/5 Amalgam to your hand with the effects of all Upgrades your previous opponent applied last round.";
+            this.SetStats(8, 5, 5);
+        }
+
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.currentRound > 1 && gameHandler.pairsHandler.opponents[curPlayer] != curPlayer)
+            {
+                int index = gameHandler.players[curPlayer].hand.AddCard(new HackathaAmalgam());
+                HackathaAmalgam amalgam = (HackathaAmalgam)gameHandler.players[curPlayer].hand.At(index);
+
+                try
+                {
+                    amalgam.cardText = "Has the effects of";
+                    int extraTextLength = 0;
+                    int extraCards = 0;
+
+                    for (int i = 0; i < gameHandler.players[enemy].playHistory[gameHandler.currentRound - 2].Count(); i++)
+                    {
+                        Card upgrade = (Mech)gameHandler.players[enemy].playHistory[gameHandler.currentRound - 2][i];                        
+
+                        if ((upgrade.GetType().IsSubclassOf(typeof(Mech)) || upgrade.GetType() == typeof(Mech)) && upgrade.name != "Hackatha")
+                        {
+                            amalgam.extraUpgradeEffects.Add((Mech)upgrade.DeepCopy());
+
+                            if (extraTextLength < 40)
+                            {
+                                amalgam.cardText += $" {upgrade.name},";
+                                extraTextLength += upgrade.cardText.Length;
+                            }
+                            else
+                            {
+                                extraCards++;
+                            }
+                        }
+                    }
+                    amalgam.cardText.TrimEnd(',');
+                    if (extraCards == 0)
+                    {                        
+                        amalgam.cardText += ".";
+                    }
+                    else
+                    {
+                        amalgam.cardText += $" and {extraCards} more Upgrades.";
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Hackatha Fucked Up");
+                }
+            }
         }
     }
 }

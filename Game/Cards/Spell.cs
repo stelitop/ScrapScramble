@@ -48,6 +48,10 @@ namespace ScrapScramble.Game.Cards
             {
                 gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, gameHandler, curPlayer, enemy);
             }
+            foreach (var extraEffect in gameHandler.players[curPlayer].extraUpgradeEffects)
+            {
+                extraEffect.OnSpellCast(this, gameHandler, curPlayer, enemy);
+            }
 
             this.OnPlay(gameHandler, curPlayer, enemy);
 

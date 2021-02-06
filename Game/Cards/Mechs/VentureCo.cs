@@ -18,7 +18,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     {
         public override string GetInfo(GameHandler gameHandler, int player)
         {
-            return base.GetInfo(gameHandler, player) + $" *({CardsFilter.FilterList<Card>(ref gameHandler.players[player].playHistory, VentureCo.Criteria).Count})*";
+            return base.GetInfo(gameHandler, player) + $" *({CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, VentureCo.Criteria).Count})*";
         }
     }
 
@@ -47,7 +47,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
             gameHandler.players[curPlayer].creatureData.attack += list.Count();
         }
     }
@@ -66,7 +66,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
             gameHandler.players[curPlayer].creatureData.attack += list.Count();
             gameHandler.players[curPlayer].creatureData.health += list.Count();
         }
@@ -86,7 +86,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
             gameHandler.players[curPlayer].creatureData.attack += list.Count();
             gameHandler.players[curPlayer].creatureData.health += list.Count();
         }
@@ -105,7 +105,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
 
             gameHandler.players[enemy].TakeDamage(2*list.Count(), gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Venture Co. Flamethrower deals {2*list.Count()} damage, ");
         }
@@ -126,7 +126,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(ref gameHandler.pool.mechs, VentureCo.Criteria);
+            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, VentureCo.Criteria);
 
             for (int i=list.Count()-1; i>=0; i--)
             {
@@ -183,7 +183,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Card> list = CardsFilter.FilterList<Card>(ref gameHandler.players[enemy].playHistory, VentureCo.Criteria);
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[enemy].playHistory, VentureCo.Criteria);
 
             if (list.Count() > 0)
             {

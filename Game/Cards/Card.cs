@@ -15,6 +15,8 @@ namespace ScrapScramble.Game.Cards
 
         public bool inLimbo = false;
 
+        public List<Mech> extraUpgradeEffects = new List<Mech>();
+
         public abstract bool PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy);
         public abstract string GetInfo(GameHandler gameHandler, int player);
         public abstract Card DeepCopy();

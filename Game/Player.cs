@@ -25,10 +25,12 @@ namespace ScrapScramble.Game
 
         public List<List<Card>> playHistory;
         public List<Mech> boughtThisTurn;
+        public List<Mech> extraUpgradeEffects;
 
         public bool destroyed;
 
         public List<string> aftermathMessages;
+        public List<Mech> nextRoundEffects;
 
         public bool ready;
 
@@ -53,6 +55,8 @@ namespace ScrapScramble.Game
             this.playHistory.Add(new List<Card>());
             this.boughtThisTurn = new List<Mech>();
             this.specificEffects = new SpecificEffects();
+            this.extraUpgradeEffects = new List<Mech>();
+            this.nextRoundEffects = new List<Mech>();
         }
         public Player(string name) : this()
         {
@@ -100,6 +104,15 @@ namespace ScrapScramble.Game
                 {
                     if (ret.Equals(string.Empty)) ret += $"{this.attachedMechs[i].writtenEffect}";
                     else ret += $"\n{this.attachedMechs[i].writtenEffect}";
+                }
+            }
+
+            for (int i = 0; i < this.extraUpgradeEffects.Count(); i++)
+            {
+                if (!this.extraUpgradeEffects[i].writtenEffect.Equals(string.Empty))
+                {
+                    if (ret.Equals(string.Empty)) ret += $"{this.extraUpgradeEffects[i].writtenEffect}";
+                    else ret += $"\n{this.extraUpgradeEffects[i].writtenEffect}";
                 }
             }
 
@@ -151,6 +164,11 @@ namespace ScrapScramble.Game
         {
             mech.OnPlay(gameHandler, curPlayer, enemy);
 
+            foreach (var extraEffect in mech.extraUpgradeEffects)
+            {
+                extraEffect.OnPlay(gameHandler, curPlayer, enemy);
+            }
+
             if (mech.creatureData.staticKeywords[StaticKeyword.Magnetic] > 0)
             {
                 for (int i = 0; i < mech.creatureData.staticKeywords[StaticKeyword.Magnetic]; i++)
@@ -187,7 +205,27 @@ namespace ScrapScramble.Game
 
             mech.Battlecry(gameHandler, curPlayer, enemy);
 
+            foreach (var extraEffect in mech.extraUpgradeEffects)
+            {
+                extraEffect.Battlecry(gameHandler, curPlayer, enemy);                
+            }
+
+            if (gameHandler.players[curPlayer].playHistory[gameHandler.players[curPlayer].playHistory.Count()-1].Count() > 0)
+            {
+                mech.Combo(gameHandler, curPlayer, enemy);
+
+                foreach (var extraEffect in mech.extraUpgradeEffects)
+                {
+                    extraEffect.Combo(gameHandler, curPlayer, enemy);                    
+                }
+            }
+
             this.attachedMechs.Add((Mech)mech.DeepCopy());
+
+            foreach (var extraEffect in mech.extraUpgradeEffects)
+            {                
+                this.extraUpgradeEffects.Add((Mech)extraEffect.DeepCopy());
+            }
         }
 
         public bool BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
@@ -234,7 +272,7 @@ namespace ScrapScramble.Game
                 damage += this.creatureData.staticKeywords[StaticKeyword.Spikes];
                 msg += $"increased to {damage} by Spikes, ";
             }
-
+                
             if (gameHandler.players[defender].creatureData.staticKeywords[StaticKeyword.Shields] > 0 && !gameHandler.players[attacker].specificEffects.ignoreShields)
             {
                 damage -= gameHandler.players[defender].creatureData.staticKeywords[StaticKeyword.Shields];
@@ -260,7 +298,11 @@ namespace ScrapScramble.Game
         {
             for (int i=0; i<this.attachedMechs.Count(); i++)
             {
-                this.attachedMechs[i].BeforeTakingDamage(ref damage, gameHandler, defender, attacker, ref msg);
+                this.attachedMechs[i].BeforeTakingDamage(ref damage, gameHandler, defender, attacker, ref msg);                
+            }
+            foreach (var extraEffect in gameHandler.players[defender].extraUpgradeEffects)
+            {
+                extraEffect.BeforeTakingDamage(ref damage, gameHandler, defender, attacker, ref msg);
             }
 
             this.creatureData.health -= damage;
@@ -292,7 +334,13 @@ namespace ScrapScramble.Game
 
                 for (int i=0; i<this.attachedMechs.Count() && gameHandler.players[attacker].IsAlive() && gameHandler.players[defender].IsAlive(); i++)
                 {
-                    this.attachedMechs[i].AfterThisTakesDamage(damage, gameHandler, defender, attacker);
+                    this.attachedMechs[i].AfterThisTakesDamage(damage, gameHandler, defender, attacker);                    
+                }
+
+                foreach (var extraEffect in gameHandler.players[defender].extraUpgradeEffects)
+                {
+                    if (!(gameHandler.players[attacker].IsAlive() && gameHandler.players[defender].IsAlive())) break;
+                    extraEffect.AfterThisTakesDamage(damage, gameHandler, defender, attacker);
                 }
             }
 

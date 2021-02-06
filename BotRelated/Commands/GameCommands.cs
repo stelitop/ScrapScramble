@@ -470,10 +470,10 @@ namespace ScrapScramble.BotRelated.Commands
             
             msg += $"\n\nUpgrade Pool Rarity Breakdown:\n";
             msg += $"C-R-E-L: ";
-            msg += $"{CardsFilter.FilterList<Mech>(ref BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Common).Count()}-";
-            msg += $"{CardsFilter.FilterList<Mech>(ref BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Rare).Count()}-";
-            msg += $"{CardsFilter.FilterList<Mech>(ref BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Epic).Count()}-";
-            msg += $"{CardsFilter.FilterList<Mech>(ref BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary).Count()}";
+            msg += $"{CardsFilter.FilterList<Mech>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Common).Count()}-";
+            msg += $"{CardsFilter.FilterList<Mech>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Rare).Count()}-";
+            msg += $"{CardsFilter.FilterList<Mech>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Epic).Count()}-";
+            msg += $"{CardsFilter.FilterList<Mech>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary).Count()}";
 
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
                 Title = "Game Info",

@@ -202,12 +202,8 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override Card DeepCopy()
         {
-            Bibliobot ret = (Bibliobot)Activator.CreateInstance(this.GetType());
-            ret.name = this.name;
-            ret.rarity = this.rarity;
-            ret.cardText = this.cardText;
-            ret.creatureData = this.creatureData.DeepCopy();
-            ret.writtenEffect = this.writtenEffect;
+            Bibliobot ret = (Bibliobot)base.DeepCopy();
+            
             ret.letter = this.letter;
             return ret;
         }
@@ -452,6 +448,93 @@ namespace ScrapScramble.Game.Cards.Mechs
             }
         }
     }
+
+
+
+    public class SwitchboardEffect : Mech
+    {
+        bool comboTrig = false;
+        bool spellburst = true;
+
+        public SwitchboardEffect()
+        {
+
+        }
+
+        public override void Combo(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            comboTrig = true;
+            this.writtenEffect = "Spellburst: Gain Rush x4.";
+        }
+
+        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (comboTrig && spellburst)
+            {
+                spellburst = false;
+                this.writtenEffect = string.Empty;
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush] += 4;
+            }
+        }
+
+        public override Card DeepCopy()
+        {
+            SwitchboardEffect ret = (SwitchboardEffect)base.DeepCopy();
+            ret.comboTrig = this.comboTrig;
+            return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class EncodedSwitchboard : Mech
+    {
+        public EncodedSwitchboard()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Encoded Switchboard";
+            this.cardText = this.writtenEffect = "Aftermath: Give a random Legendary Upgrade in your shop \"Combo: Gain \'Spellburst: Gain Rush x4.\'\"";
+            this.SetStats(3, 0, 4);
+        }
+
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Mech> legendaries = CardsFilter.FilterList<Mech>(gameHandler.players[curPlayer].shop.GetAllUpgrades(), x => x.rarity == Rarity.Legendary);
+            int index = GameHandler.randomGenerator.Next(0, legendaries.Count());
+
+            legendaries[index].extraUpgradeEffects.Add(new SwitchboardEffect());
+            legendaries[index].cardText += " Combo: Gain \'Spellburst: Gain Rush x4.\'";
+
+            gameHandler.players[curPlayer].aftermathMessages.Add($"Your Encoded Switchboard gives the {legendaries[index].name} in your shop \"Combo: Gain \'Spellburst: Gain Rush x4.\'\"");
+        }
+    }
+
+    [UpgradeAttribute]
+    public class CompetentScrapper : Mech
+    {
+        public CompetentScrapper()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Competent Scrapper";
+            this.cardText = "Battlecry: Discard all Spare Parts in your hand. Give your Mech +3/+3 for each.";
+            this.SetStats(4, 3, 4);
+        }
+
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<int> handIndexes = gameHandler.players[curPlayer].hand.GetAllUpgradeIndexes();        
+
+            for (int i=0; i<handIndexes.Count(); i++)
+            {
+                if (Attribute.IsDefined(gameHandler.players[curPlayer].hand.At(handIndexes[i]).GetType(), typeof(SparePartAttribute)))
+                {
+                    gameHandler.players[curPlayer].hand.RemoveCard(handIndexes[i]);
+                    gameHandler.players[curPlayer].creatureData.attack += 3;
+                    gameHandler.players[curPlayer].creatureData.health += 3;
+                }
+            }
+        }
+    }
+
 }
 
 /*
