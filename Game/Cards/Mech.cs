@@ -41,12 +41,27 @@ namespace ScrapScramble.Game.Cards
 
         public override string GetInfo(GameHandler gameHandler, int player)
         {
-            string ret = string.Empty; 
-            if (this.cardText.Equals(string.Empty) ) ret = $"{this.name} - {this.rarity} - {this.cost}/{this.creatureData.attack}/{this.creatureData.health}";
-            else ret = $"{this.name} - {this.rarity} - {this.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
+            string ret = string.Empty;
+            string rarity = $"{this.rarity} - ";
+            if (this.rarity == Rarity.NO_RARITY) rarity = string.Empty;
+
+            if (this.cardText.Equals(string.Empty) ) ret = $"{this.name} - {rarity}{this.cost}/{this.creatureData.attack}/{this.creatureData.health}";
+            else ret = $"{this.name} - {rarity}{this.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
 
             if (this.creatureData.staticKeywords[StaticKeyword.Freeze] == 1) ret = $"(Frozen for 1 turn) {ret}";
             else if (this.creatureData.staticKeywords[StaticKeyword.Freeze] > 1) ret = $"(Frozen for {this.creatureData.staticKeywords[StaticKeyword.Freeze]} turns) {ret}";
+            return ret;
+        }
+
+        public override string ToString()
+        {
+            string ret = string.Empty;
+            string rarity = $"{this.rarity} - ";
+            if (this.rarity == Rarity.NO_RARITY) rarity = string.Empty;
+
+            if (this.cardText.Equals(string.Empty)) ret = $"{this.name} - {rarity}{this.cost}/{this.creatureData.attack}/{this.creatureData.health}";
+            else ret = $"{this.name} - {rarity}{this.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
+
             return ret;
         }
 
@@ -113,6 +128,7 @@ namespace ScrapScramble.Game.Cards
         public virtual void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void Combo(GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void OnBeingFrozen(GameHandler gameHandler, int curPlayer, int enemy) { }
 
         public virtual void AfterThisTakesDamage(int damage, GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void AfterThisAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy) { }
@@ -135,6 +151,7 @@ namespace ScrapScramble.Game.Cards
             ret.cardText = this.cardText;            
             ret.creatureData = this.creatureData.DeepCopy();            
             ret.writtenEffect = this.writtenEffect;
+            ret.extraUpgradeEffects.Clear();
 
             for (int i = 0; i < this.extraUpgradeEffects.Count(); i++)
                 ret.extraUpgradeEffects.Add((Mech)this.extraUpgradeEffects[i].DeepCopy());

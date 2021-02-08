@@ -376,6 +376,69 @@ namespace ScrapScramble.BotRelated.Commands
             await msg.ModifyAsync(embed: newMenuPage.Build()).ConfigureAwait(false);
         }
 
+        [Command("ulist2")]
+        [RequireGuild]
+        public async Task BrowseMenuTest(CommandContext ctx)
+        {
+            DSharpPlus.Interactivity.Page discordpage = new DSharpPlus.Interactivity.Page();
+
+            int upgradesPerPage = Math.Min(BotInfoHandler.gameHandler.pool.mechs.Count(), 7);            
+            int totalPages = BotInfoHandler.gameHandler.pool.mechs.Count() / upgradesPerPage;
+            if (BotInfoHandler.gameHandler.pool.mechs.Count() % upgradesPerPage != 0) totalPages++;
+
+            //DiscordMessage menuMessage = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { Color = DiscordColor.Azure }).ConfigureAwait(false);
+            //await this.UpdateBrowseMenuAsync(ctx, menuMessage, upgradesPerPage, page, totalPages);
+
+            var interactivity = ctx.Client.GetInteractivity();
+
+
+            List<DSharpPlus.Interactivity.Page> allMenuPages = new List<DSharpPlus.Interactivity.Page>();
+
+            DSharpPlus.Interactivity.PaginationEmojis paginationEmojis = new DSharpPlus.Interactivity.PaginationEmojis();
+
+            paginationEmojis.SkipLeft = DiscordEmoji.FromName(ctx.Client, ":rewind:");
+            paginationEmojis.Left = DiscordEmoji.FromName(ctx.Client, ":arrow_left:");
+            paginationEmojis.Stop = DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:");
+            paginationEmojis.Right = DiscordEmoji.FromName(ctx.Client, ":arrow_right:");
+            paginationEmojis.SkipRight = DiscordEmoji.FromName(ctx.Client, ":fast_forward:");            
+
+            for (int page=1; page<=totalPages; page++)
+            {
+                string description = $"Page {page}/{totalPages}\n";
+
+                Rarity lastRarity = Rarity.NO_RARITY;
+                string pageInfo = string.Empty;
+                for (int i = upgradesPerPage * (page - 1); i < upgradesPerPage * page && i < BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
+                {
+                    if (lastRarity != BotInfoHandler.gameHandler.pool.mechs[i].rarity)
+                    {
+                        if (lastRarity != Rarity.NO_RARITY)
+                        {
+                            description += $"\n**{lastRarity}**\n{pageInfo}";
+                            //newMenuPage.AddField(lastRarity.ToString(), pageInfo);
+                        }
+                        pageInfo = string.Empty;
+                        lastRarity = BotInfoHandler.gameHandler.pool.mechs[i].rarity;
+                    }
+                    pageInfo += $"{i + 1}) {BotInfoHandler.gameHandler.pool.mechs[i]}\n";
+                }
+                description += $"\n**{lastRarity}**\n{pageInfo}";
+                //newMenuPage.AddField(lastRarity.ToString(), pageInfo);
+
+                DSharpPlus.Interactivity.Page menuPage = new DSharpPlus.Interactivity.Page(embed: new DiscordEmbedBuilder
+                {
+                    Title = "List of Upgrades",
+                    Description = description,
+                    Color = DiscordColor.Azure,
+                    Footer = new DiscordEmbedBuilder.EmbedFooter { Text = $"Total Upgrades: {BotInfoHandler.gameHandler.pool.mechs.Count()}" }
+                });
+
+                allMenuPages.Add(menuPage);
+            }
+
+            await interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, allMenuPages, paginationEmojis, DSharpPlus.Interactivity.Enums.PaginationBehaviour.WrapAround, timeoutoverride: TimeSpan.FromMinutes(7));
+        }
+
         [Command("upgradeslist")]
         [Description("Displays an interactable menu, which lists the names of all available Upgrades.")]
         [RequireGuild]
@@ -388,6 +451,7 @@ namespace ScrapScramble.BotRelated.Commands
             
             DiscordMessage menuMessage = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { Color = DiscordColor.Azure}).ConfigureAwait(false);
             await this.UpdateBrowseMenuAsync(ctx, menuMessage, upgradesPerPage, page, totalPages);
+
 
 
             List<DiscordEmoji> buttons = new List<DiscordEmoji>();
@@ -406,6 +470,7 @@ namespace ScrapScramble.BotRelated.Commands
             while (true)
             {
                 var interactivity = ctx.Client.GetInteractivity();
+
                 var reactionResult = await interactivity.WaitForReactionAsync(
                     x => x.Message == menuMessage &&
                     x.User == ctx.User &&

@@ -110,6 +110,8 @@ namespace ScrapScramble.Game
                         gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.staticKeywords[StaticKeyword.Freeze] =
                             Math.Max(freezeAmount, gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.staticKeywords[StaticKeyword.Freeze]);
 
+                        gameHandler.players[curPlayer].shop.At(shopIndex).OnBeingFrozen(gameHandler, curPlayer, enemy);
+
                         return shopIndex;
                     }
                     else continue;                    

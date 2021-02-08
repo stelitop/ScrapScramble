@@ -188,7 +188,6 @@ namespace ScrapScramble.Game.Cards.Mechs
 
                 break;
             }
-            Console.WriteLine(letter);
         }
 
         public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
@@ -220,7 +219,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(4, 0, 8);
         }
 
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (curPlayer == enemy) return;
 
@@ -286,6 +285,24 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.combatOutputCollector.preCombatHeader.Add(
                 $"{gameHandler.players[curPlayer].name}'s Super Scooper steals {attackst}/{healthst} from {gameHandler.players[enemy].name}'s {upgradesList[pos].name}, " +
                 $"leaving it as a {gameHandler.players[enemy].creatureData.Stats()} and leaving {gameHandler.players[curPlayer].name} as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
+        }
+    }
+
+    [TokenAttribute]
+    public class LightningBloom : Spell
+    {
+        public LightningBloom()
+        {
+            this.rarity = SpellRarity.Spell;
+            this.name = "Lightning Bloom";
+            this.cardText = "Gain 2 Mana this turn only. Overload: (2).";
+            this.cost = 0;
+        }
+
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].curMana += 2;
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload] += 2;
         }
     }
 
@@ -416,7 +433,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Epic;
             this.name = "Dungeon Dragonling";
             this.cardText = this.writtenEffect = "Whenever you would take damage, roll a d20. You take that much less damage.";
-            this.SetStats(20, 4, 12);
+            this.SetStats(12, 4, 12);
         }
 
         public override void BeforeTakingDamage(ref int damage, GameHandler gameHandler, int curPlayer, int enemy, ref string msg)
@@ -535,6 +552,38 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    [UpgradeAttribute]
+    public class OddsEvener : Mech
+    {
+        public OddsEvener()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Odds Evener";
+            this.cardText = this.writtenEffect = "Aftermath: Give all Mechs who won last round Taunt and those who lost Rush.";
+            this.SetStats(5, 5, 5);
+        }
+
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.pairsHandler.playerResults.Count() < 2) return;
+
+            for (int i=0; i<gameHandler.players.Count(); i++)
+            {
+                if (gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count()-2][i] == FightResult.WIN)
+                {
+                    gameHandler.players[i].creatureData.staticKeywords[StaticKeyword.Taunt]++;
+                    gameHandler.players[i].aftermathMessages.Add(
+                        $"{gameHandler.players[curPlayer].name}'s {this.name} gives you Taunt because you won last round.");
+                }
+                else if (gameHandler.pairsHandler.playerResults[gameHandler.pairsHandler.playerResults.Count() - 2][i] == FightResult.LOSS)
+                {
+                    gameHandler.players[i].creatureData.staticKeywords[StaticKeyword.Rush]++;
+                    gameHandler.players[i].aftermathMessages.Add(
+                        $"{gameHandler.players[curPlayer].name}'s {this.name} gives you Rush because you lost last round.");
+                }
+            }
+        }
+    }
 }
 
 /*

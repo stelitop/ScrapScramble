@@ -176,6 +176,8 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].shop.At(shopPos).creatureData.health += 4;
             gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Freeze] =
                 Math.Max(1, gameHandler.players[curPlayer].shop.At(shopPos).creatureData.staticKeywords[StaticKeyword.Freeze]);
+
+            gameHandler.players[curPlayer].shop.At(shopPos).OnBeingFrozen(gameHandler, curPlayer, enemy);
         }
     }
 }

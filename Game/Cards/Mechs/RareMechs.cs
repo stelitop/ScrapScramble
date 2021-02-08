@@ -797,7 +797,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Rare;
             this.name = "Scrapbarber";
             this.cardText = this.writtenEffect = "After this attacks the enemy Mech, steal 2 Attack and Health from it.";
-            this.SetStats(9, 3, 3);
+            this.SetStats(5, 3, 3);
         }
 
         public override void AfterThisAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
@@ -1050,11 +1050,12 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    public class Microbot : Mech
+    [TokenAttribute]
+    public class BeeBot : Mech
     {
-        public Microbot()
+        public BeeBot()
         {
-            this.name = "Microbot";
+            this.name = "Bee Bot";
             this.rarity = Rarity.NO_RARITY;
             this.SetStats(1, 1, 1);
         }
@@ -1065,12 +1066,12 @@ namespace ScrapScramble.Game.Cards.Mechs
         public HiveMindEffect()
         {
             this.printEffectInCombat = false;
-            this.writtenEffect = "After you buy an Upgrade this turn, add a 1/1 Microbot to your shop.";
+            this.writtenEffect = "After you buy an Upgrade this turn, add a 1/1 Bee Bot to your shop.";
         }
 
         public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].shop.AddUpgrade(new Microbot());
+            gameHandler.players[curPlayer].shop.AddUpgrade(new BeeBot());
         }
     }
 
@@ -1081,7 +1082,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Rare;
             this.name = "Hive Mind";
-            this.cardText = this.writtenEffect = "Aftermath: After you buy an Upgrade this turn, add a 1/1 Microbot to your shop.";
+            this.cardText = this.writtenEffect = "Aftermath: After you buy an Upgrade this turn, add a 1/1 Bee Bot to your shop.";
             this.SetStats(2, 2, 2);
         }
 
@@ -1090,10 +1091,45 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].nextRoundEffects.Add(new HiveMindEffect());
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
-                $"Due to your {this.name}, after you buy an Upgrade this turn, add a 1/1 Microbot to your shop.");
+                $"Due to your {this.name}, after you buy an Upgrade this turn, add a 1/1 Bee Bot to your shop.");
         }
     }
 
+    [UpgradeAttribute]
+    public class IndecisiveAutoshopper : Mech
+    {
+        public IndecisiveAutoshopper()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Indecisive Autoshopper";
+            this.cardText = "Binary. Battlecry: Refresh your shop.";
+            this.SetStats(4, 2, 4);
+            this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
+        }
+
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.maxMana, false);
+        }
+    }
+
+    [UpgradeAttribute]
+    public class IllegalThermodynamo : Mech
+    {
+        public IllegalThermodynamo()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Illegal Thermodynamo";
+            this.cardText = "After this is Frozen, it gains +3/+3.";
+            this.SetStats(3, 2, 2);
+        }
+
+        public override void OnBeingFrozen(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.attack += 3;
+            gameHandler.players[curPlayer].creatureData.health += 3;
+        }
+    }
 }
 
 /*

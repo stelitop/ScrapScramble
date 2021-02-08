@@ -919,7 +919,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Common;
             this.name = "Boomerang Magnet";
             this.cardText = "Magnetic, Rush. Overload: (4)";
-            this.SetStats(5, 5, 3);
+            this.SetStats(5, 5, 4);
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;

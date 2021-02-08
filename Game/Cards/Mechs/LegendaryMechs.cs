@@ -395,18 +395,19 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    [TokenAttribute]
     public class HackathaAmalgam : Mech
     {
         public HackathaAmalgam()
         {
             this.rarity = Rarity.NO_RARITY;
-            this.name = "Amalgam";
+            this.name = "Hackatha's Amalgam";
             this.cardText = string.Empty;
             this.SetStats(5, 5, 5); 
         }
     }
 
-    [UpgradeAttribute]
+    //[UpgradeAttribute]
     public class Hackatha : Mech
     {
         public Hackatha()
@@ -464,6 +465,121 @@ namespace ScrapScramble.Game.Cards.Mechs
                     Console.WriteLine("Hackatha Fucked Up");
                 }
             }
+        }
+    }
+
+
+    [TokenAttribute]
+    public class Receipt : Spell
+    {
+        public Receipt()
+        {
+            this.name = "Receipt";
+            this.cardText = "Name a number of Attack or Health. Remove that much from your Mech and gain half that Mana this turn only (rounded down).";
+            this.cost = 0;            
+            this.rarity = SpellRarity.Spell;
+        }
+
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            PlayerInteraction playerInteraction = new PlayerInteraction("Name a number of Attack or Health", "First type the number, followed by 'Attack' or 'Health'", "Capitalisation is ignored", AnswerType.StringAnswer);
+
+            string res;
+            bool show = true;
+            while (true)
+            {
+                res = playerInteraction.SendInteractionAsync(curPlayer, show).Result;
+                show = false;
+                if (res.Equals(string.Empty)) continue;
+                if (res.Equals("TimeOut"))
+                {
+                    show = true;
+                    continue;
+                }
+
+                var msg = res.Split();
+
+                if (msg.Count() != 2) continue;
+
+                int numb;
+
+                if (int.TryParse(msg[0], out numb) && (msg[1].Equals("attack", StringComparison.OrdinalIgnoreCase) || msg[1].Equals("health", StringComparison.OrdinalIgnoreCase)))
+                {
+                    if (numb < 0) continue;
+
+                    ref int stat = ref gameHandler.players[curPlayer].creatureData.attack;
+                    if (msg[1].Equals("health", StringComparison.OrdinalIgnoreCase)) stat = ref gameHandler.players[curPlayer].creatureData.health;
+
+                    if (numb >= stat) continue;
+                    stat -= numb;
+                    gameHandler.players[curPlayer].curMana += numb / 2;
+                }
+                else continue;
+
+                break;
+            }
+        }
+    }
+
+    public class Scrap4CashEffect : Mech
+    {
+        public Scrap4CashEffect()
+        {
+            this.writtenEffect = "Permanent Aftermath: Add a Receipt to your hand. It can refund your Mech's stats for Mana.";
+        }
+
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].hand.AddCard(new Receipt());
+            gameHandler.players[curPlayer].nextRoundEffects.Add(new Scrap4CashEffect());
+        }
+    }
+
+    [UpgradeAttribute]
+    public class MrScrap4Cash : Mech
+    {
+        public MrScrap4Cash()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Mr. Scrap-4-Cash";
+            this.cardText = "Permanent Aftermath: Add a Receipt to your hand. It can refund your Mech's stats for Mana.";
+            this.SetStats(5, 5, 5);
+            this.extraUpgradeEffects.Add(new Scrap4CashEffect());
+        }
+    }
+
+    [TokenAttribute]
+    public class AbsoluteZero : Spell
+    {
+        public AbsoluteZero()
+        {
+            this.rarity = SpellRarity.Spell;
+            this.name = "Absolute Zero";
+            this.cardText = "Freeze an Upgrade. Return this to your hand.";
+            this.cost = 1;
+        }
+
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            PlayerInteraction.FreezeUpgradeInShop(gameHandler, curPlayer, enemy);
+            gameHandler.players[curPlayer].hand.AddCard(new AbsoluteZero());
+        }
+    }
+
+    [UpgradeAttribute]
+    public class CelsiorX : Mech
+    {
+        public CelsiorX()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Celsior X";
+            this.cardText = "Battlecry: Add a 1-Cost Absolute Zero to your hand. It Freezes an Upgrade and can be played any number of times.";
+            this.SetStats(2, 2, 2);
+        }
+
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].hand.AddCard(new AbsoluteZero());            
         }
     }
 }

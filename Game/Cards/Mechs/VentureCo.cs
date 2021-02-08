@@ -202,6 +202,27 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
+    [UpgradeAttribute]
+    public class VentureCoPowerGenerator : VentureCoMechNaming
+    {
+        public VentureCoPowerGenerator()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Venture Co. Power Generator";
+            this.cardText = "Battlecry: Refresh 1 Mana for each Venture Co. Upgrade you've bought this game.";
+            this.SetStats(6, 4, 4);
+        }
+
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
+
+            int refreshed = Math.Max(0, Math.Min(list.Count(), gameHandler.maxMana - gameHandler.players[curPlayer].curMana));
+
+            gameHandler.players[curPlayer].curMana += refreshed;
+        }
+    }
+
 }
 
 /*

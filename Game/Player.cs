@@ -63,7 +63,7 @@ namespace ScrapScramble.Game
             this.name = name;
         }        
 
-        public string PrintInfoGeneral(GameHandler gameHandler)
+        public string PrintInfoGeneral(GameHandler gameHandler, int curPlayer)
         {
             string ret = string.Empty;
 
@@ -72,6 +72,9 @@ namespace ScrapScramble.Game
             if (this.overloaded > 0) ret += $"\n ({this.overloaded} Overloaded)";
             if (this.lives > 1) ret += $"\nLives: {this.lives}";
             else ret += "\nLives: **1** (!)";
+            ret += "\nOpponent: ";
+            if (gameHandler.pairsHandler.opponents[curPlayer] != curPlayer) ret += $"{gameHandler.players[gameHandler.pairsHandler.opponents[curPlayer]].name}";
+            else ret += "None";
 
             return ret;
         }
@@ -223,9 +226,11 @@ namespace ScrapScramble.Game
             this.attachedMechs.Add((Mech)mech.DeepCopy());
 
             foreach (var extraEffect in mech.extraUpgradeEffects)
-            {                
+            {
+                Console.WriteLine("sadge'");
                 this.extraUpgradeEffects.Add((Mech)extraEffect.DeepCopy());
             }
+            Console.WriteLine("a");
         }
 
         public bool BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
@@ -417,7 +422,7 @@ namespace ScrapScramble.Game
             {
                 if (this.attachedMechs[i].name == BlankUpgrade.name) continue;
                 int mult = 1;
-                ret += $"{this.attachedMechs[i].name}";
+                ret += $"- {this.attachedMechs[i].name}";
 
                 for (int j=i+1; j<this.attachedMechs.Count(); j++)
                 {
