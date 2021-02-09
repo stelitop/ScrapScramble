@@ -40,6 +40,29 @@ namespace ScrapScramble.Game
         {
 
         }
+    }
 
+    public enum UpgradePackage
+    {
+        Classic = 0,
+        VentureCo = 1,
+        JunkAndTreasures = 2,
+        DarkmoonFaire = 3,
+        EdgeOfScience = 4,
+        ScholomanceAcademy = 5,
+        MonstersReanimated = 6,
+        WarMachines = 7,
+    }
+
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class PackageAttribute : Attribute
+    {
+        public UpgradePackage Package { get; }
+
+        public PackageAttribute(UpgradePackage package = UpgradePackage.Classic)
+        {
+            Package = package;
+        }
     }
 }

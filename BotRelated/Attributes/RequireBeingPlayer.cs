@@ -17,7 +17,14 @@ namespace ScrapScramble.BotRelated.Attributes
 
         public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
         {
-            return Task.FromResult(BotInfoHandler.participantsDiscordIds.Contains(ctx.User.Id));
+            bool result = BotInfoHandler.participantsDiscordIds.Contains(ctx.User.Id);
+
+            if (result == false) return Task.FromResult(false);
+            
+            int mechIndex = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
+            if (BotInfoHandler.gameHandler.players[mechIndex].lives <= 0) return Task.FromResult(false);
+
+            return Task.FromResult(true);
         }
     }
 }

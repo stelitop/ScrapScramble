@@ -117,11 +117,17 @@ namespace ScrapScramble.BotRelated.Commands
             else if (BotInfoHandler.inGame)
             {
                 //a game has already started
+
+                int mechIndex = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
+
+                BotInfoHandler.gameHandler.players[mechIndex].lives = 0;
+                BotInfoHandler.gameHandler.pairsHandler.opponents[BotInfoHandler.gameHandler.pairsHandler.opponents[mechIndex]] = BotInfoHandler.gameHandler.pairsHandler.opponents[mechIndex];
+
                 responseMessage = new DiscordEmbedBuilder
                 {
-                    Title = "A game has already started",
-                    Description = "You cannot sign off while in game.",
-                    Color = DiscordColor.Red
+                    Title = "You have been signed off from the current game",
+                    Description = "You will be unable to return to the game.",
+                    Color = DiscordColor.Green
                 };
             }
             else
@@ -380,8 +386,6 @@ namespace ScrapScramble.BotRelated.Commands
         [RequireGuild]
         public async Task BrowseMenuTest(CommandContext ctx)
         {
-            DSharpPlus.Interactivity.Page discordpage = new DSharpPlus.Interactivity.Page();
-
             int upgradesPerPage = Math.Min(BotInfoHandler.gameHandler.pool.mechs.Count(), 7);            
             int totalPages = BotInfoHandler.gameHandler.pool.mechs.Count() / upgradesPerPage;
             if (BotInfoHandler.gameHandler.pool.mechs.Count() % upgradesPerPage != 0) totalPages++;
@@ -394,13 +398,14 @@ namespace ScrapScramble.BotRelated.Commands
 
             List<DSharpPlus.Interactivity.Page> allMenuPages = new List<DSharpPlus.Interactivity.Page>();
 
-            DSharpPlus.Interactivity.PaginationEmojis paginationEmojis = new DSharpPlus.Interactivity.PaginationEmojis();
-
-            paginationEmojis.SkipLeft = DiscordEmoji.FromName(ctx.Client, ":rewind:");
-            paginationEmojis.Left = DiscordEmoji.FromName(ctx.Client, ":arrow_left:");
-            paginationEmojis.Stop = DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:");
-            paginationEmojis.Right = DiscordEmoji.FromName(ctx.Client, ":arrow_right:");
-            paginationEmojis.SkipRight = DiscordEmoji.FromName(ctx.Client, ":fast_forward:");            
+            DSharpPlus.Interactivity.PaginationEmojis paginationEmojis = new DSharpPlus.Interactivity.PaginationEmojis
+            {
+                SkipLeft = DiscordEmoji.FromName(ctx.Client, ":rewind:"),
+                Left = DiscordEmoji.FromName(ctx.Client, ":arrow_left:"),
+                Stop = DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:"),
+                Right = DiscordEmoji.FromName(ctx.Client, ":arrow_right:"),
+                SkipRight = DiscordEmoji.FromName(ctx.Client, ":fast_forward:")
+            };
 
             for (int page=1; page<=totalPages; page++)
             {
@@ -454,13 +459,14 @@ namespace ScrapScramble.BotRelated.Commands
 
 
 
-            List<DiscordEmoji> buttons = new List<DiscordEmoji>();
-
-            buttons.Add(DiscordEmoji.FromName(ctx.Client, ":rewind:"));
-            buttons.Add(DiscordEmoji.FromName(ctx.Client, ":arrow_left:"));
-            buttons.Add(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:"));
-            buttons.Add(DiscordEmoji.FromName(ctx.Client, ":arrow_right:"));
-            buttons.Add(DiscordEmoji.FromName(ctx.Client, ":fast_forward:"));
+            List<DiscordEmoji> buttons = new List<DiscordEmoji>
+            {
+                DiscordEmoji.FromName(ctx.Client, ":rewind:"),
+                DiscordEmoji.FromName(ctx.Client, ":arrow_left:"),
+                DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:"),
+                DiscordEmoji.FromName(ctx.Client, ":arrow_right:"),
+                DiscordEmoji.FromName(ctx.Client, ":fast_forward:")
+            };
 
             for (int i=0; i<buttons.Count(); i++)
             {

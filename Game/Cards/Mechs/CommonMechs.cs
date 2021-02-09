@@ -173,117 +173,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Tiebreaker] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
         }
-    }
-
-    [UpgradeAttribute]
-    public class ArmOfExotron : Mech
-    {
-        public ArmOfExotron()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Arm of Exotron";
-            this.cardText = "Battlecry: Gain +2 Spikes.";
-            this.SetStats(2, 2, 1);
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
-        }
-
-        public override string GetInfo(GameHandler gameHandler, int player)
-        {
-            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, delegate(Card m) { return m.name.Equals(this.name); });
-
-            string ret = base.GetInfo(gameHandler, player);
-
-            if (list.Count() > 0) ret += " *(played before)*";            
-
-            return ret;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class LegOfExotron : Mech
-    {
-        public LegOfExotron()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Leg of Exotron";
-            this.cardText = "Battlecry: Gain +2 Shields.";
-            this.SetStats(2, 1, 2);
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
-        }
-
-        public override string GetInfo(GameHandler gameHandler, int player)
-        {
-            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
-
-            string ret = base.GetInfo(gameHandler, player);
-
-            if (list.Count() > 0) ret += " *(played before)*";
-
-            return ret;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class MotherboardOfExotron : Mech
-    {
-        public MotherboardOfExotron()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Motherboard of Exotron";
-            this.cardText = "Tiebreaker. Overload: (1)";
-            this.SetStats(2, 2, 2);
-            this.creatureData.staticKeywords[StaticKeyword.Tiebreaker] = 1;
-            this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
-        }
-
-        public override string GetInfo(GameHandler gameHandler, int player)
-        {
-            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
-
-            string ret = base.GetInfo(gameHandler, player);
-
-            if (list.Count() > 0) ret += " *(played before)*";
-
-            return ret;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class WheelOfExotron : Mech
-    {
-        public WheelOfExotron()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Wheel of Exotron";
-            this.cardText = "Battlecry: Gain +2 Spikes and +2 Shields.";
-            this.SetStats(2, 1, 1);
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
-        }
-
-        public override string GetInfo(GameHandler gameHandler, int player)
-        {
-            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
-
-            string ret = base.GetInfo(gameHandler, player);
-
-            if (list.Count() > 0) ret += " *(played before)*";
-
-            return ret;
-        }
-    }
+    }  
 
     [UpgradeAttribute]
     public class ChainMail : Mech
@@ -407,26 +297,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.combatOutputCollector.preCombatHeader.Add(
                 $"{gameHandler.players[curPlayer].name}'s Malfunctioning Puncher reduces its Attack by 4, leaving it with {gameHandler.players[curPlayer].creatureData.attack} Attack.");
         }
-    }
-
-    [UpgradeAttribute]
-    public class HelicopterBlades : Mech
-    {
-        public HelicopterBlades()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Helicopter Blades";
-            this.cardText = "Rush. Battlecry: Gain +4 Spikes. Overload: (3)";
-            this.SetStats(5, 4, 3);
-            this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
-            this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class ShieldbotClanker : Mech
@@ -501,26 +372,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(6, 6, 10);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 2;
         }
-    }
-
-    [UpgradeAttribute]
-    public class OneHitWonder : Mech
-    {
-        public OneHitWonder()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "One Hit Wonder";
-            this.cardText = this.writtenEffect = "Start of Combat: Gain +8 Attack.";
-            this.SetStats(7, 1, 5);
-        }
-
-        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.attack += 8;
-            gameHandler.combatOutputCollector.preCombatHeader.Add(
-                $"{gameHandler.players[curPlayer].name}'s One Hit Wonder gives it +8 Attack, leaving it with {gameHandler.players[curPlayer].creatureData.attack} Attack.");
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class Steamfunk : Mech
@@ -559,20 +411,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.combatOutputCollector.preCombatHeader.Add(
                 $"{gameHandler.players[curPlayer].name}'s Prismatic Barrier gives it +10 Shields, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields]} Shields.");
         }
-    }
-
-    [UpgradeAttribute]
-    public class SixpistolConstable : Mech
-    {
-        public SixpistolConstable()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Sixpistol Constable";
-            this.cardText = "Rush x6";
-            this.SetStats(15, 6, 6);
-            this.creatureData.staticKeywords[StaticKeyword.Rush] = 6;
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class TwoHeadedColossus : Mech
@@ -584,142 +423,6 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.cardText = "Tiebreaker";
             this.SetStats(11, 11, 11);
             this.creatureData.staticKeywords[StaticKeyword.Tiebreaker] = 1;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class OrbitalMechanosphere : Mech
-    {
-        public OrbitalMechanosphere()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Orbital Mechanosphere";
-            this.cardText = string.Empty;
-            this.SetStats(30, 50, 50);            
-        }
-    }
-
-    [UpgradeAttribute]
-    public class BronzeBruiser : Mech
-    {
-        public BronzeBruiser()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Bronze Bruiser";
-            this.cardText = this.writtenEffect = "Aftermath: Add 4 random Common Upgrades to your shop.";
-            this.SetStats(2, 1, 2);
-        }
-
-        private bool Criteria(Mech m)
-        {
-            if (m.rarity == Rarity.Common) return true;
-            return false;
-        }
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
-
-            for (int i=0; i<4; i++)
-            {
-                int pos = GameHandler.randomGenerator.Next(0, list.Count());
-                gameHandler.players[curPlayer].shop.AddUpgrade(list[pos]);
-            }
-
-            gameHandler.players[curPlayer].aftermathMessages.Add(
-                "Your Bronze Bruiser adds 4 random Common Upgrades to your shop.");
-        }
-    }
-
-    [UpgradeAttribute]
-    public class SilverShogun : Mech
-    {
-        public SilverShogun()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Silver Shogun";
-            this.cardText = this.writtenEffect = "Aftermath: Add 3 random Rare Upgrades to your shop.";
-            this.SetStats(3, 2, 3);
-        }
-
-        private bool Criteria(Mech m)
-        {
-            if (m.rarity == Rarity.Rare) return true;
-            return false;
-        }
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
-
-            for (int i = 0; i < 3; i++)
-            {
-                int pos = GameHandler.randomGenerator.Next(0, list.Count());
-                gameHandler.players[curPlayer].shop.AddUpgrade(list[pos]);
-            }
-
-            gameHandler.players[curPlayer].aftermathMessages.Add(
-                "Your Silver Shogun adds 3 random Rare Upgrades to your shop.");
-        }
-    }
-
-    [UpgradeAttribute]
-    public class GoldenGunner : Mech
-    {
-        public GoldenGunner()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Golden Gunner";
-            this.cardText = this.writtenEffect = "Aftermath: Add 2 random Epic Upgrades to your shop.";
-            this.SetStats(4, 3, 4);
-        }
-
-        private bool Criteria(Mech m)
-        {
-            if (m.rarity == Rarity.Epic) return true;
-            return false;
-        }
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
-
-            for (int i = 0; i < 2; i++)
-            {
-                int pos = GameHandler.randomGenerator.Next(0, list.Count());
-                gameHandler.players[curPlayer].shop.AddUpgrade(list[pos]);
-            }
-
-            gameHandler.players[curPlayer].aftermathMessages.Add(
-                "Your Golden Gunner adds 2 random Epic Upgrades to your shop.");
-        }
-    }
-
-    [UpgradeAttribute]
-    public class PlatinumParagon : Mech
-    {
-        public PlatinumParagon()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Platinum Paragon";
-            this.cardText = this.writtenEffect = "Aftermath: Add 1 random Legendary Upgrade to your shop.";
-            this.SetStats(5, 4, 5);
-        }
-
-        private bool Criteria(Mech m)
-        {
-            if (m.rarity == Rarity.Legendary) return true;
-            return false;
-        }
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
-
-            for (int i = 0; i < 1; i++)
-            {
-                int pos = GameHandler.randomGenerator.Next(0, list.Count());
-                gameHandler.players[curPlayer].shop.AddUpgrade(list[pos]);
-            }
-
-            gameHandler.players[curPlayer].aftermathMessages.Add(
-                "Your Platinum Paragon adds 1 random Legendary Upgrade to your shop.");
         }
     }
 
@@ -854,77 +557,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [UpgradeAttribute]
-    public class SyntheticSnowball : Mech
-    {
-        public SyntheticSnowball()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Synthetic Snowball";
-            this.cardText = "Echo. Battlecry: Freeze an Upgrade. Give it +2/+2.";
-            this.SetStats(3, 2, 2);
-            this.creatureData.staticKeywords[StaticKeyword.Echo] = 1;
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
-
-            int shopIndex = PlayerInteraction.FreezeUpgradeInShop(gameHandler, curPlayer, enemy);
-
-            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack += 2;
-            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.health += 2;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class MagnetBall : Mech
-    {
-        public MagnetBall()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Magnet Ball";
-            this.cardText = "Magnetic, Taunt. Overload: (4).";
-            this.SetStats(2, 4, 5);
-            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
-            this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
-            this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class Shieldmobile : Mech
-    {
-        public Shieldmobile()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Shieldmobile";
-            this.cardText = "Magnetic. Battlecry: Gain +6 Shields. Overload: (4).";
-            this.SetStats(2, 2, 6);
-            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
-            this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 6;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class BoomerangMagnet : Mech
-    {
-        public BoomerangMagnet()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Boomerang Magnet";
-            this.cardText = "Magnetic, Rush. Overload: (4)";
-            this.SetStats(5, 5, 4);
-            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
-            this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
-            this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
-        }
-    }
+    
 
     [UpgradeAttribute]
     public class DjinniDecelerator : Mech
@@ -938,87 +571,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 2;            
         }
-    }
-
-    [UpgradeAttribute]
-    public class TrashCube : Mech
-    {
-        public TrashCube()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Trash Cube";
-            this.cardText = "Echo, Magnetic";
-            this.SetStats(5, 4, 4);
-            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
-            this.creatureData.staticKeywords[StaticKeyword.Echo] = 1;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class Spikecycle : Mech
-    {
-        public Spikecycle()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Spikecycle";
-            this.cardText = "Magnetic. Battlecry: Gain +6 Spikes. Overload: (4).";
-            this.SetStats(2, 6, 2);
-            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
-            this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 6;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class CircusCircuit : Mech
-    {
-        public CircusCircuit()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Circus Circuit";
-            this.cardText = "Aftermath: Add a random Spare Part to your hand.";
-            this.SetStats(3, 2, 3);
-        }
-
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            int pos = GameHandler.randomGenerator.Next(0, gameHandler.pool.spareparts.Count());
-
-            gameHandler.players[curPlayer].hand.AddCard(gameHandler.pool.spareparts[pos]);
-
-            gameHandler.players[curPlayer].aftermathMessages.Add(
-                $"Your Circus Circuit added a {gameHandler.pool.spareparts[pos].name} to your hand.");
-        }
-    }
-
-    [UpgradeAttribute]
-    public class Tinkerpet: Mech
-    {
-        private bool spellburst = true;
-
-        public Tinkerpet()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Tinkerpet";
-            this.cardText = this.writtenEffect = "Spellburst: Give your Mech +4 Spikes and +4 Shields.";
-            this.SetStats(2, 1, 1);
-        }
-
-        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            if (this.spellburst)
-            {
-                this.spellburst = false;
-                this.writtenEffect = string.Empty;
-                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
-                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
-            }
-        }
-    }
+    }        
 
     [UpgradeAttribute]
     public class BootPolisher : Mech
@@ -1072,61 +625,7 @@ namespace ScrapScramble.Game.Cards.Mechs
                     $"{gameHandler.players[curPlayer].name}'s Cutlery Dispencer fails to trigger.");
             }
         }
-    }
-
-    [UpgradeAttribute]
-    public class SurveillanceBird : Mech
-    {
-        public SurveillanceBird()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Surveillance Bird";
-            this.cardText = this.writtenEffect = "Aftermath: Gain 2 Mana this turn only.";
-            this.SetStats(3, 2, 2);
-        }
-
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].curMana += 2;
-            gameHandler.players[curPlayer].aftermathMessages.Add("Your Surveillance Bird gave you +2 Mana this turn only.");
-        }
-    }
-
-    [UpgradeAttribute]
-    public class OnyxCrowbot : Mech
-    {
-        public OnyxCrowbot()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Onyx Crowbot";
-            this.cardText = this.writtenEffect = "Aftermath: Gain 4 Mana this turn only.";
-            this.SetStats(5, 4, 4);
-        }
-
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].curMana += 4;
-            gameHandler.players[curPlayer].aftermathMessages.Add("Your Onyx Crowbot gave you +4 Mana this turn only.");
-        }
-    }
-
-    [UpgradeAttribute]
-    public class SulfurNanoPhoenix : Mech
-    {
-        public SulfurNanoPhoenix()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Sulfur Nano-Phoenix";
-            this.cardText = this.writtenEffect = "Aftermath: Gain 6 Mana this turn only.";
-            this.SetStats(7, 6, 6);
-        }
-
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].curMana += 6;
-            gameHandler.players[curPlayer].aftermathMessages.Add("Your Sulfur Nano-Phoenix gave you +6 Mana this turn only.");
-        }
-    }
+    }    
 }
 
 /*

@@ -40,35 +40,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes];
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] = 0;
         }
-    }
-
-    [UpgradeAttribute]
-    public class TightropeChampion : Mech
-    {
-        public TightropeChampion()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Tightrope Champion";
-            this.cardText = this.writtenEffect = "Start of Combat: If your Mech's Attack is equal to its Health, gain +2/+2.";
-            this.SetStats(4, 4, 4);
-        }
-
-        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            if (gameHandler.players[curPlayer].creatureData.attack == gameHandler.players[curPlayer].creatureData.health)
-            {
-                gameHandler.players[curPlayer].creatureData.attack += 2;
-                gameHandler.players[curPlayer].creatureData.health += 2;
-                gameHandler.combatOutputCollector.preCombatHeader.Add(
-                    $"{gameHandler.players[curPlayer].name}'s Tighrope Champion triggers and gives it +2/+2, leaving it as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
-            }
-            else
-            {
-                gameHandler.combatOutputCollector.preCombatHeader.Add(
-                    $"{gameHandler.players[curPlayer].name}'s Tighrope Champion failed to trigger.");
-            }
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class CarbonCarapace : Mech
@@ -87,67 +59,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.combatOutputCollector.preCombatHeader.Add(
                 $"{gameHandler.players[curPlayer].name}'s Carbon Carapace gives it +{gameHandler.players[enemy].creatureData.attack % 10} Shields, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields]} Shields.");
         }
-    }
-
-    [UpgradeAttribute]
-    public class CopperplatedPrince : Mech
-    {
-        public CopperplatedPrince()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Copperplated Prince";
-            this.cardText = this.writtenEffect = "Start of Combat: Gain +2 Health for each unspent Mana you have.";
-            this.SetStats(3, 3, 1);
-        }
-
-        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.health += 2 * gameHandler.players[curPlayer].curMana;
-            gameHandler.combatOutputCollector.preCombatHeader.Add(
-                $"{gameHandler.players[curPlayer].name}'s Copperplated Prince gives it +{2 * gameHandler.players[curPlayer].curMana} Health, leaving it with {gameHandler.players[curPlayer].creatureData.health} Health.");
-        }
-    }
-
-    [UpgradeAttribute]
-    public class CopperplatedPrincess : Mech
-    {
-        public CopperplatedPrincess()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Copperplated Princess";
-            this.cardText = this.writtenEffect = "Start of Combat: Gain +2 Attack for each unspent Mana you have.";
-            this.SetStats(3, 1, 3);
-        }
-
-        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.attack += 2 * gameHandler.players[curPlayer].curMana;
-            gameHandler.combatOutputCollector.preCombatHeader.Add(
-                $"{gameHandler.players[curPlayer].name}'s Copperplated Princess gives it +{2 * gameHandler.players[curPlayer].curMana} Attack, leaving it with {gameHandler.players[curPlayer].creatureData.attack} Attack.");
-        }
-    }
-
-    [UpgradeAttribute]
-    public class HomingMissile : Mech
-    {
-        public HomingMissile()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Homing Missile";
-            this.cardText = this.writtenEffect = "Aftermath: Reduce the Health of your opponent's Mech by 5 (but not below 1).";
-            this.SetStats(4, 3, 3);
-        }
-
-        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            if (curPlayer == enemy) return;
-
-            gameHandler.players[enemy].creatureData.health -= 5;
-            if (gameHandler.players[enemy].creatureData.health < 1) gameHandler.players[enemy].creatureData.health = 1;
-            gameHandler.players[enemy].aftermathMessages.Add(
-                $"{gameHandler.players[curPlayer].name}'s Homing Missile reduced your Mech's Health to {gameHandler.players[enemy].creatureData.health}.");
-        }
-    }
+    }        
 
     [UpgradeAttribute]
     public class TwilightDrone : Mech
@@ -183,28 +95,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].creatureData.health -= 6;
             gameHandler.players[curPlayer].aftermathMessages.Add("Your Offbrand Shoe deals 6 damage to you.");
         }
-    }
-
-    [UpgradeAttribute]
-    public class Hypnodrone : Mech
-    {
-        public Hypnodrone()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Hypnodrone";
-            this.cardText = this.writtenEffect = "Aftermath: Reduce the Attack of your opponent's Mech by 5 (but not below 1).";
-            this.SetStats(7, 6, 6);
-        }
-
-        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            if (curPlayer == enemy) return;
-
-            gameHandler.players[enemy].creatureData.attack -= 5;
-            if (gameHandler.players[enemy].creatureData.attack < 1) gameHandler.players[enemy].creatureData.attack = 1;
-            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Hypnodrone reduced your Mech's Attack by 5, leaving it with {gameHandler.players[enemy].creatureData.attack} Attack.");
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class MkIVSuperCobra : Mech
@@ -230,85 +121,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             
             gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Mk. IV Super Cobra destroyed a random upgrade in your shop.");
         }
-    }
-
-    [UpgradeAttribute]
-    public class LivewireBramble : Mech
-    {
-        public LivewireBramble()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Livewire Bramble";
-            this.cardText = this.writtenEffect = "Aftermath: Replace two random Upgrades in your shop with Livewire Brambles.";
-            this.SetStats(0, 2, 1);
-        }
-
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            List<int> upgrades = gameHandler.players[curPlayer].shop.GetAllUpgradeIndexes();
-
-            if (upgrades.Count() <= 2)
-            {
-                for (int i = 0; i < upgrades.Count(); i++)
-                {
-                    gameHandler.players[curPlayer].shop.TransformUpgrade(upgrades[i], new LivewireBramble());
-                }
-            }
-            else
-            {
-                int pos1, pos2;
-                pos1 = GameHandler.randomGenerator.Next(0, upgrades.Count());
-                pos2 = GameHandler.randomGenerator.Next(0, upgrades.Count() - 1);
-                if (pos2 >= pos1) pos2++;
-
-                gameHandler.players[curPlayer].shop.TransformUpgrade(upgrades[pos1], new LivewireBramble());
-                gameHandler.players[curPlayer].shop.TransformUpgrade(upgrades[pos2], new LivewireBramble());
-            }
-
-            gameHandler.players[curPlayer].aftermathMessages.Add(
-                "Your Livewire Bramble replace two Upgrades in your shop with Livewire Brambles.");
-        }
-    }
-
-    [UpgradeAttribute]
-    public class PeekABot : Mech
-    {
-        public PeekABot()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Peek-a-Bot";
-            this.cardText = this.writtenEffect = "Aftermath: You are told the most expensive Upgrade in your opponent's shop.";
-            this.SetStats(1, 1, 1);
-        }
-
-        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            if (curPlayer == enemy) return;
-            if (gameHandler.players[enemy].shop.OptionsCount() == 0)
-            {
-                gameHandler.players[curPlayer].aftermathMessages.Add("Your opponent's shop is empty.");
-                return;
-            }
-
-            List<Mech> enemyMechs = gameHandler.players[enemy].shop.GetAllUpgrades();
-            List<int> highestCosts = new List<int>();
-            int maxCost = -1;
-
-            for (int i = 0; i < enemyMechs.Count(); i++)
-            {
-                if (maxCost < enemyMechs[i].cost) maxCost = enemyMechs[i].cost;
-            }
-
-            for (int i = 0; i < enemyMechs.Count(); i++)
-            {
-                if (enemyMechs[i].cost == maxCost) highestCosts.Add(i);
-            }
-
-            int pos = GameHandler.randomGenerator.Next(0, highestCosts.Count());
-
-            gameHandler.players[curPlayer].aftermathMessages.Add($"Your Peek-a-Bot tells you the most expensive Upgrade in your opponent's shop is {enemyMechs[highestCosts[pos]].name}");
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class LightningWeasel : Mech
@@ -378,75 +191,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[enemy].aftermathMessages.Add(
                 $"{gameHandler.players[curPlayer].name}'s Society Progressor removed Binary from all Upgrades in your shop.");
         }
-    }
-
-    [UpgradeAttribute]
-    public class SiliconGrenadeBelt : Mech
-    {
-        public SiliconGrenadeBelt()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Silicon Grenade Belt";
-            this.cardText = this.writtenEffect = "Start of Combat: Deal 1 damage to the enemy Mech, twice.";
-            this.SetStats(4, 4, 2);
-        }
-
-        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[enemy].TakeDamage(1, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Silicon Grenade Belt deals 1 damage, ");
-            gameHandler.players[enemy].TakeDamage(1, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Silicon Grenade Belt deals 1 damage, ");
-        }
-    }
-
-    [UpgradeAttribute]
-    public class ScrapStacker : Mech
-    {
-        public ScrapStacker()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Scrap Stacker";
-            this.cardText = this.writtenEffect = "After you buy another Upgrade, gain +2/+2.";
-            this.printEffectInCombat = false;
-            this.SetStats(8, 4, 4);
-        }
-
-        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.attack += 2;
-            gameHandler.players[curPlayer].creatureData.health += 2;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class PacifisticRecruitomatic : Mech
-    {
-        public PacifisticRecruitomatic()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Pacifistic Recruitomatic";
-            this.cardText = this.writtenEffect = "Aftermath: Add 3 random 0-Attack Upgrades to your shop.";
-            this.SetStats(2, 0, 3);
-        }
-
-        private bool Criteria(Mech m)
-        {
-            if (m.creatureData.attack == 0) return true;
-            return false;
-        }
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
-
-            for (int i = 0; i < 3; i++)
-            {
-                int pos = GameHandler.randomGenerator.Next(0, list.Count());
-                gameHandler.players[curPlayer].shop.AddUpgrade(list[pos]);
-            }
-
-            gameHandler.players[curPlayer].aftermathMessages.Add(
-                "Your Pacifistic Recruitomatic adds 3 random 0-Attack Upgrades to your shop.");
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class ElectricBoogaloo : Mech
@@ -516,37 +261,7 @@ namespace ScrapScramble.Game.Cards.Mechs
                     $"{gameHandler.players[curPlayer].name}'s Prismatic Reflectotron triggers, dealing {damage} damage, ");
             }
         }
-    }
-
-    [UpgradeAttribute]
-    public class RoboRabbit : Mech
-    {
-        public RoboRabbit()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Robo-Rabbit";
-            this.cardText = "Battlecry: Gain +2/+2 for each other Robo-Rabbit you've played this game.";
-            this.SetStats(2, 1, 1);
-        }
-
-        private bool Criteria(Card m)
-        {
-            return m.name.Equals("Robo-Rabbit");
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, this.Criteria);
-
-            gameHandler.players[curPlayer].creatureData.attack += 2 * list.Count();
-            gameHandler.players[curPlayer].creatureData.health += 2 * list.Count();
-        }
-
-        public override string GetInfo(GameHandler gameHandler, int player)
-        {
-            return base.GetInfo(gameHandler, player) + $" *({CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, Criteria).Count})*";
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class Autobalancer : Mech
@@ -697,65 +412,6 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class ArcaneAutomatron : Mech
-    {
-        public ArcaneAutomatron()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Arcane Automatron";
-            this.cardText = "Buying this Upgrade also counts as casting a spell.";
-            this.SetStats(2, 1, 3);
-        }
-
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
-            {
-                gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, gameHandler, curPlayer, enemy);                
-            }
-
-            foreach (var extraEffect in gameHandler.players[curPlayer].extraUpgradeEffects)
-            {
-                extraEffect.OnSpellCast(this, gameHandler, curPlayer, enemy);
-            }
-        }
-    }
-
-    [UpgradeAttribute]
-    public class AnonymousSupplier : Mech
-    {
-        public AnonymousSupplier()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Anonymous Supplier";
-            this.cardText = this.writtenEffect = "Your Upgrades are not shared in the combat log.";
-            this.SetStats(3, 3, 3);
-        }
-
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].specificEffects.hideUpgradesInLog = true;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class TrickRoomster : Mech
-    {
-        public TrickRoomster()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Trick Roomster";
-            this.cardText = this.writtenEffect = "The Mech with the lower Attack Priority goes first instead.";
-            this.SetStats(4, 1, 1);
-        }
-
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].specificEffects.invertAttackPriority = true;
-        }
-    }
-
-    [UpgradeAttribute]
     public class BrassBracer : Mech
     {
         public BrassBracer()
@@ -787,68 +443,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             gameHandler.players[curPlayer].specificEffects.ignoreShields = true;
         }
-    }
-
-    [UpgradeAttribute]
-    public class Scrapbarber : Mech
-    {
-        public Scrapbarber()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Scrapbarber";
-            this.cardText = this.writtenEffect = "After this attacks the enemy Mech, steal 2 Attack and Health from it.";
-            this.SetStats(5, 3, 3);
-        }
-
-        public override void AfterThisAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            int stolenat = Math.Min(gameHandler.players[enemy].creatureData.attack - 1, 2);
-            int stolenhp = Math.Min(gameHandler.players[enemy].creatureData.health, 2);
-
-            gameHandler.players[curPlayer].creatureData.attack += stolenat;
-            gameHandler.players[curPlayer].creatureData.health += stolenhp;
-
-            gameHandler.players[enemy].creatureData.attack -= stolenat;
-            gameHandler.players[enemy].creatureData.health -= stolenhp;
-
-            gameHandler.combatOutputCollector.combatHeader.Add(
-                $"{gameHandler.players[curPlayer].name}'s Scrapbarber steals {stolenat}/{stolenhp} from {gameHandler.players[enemy].name}, " +
-                $"leaving it as a {gameHandler.players[enemy].creatureData.Stats()} and leaving {gameHandler.players[curPlayer].name} as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
-        }
-    }
-
-    [UpgradeAttribute]
-    public class CopyShredder : Mech
-    {
-        public CopyShredder()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Copy Shredder";
-            this.cardText = this.writtenEffect = "Start of Combat: Gain +1/+1 for each duplicate Upgrade your opponent bought this round.";
-            this.SetStats(3, 2, 4);
-        }
-
-        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            List<string> found = new List<string>();
-            int buff = 0;
-
-            for (int i=0; i<gameHandler.players[enemy].boughtThisTurn.Count(); i++)
-            {
-                if (found.Contains(gameHandler.players[enemy].boughtThisTurn[i].name))
-                {
-                    buff++;
-                }
-                else found.Add(gameHandler.players[enemy].boughtThisTurn[i].name);
-            }
-
-            gameHandler.players[curPlayer].creatureData.attack += buff;
-            gameHandler.players[curPlayer].creatureData.health += buff;
-
-            gameHandler.combatOutputCollector.preCombatHeader.Add(
-                $"{gameHandler.players[curPlayer].name}'s Copy Shredder gives it +{buff}/+{buff}.");
-        }
-    }
+    }   
 
     [UpgradeAttribute]
     public class BrawlersPlating : Mech
@@ -1007,48 +602,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             damage = 0;
             msg += $"prevented by Divine Relic, ";
         }
-    }
-
-    [UpgradeAttribute]
-    public class CobaltConqueror : Mech
-    {
-        private bool comboTrig = false;
-        private bool effectTrig = false;
-
-        public CobaltConqueror()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Cobalt Conqueror";
-            this.cardText = "Rush. Combo: Give the next Upgrade you buy this turn Rush.";
-            this.printEffectInCombat = false;
-            this.SetStats(10, 9, 7);
-            this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
-            this.effectTrig = false;
-        }
-
-        public override void Combo(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            this.writtenEffect = "Give the next Upgrade you buy this turn Rush.";
-            this.comboTrig = true;
-        }
-
-        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            if (this.comboTrig && !this.effectTrig)
-            {
-                this.effectTrig = true;
-                this.writtenEffect = string.Empty;
-                m.creatureData.staticKeywords[StaticKeyword.Rush]++;
-            }
-        }
-
-        public override Card DeepCopy()
-        {
-            CobaltConqueror ret = (CobaltConqueror)base.DeepCopy();
-            ret.comboTrig = this.comboTrig;
-            return ret;
-        }
-    }
+    }    
 
     [TokenAttribute]
     public class BeeBot : Mech
@@ -1110,24 +664,6 @@ namespace ScrapScramble.Game.Cards.Mechs
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.maxMana, false);
-        }
-    }
-
-    [UpgradeAttribute]
-    public class IllegalThermodynamo : Mech
-    {
-        public IllegalThermodynamo()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Illegal Thermodynamo";
-            this.cardText = "After this is Frozen, it gains +3/+3.";
-            this.SetStats(3, 2, 2);
-        }
-
-        public override void OnBeingFrozen(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.attack += 3;
-            gameHandler.players[curPlayer].creatureData.health += 3;
         }
     }
 }
