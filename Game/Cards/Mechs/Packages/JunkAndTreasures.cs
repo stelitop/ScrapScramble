@@ -255,6 +255,29 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
+    public class GemRefiner : Upgrade
+    {
+        public GemRefiner()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Gem Refiner";
+            this.cardText = "Battlecry: Set the Attack, Health and Cost of an Upgrade in your shop to (1).";            
+            this.SetStats(3, 1, 1);
+        }
+
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            int chosenUpgrade = PlayerInteraction.ChooseUpgradeInShop(gameHandler, curPlayer, enemy);
+            if (chosenUpgrade < 0) return;
+
+            gameHandler.players[curPlayer].shop.At(chosenUpgrade).Cost = 1;
+            gameHandler.players[curPlayer].shop.At(chosenUpgrade).creatureData.health = 1;
+            gameHandler.players[curPlayer].shop.At(chosenUpgrade).creatureData.health = 1;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.JunkAndTreasures)]
     public class FallenReaver : Upgrade
     {
         public FallenReaver()
@@ -362,6 +385,42 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
+
+    public class GrandVaultEffect : Upgrade
+    {
+        public GrandVaultEffect()
+        {
+            this.writtenEffect = "Permanent Aftermath: Add 3 random Upgrades to your shop.";
+        }
+
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            for (int i=0; i<3; i++)
+            {
+                int poolSize = gameHandler.pool.mechs.Count();
+                gameHandler.players[curPlayer].shop.AddUpgrade(gameHandler.pool.mechs[GameHandler.randomGenerator.Next(0, poolSize)]);
+            }
+
+            gameHandler.players[curPlayer].nextRoundEffects.Add(new GrandVaultEffect());
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                "Your Grand Vault adds 3 random Upgrades to your shop.");
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.JunkAndTreasures)]
+    public class GrandVault : Upgrade
+    {
+        public GrandVault()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Grand Vault";
+            this.cardText = "Permanent Aftermath: Add 3 random Upgrades to your shop.";
+            this.SetStats(7, 7, 7);
+            this.extraUpgradeEffects.Add(new GrandVaultEffect());
+        }
+    }
+
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
     public class Solartron3000 : Upgrade
@@ -454,6 +513,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             gameHandler.players[curPlayer].hand.AddCard(new Receipt());
             gameHandler.players[curPlayer].nextRoundEffects.Add(new Scrap4CashEffect());
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                "Your Mr. Scrap-4-Cast adds a Receipt to your hand.");
         }
     }
 

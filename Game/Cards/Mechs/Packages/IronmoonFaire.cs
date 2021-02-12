@@ -82,6 +82,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             Upgrade copy = (Upgrade)this.DeepCopy();
             copy.Cost = Math.Max(0, copy.Cost - 1);
             gameHandler.players[curPlayer].shop.AddUpgrade(copy);
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Ferris Wheel has returned to your shop. It now costs {copy.Cost}");
         }
     }
 
@@ -510,6 +512,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
             gameHandler.players[curPlayer].hand.AddCard(new IronmoonTicket());
             gameHandler.players[curPlayer].nextRoundEffects.Add(new SilasIronmoonEffect());
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                "Your Silas Ironmoon adds an Ironmoon Ticket to your hand.");
         }
      
     }

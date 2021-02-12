@@ -244,32 +244,7 @@ namespace ScrapScramble.Game.Cards.Mechs
                     $"{gameHandler.players[curPlayer].name}'s Autobalancer gives it +1/+1 due to a tie, leaving it as a {gameHandler.players[curPlayer].creatureData.Stats()}.");
             }
         }
-    }
-
-    [UpgradeAttribute]
-    public class PlatedBeetleDrone : Upgrade
-    {
-        private int attacks;
-        public PlatedBeetleDrone()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Plated Beetle Drone";
-            this.cardText = this.writtenEffect = "The first time your Upgrade takes damage, gain +3 Shields. The second time, gain +2. The third, +1.";
-            this.SetStats(4, 2, 3);
-            this.attacks = 0;
-        }
-
-        public override void AfterThisTakesDamage(int damage, GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            attacks++;
-            if (attacks < 4)
-            {
-                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += (4 - attacks);
-                gameHandler.combatOutputCollector.combatHeader.Add(
-                    $"{gameHandler.players[curPlayer].name}'s Plated Beetle Drone triggers, giving it +{4 - attacks} Shields, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields]} Shields.");
-            }
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class ByteBarker : Upgrade
@@ -313,7 +288,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [UpgradeAttribute]
+    //[UpgradeAttribute]
     public class ThreeDPrinter : Upgrade
     {
         public ThreeDPrinter()

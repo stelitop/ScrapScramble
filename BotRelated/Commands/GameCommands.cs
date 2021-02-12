@@ -571,6 +571,7 @@ namespace ScrapScramble.BotRelated.Commands
                 string description = string.Empty;
 
                 Rarity lastRarity = Rarity.NO_RARITY;
+                int rarityCount = 0;
 
                 for (int i = 0; i < BotInfoHandler.gameHandler.packageHandler.Packages[packageName].Count(); i++)
                 {
@@ -578,14 +579,16 @@ namespace ScrapScramble.BotRelated.Commands
                     {
                         if (lastRarity != Rarity.NO_RARITY)
                         {
-                            embed.AddField(lastRarity.ToString(), description);
+                            embed.AddField($"{lastRarity.ToString()} ({rarityCount})", description);                            
                         }
                         description = string.Empty;
+                        rarityCount = 0;
                         lastRarity = BotInfoHandler.gameHandler.packageHandler.Packages[packageName][i].rarity;
                     }
+                    rarityCount++;
                     description += $"- {BotInfoHandler.gameHandler.packageHandler.Packages[packageName][i]}\n";
                 }
-                embed.AddField(lastRarity.ToString(), description);
+                embed.AddField($"{lastRarity.ToString()} ({rarityCount})", description);
 
                 await ctx.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
             }            

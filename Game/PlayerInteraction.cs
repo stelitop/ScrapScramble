@@ -84,8 +84,42 @@ namespace ScrapScramble.Game
             }
         }
 
+        public static int ChooseUpgradeInShop(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return -1;
+
+            PlayerInteraction chooseUpgrade = new PlayerInteraction("Choose an Upgrade in your shop.", string.Empty, "Write the corresponding index", AnswerType.IntAnswer);
+            string res;
+            bool show = true;
+            while (true)
+            {
+                res = chooseUpgrade.SendInteractionAsync(curPlayer, show).Result;
+                show = false;
+                if (res.Equals(string.Empty)) continue;
+                if (res.Equals("TimeOut"))
+                {
+                    show = true;
+                    continue;
+                }
+                else
+                {
+                    int shopIndex = int.Parse(res) - 1;
+                    if (0 <= shopIndex && shopIndex < gameHandler.players[curPlayer].shop.totalSize)
+                    {
+                        if (gameHandler.players[curPlayer].shop.At(shopIndex).inLimbo) continue;
+                        if (gameHandler.players[curPlayer].shop.At(shopIndex).name == BlankUpgrade.name) continue;
+
+                        return shopIndex;
+                    }
+                    else continue;
+                }
+            }
+        }
+
         public static int FreezeUpgradeInShop(GameHandler gameHandler, int curPlayer, int enemy, int freezeAmount = 1)
         {
+            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return -1;
+
             PlayerInteraction freeze = new PlayerInteraction("Choose an Upgrade in your shop to Freeze", string.Empty, "Write the corresponding index", AnswerType.IntAnswer);
             string res;
             bool show = true;
