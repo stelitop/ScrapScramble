@@ -17,20 +17,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.cardText = string.Empty;
             this.SetStats(2, 3, 1);
         }
-    }
-
-    [UpgradeAttribute]
-    public class SpringedSmilebot : Mech
-    {
-        public SpringedSmilebot()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Springed Smilebot";
-            this.cardText = "Rush";
-            this.SetStats(4, 3, 1);
-            this.creatureData.staticKeywords[StaticKeyword.Rush] += 1;
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class RunawayTire : Mech
@@ -73,55 +60,6 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.cardText = "Taunt x2";
             this.SetStats(3, 5, 5);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] += 2;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class RefurbishePlating : Mech
-    {
-        public RefurbishePlating()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Refurbished Plating";
-            this.cardText = "Battlecry: Gain Shields equal to twice your Taunt.";
-            this.SetStats(2, 0, 2);
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Taunt] * 2;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class Healthbox : Mech
-    {
-        public Healthbox()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Healthbox";
-            this.cardText = this.writtenEffect = "Start of Combat: Give the enemy Mech +8 Health.";
-            this.SetStats(0, 0, 8);
-        }
-
-        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[enemy].creatureData.health += 8;
-            gameHandler.combatOutputCollector.preCombatHeader.Add(
-                $"{gameHandler.players[curPlayer].name}'s Healthbox gives {gameHandler.players[enemy].name} +8 Health, leaving it with {gameHandler.players[enemy].creatureData.health} Health.");
-        }
-    }
-
-    [UpgradeAttribute]
-    public class Microchip : Mech
-    {
-        public Microchip()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Microchip";
-            this.cardText = "Overload: (2)";
-            this.SetStats(0, 1, 1);
-            this.creatureData.staticKeywords[StaticKeyword.Overload] = 2;
         }
     }
 
@@ -275,29 +213,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
         }
-    }
-    
-    [UpgradeAttribute]
-    public class MalfunctioningPuncher : Mech
-    {
-        public MalfunctioningPuncher()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Malfunctioning Puncher";
-            this.cardText = "Start of Combat: Your Mech loses -4 Attack. Overload: (1)";
-            this.writtenEffect = "Start of Combat: Your Mech loses -4 Attack.";
-            this.SetStats(4, 4, 8);
-        }
-
-        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.attack -= 4;
-            if (gameHandler.players[curPlayer].creatureData.attack < 1) gameHandler.players[curPlayer].creatureData.attack = 1;
-
-            gameHandler.combatOutputCollector.preCombatHeader.Add(
-                $"{gameHandler.players[curPlayer].name}'s Malfunctioning Puncher reduces its Attack by 4, leaving it with {gameHandler.players[curPlayer].creatureData.attack} Attack.");
-        }
-    }    
+    }      
 
     [UpgradeAttribute]
     public class ShieldbotClanker : Mech
@@ -467,49 +383,7 @@ namespace ScrapScramble.Game.Cards.Mechs
                 }
             }
         }
-    }
-
-    [UpgradeAttribute]
-    public class CorrodedBastion : Mech
-    {
-        public CorrodedBastion()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Corroded Bastion";
-            this.cardText = "Choose One - Gain Taunt; or Overload: (2).";
-            this.SetStats(2, 2, 4);
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            PlayerInteraction chooseOne = new PlayerInteraction("Choose One", "1) Gain Taunt\n2) Gain Overload: (2)", "Write the corresponding number", AnswerType.IntAnswer);
-            string res;
-            bool show = true;
-            while (true)
-            {
-                res = chooseOne.SendInteractionAsync(curPlayer, show).Result;
-                show = false;
-                if (res.Equals(string.Empty)) continue;
-                if (res.Equals("TimeOut"))
-                {
-                    continue;
-                }
-                else
-                {
-                    if (int.Parse(res) == 1)
-                    {
-                        gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Taunt]++;
-                    }
-                    else if (int.Parse(res) == 2)
-                    {
-                        gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload]+=2;
-                    }
-                    else continue;
-                    break;
-                }
-            }
-        }
-    }
+    }              
 
     [UpgradeAttribute]
     public class SystemRebooter : Mech
@@ -571,61 +445,30 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 2;            
         }
-    }        
-
-    [UpgradeAttribute]
-    public class BootPolisher : Mech
-    {
-        public BootPolisher()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Boot Polisher";
-            this.cardText = this.writtenEffect = "Start of Combat: If the enemy Mech has Attack Priority, gain +4 Shields.";
-            this.SetStats(3, 2, 3);
-        }
-
-        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            if (gameHandler.combatOutputCollector.goingFirst == enemy)
-            {
-                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
-                gameHandler.combatOutputCollector.preCombatHeader.Add(
-                    $"{gameHandler.players[curPlayer].name}'s Boot Polisher triggers, giving it +4 Shields, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields]} Shields.");
-            }
-            else
-            {
-                gameHandler.combatOutputCollector.preCombatHeader.Add(
-                    $"{gameHandler.players[curPlayer].name}'s Boot Polisher fails to trigger.");
-            }
-        }
     }
 
-    [UpgradeAttribute]
-    public class CutleryDispencer : Mech
+    [UpgradeAttribute]    
+    public class SyntheticSnowball : Mech
     {
-        public CutleryDispencer()
+        public SyntheticSnowball()
         {
             this.rarity = Rarity.Common;
-            this.name = "Cutlery Dispencer";
-            this.cardText = this.writtenEffect = "Start of Combat: If your Mech has Attack Priority, gain +4 Spikes.";
-            this.SetStats(3, 3, 2);
+            this.name = "Synthetic Snowball";
+            this.cardText = "Echo. Battlecry: Freeze an Upgrade. Give it +2/+2.";
+            this.SetStats(3, 2, 2);
+            this.creatureData.staticKeywords[StaticKeyword.Echo] = 1;
         }
 
-        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.combatOutputCollector.goingFirst == curPlayer)
-            {
-                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
-                gameHandler.combatOutputCollector.preCombatHeader.Add(
-                    $"{gameHandler.players[curPlayer].name}'s Cutlery Dispencer triggers, giving it +4 Spikes, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes]} Spikes.");
-            }
-            else
-            {
-                gameHandler.combatOutputCollector.preCombatHeader.Add(
-                    $"{gameHandler.players[curPlayer].name}'s Cutlery Dispencer fails to trigger.");
-            }
+            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
+
+            int shopIndex = PlayerInteraction.FreezeUpgradeInShop(gameHandler, curPlayer, enemy);
+
+            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack += 2;
+            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.health += 2;
         }
-    }    
+    }
 }
 
 /*

@@ -80,8 +80,31 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
             Mech copy = (Mech)this.DeepCopy();
-            copy.cost = Math.Max(0, copy.cost - 1);
+            copy.Cost = Math.Max(0, copy.Cost - 1);
             gameHandler.players[curPlayer].shop.AddUpgrade(copy);
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.IronmoonFaire)]
+    public class MalfunctioningGuard : Mech
+    {
+        public MalfunctioningGuard()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Malfunctioning Guard";
+            this.cardText = "Start of Combat: Your Mech loses -4 Attack. Overload: (1)";
+            this.writtenEffect = "Start of Combat: Your Mech loses -4 Attack.";
+            this.SetStats(4, 4, 8);
+        }
+
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.attack -= 4;
+            if (gameHandler.players[curPlayer].creatureData.attack < 1) gameHandler.players[curPlayer].creatureData.attack = 1;
+
+            gameHandler.combatOutputCollector.preCombatHeader.Add(
+                $"{gameHandler.players[curPlayer].name}'s Malfunctioning Puncher reduces its Attack by 4, leaving it with {gameHandler.players[curPlayer].creatureData.attack} Attack.");
         }
     }
 
@@ -112,12 +135,12 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
             for (int i = 0; i < enemyMechs.Count(); i++)
             {
-                if (maxCost < enemyMechs[i].cost) maxCost = enemyMechs[i].cost;
+                if (maxCost < enemyMechs[i].Cost) maxCost = enemyMechs[i].Cost;
             }
 
             for (int i = 0; i < enemyMechs.Count(); i++)
             {
-                if (enemyMechs[i].cost == maxCost) highestCosts.Add(i);
+                if (enemyMechs[i].Cost == maxCost) highestCosts.Add(i);
             }
 
             int pos = GameHandler.randomGenerator.Next(0, highestCosts.Count());
@@ -172,6 +195,25 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.invertAttackPriority = true;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.IronmoonFaire)]
+    public class PrizeStacker : Mech
+    {
+        public PrizeStacker()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Prize Stacker";
+            this.cardText = "Battlecry: Give your Mech +1/+1 for each card in your hand.";
+            this.SetStats(4, 2, 4);
+        }
+
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].hand.OptionsCount();
+            gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].hand.OptionsCount();
         }
     }
 
@@ -254,8 +296,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
             Mech m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
-            m.cost -= 4;
-            if (m.cost < 0) m.cost = 0;
+            m.Cost -= 4;
+            if (m.Cost < 0) m.Cost = 0;
 
             gameHandler.players[curPlayer].aftermathMessages.Add($"Your Highroller reduces the cost of {m.name} in your shop by (4).");
         }
@@ -381,40 +423,68 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
 
+    //[TokenAttribute]
+    //public class IronmoonTicket : Spell
+    //{
+    //    public int value = 1;
+    //    public IronmoonTicket()
+    //    {
+    //        this.rarity = SpellRarity.Spell;
+    //        this.name = "Ironmoon Ticket";
+    //        this.cost = 0;
+    //        this.UpdateCardText();
+    //    }
+
+    //    private void UpdateCardText()
+    //    {
+    //        this.cardText = $"Gain +{value}/+{value}. Gain {value} Mana this turn only.";
+    //    }
+
+    //    public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+    //    {
+    //        gameHandler.players[curPlayer].creatureData.attack += value;
+    //        gameHandler.players[curPlayer].creatureData.health += value;
+    //        gameHandler.players[curPlayer].curMana += value;
+    //    }
+
+    //    public override string GetInfo(GameHandler gameHandler, int player)
+    //    {
+    //        this.UpdateCardText();
+    //        return base.GetInfo(gameHandler, player);
+    //    }
+    //    public override Card DeepCopy()
+    //    {
+    //        IronmoonTicket ret =  (IronmoonTicket)base.DeepCopy();
+    //        ret.value = this.value;
+    //        return ret;
+    //    }
+    //}
+
     [TokenAttribute]
     public class IronmoonTicket : Spell
     {
-        public int value = 1;
         public IronmoonTicket()
         {
             this.rarity = SpellRarity.Spell;
             this.name = "Ironmoon Ticket";
-            this.cost = 0;
-            this.UpdateCardText();
-        }
-
-        private void UpdateCardText()
-        {
-            this.cardText = $"Gain +{value}/+{value}. Gain {value} Mana this turn only.";
+            this.cardText = "Gain +1/+1 and 1 Mana for each Ironmoon Ticket you're holding.";
+            this.Cost = 0;
         }
 
         public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].creatureData.attack += value;
-            gameHandler.players[curPlayer].creatureData.health += value;
-            gameHandler.players[curPlayer].curMana += value;
+            int amountOfTickets = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].hand.GetAllUpgrades(), x => x.name == this.name).Count();
+
+            gameHandler.players[curPlayer].creatureData.attack += amountOfTickets;
+            gameHandler.players[curPlayer].creatureData.health += amountOfTickets;
+            gameHandler.players[curPlayer].curMana += amountOfTickets;
         }
 
         public override string GetInfo(GameHandler gameHandler, int player)
         {
-            this.UpdateCardText();
-            return base.GetInfo(gameHandler, player);
-        }
-        public override Card DeepCopy()
-        {
-            IronmoonTicket ret =  (IronmoonTicket)base.DeepCopy();
-            ret.value = this.value;
-            return ret;
+            List<Card> amountOfTickets = CardsFilter.FilterList<Card>(gameHandler.players[player].hand.GetAllUpgrades(), x => x.name == this.name);
+
+            return base.GetInfo(gameHandler, player) + $" *({amountOfTickets.Count()})*";
         }
     }
 
@@ -422,20 +492,23 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     {
         public SilasIronmoonEffect()
         {
-            this.writtenEffect = "Permanent Aftermath: Increase your Tickets's bonuses by 1.";            
+            //this.writtenEffect = "Permanent Aftermath: Increase your Tickets's bonuses by 1.";   
+            this.writtenEffect = "Permanent Aftermath: Add a Ticket to your hand. It gives you +1/+1 and 1 Mana for each Ticket you're holding.";
+
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Card> handCards = gameHandler.players[curPlayer].hand.GetAllUpgrades();
+            //List<Card> handCards = gameHandler.players[curPlayer].hand.GetAllUpgrades();
 
-            foreach (var card in handCards)
-            {
-                if (card.GetType() == typeof(IronmoonTicket))
-                {
-                    ((IronmoonTicket)card).value++;
-                }
-            }
-            
+            //foreach (var card in handCards)
+            //{
+            //    if (card.GetType() == typeof(IronmoonTicket))
+            //    {
+            //        ((IronmoonTicket)card).value++;
+            //    }
+            //}
+
+            gameHandler.players[curPlayer].hand.AddCard(new IronmoonTicket());
             gameHandler.players[curPlayer].nextRoundEffects.Add(new SilasIronmoonEffect());
         }
      
@@ -449,13 +522,14 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Legendary;
             this.name = "Silas Ironmoon";
-            this.cardText = "Battlecry: Add a Ticket to your hand that gives your Mech +1/+1 and 1 Mana. Permanent Aftermath: Increase your Tickets's bonuses by 1.";
+            //this.cardText = "Battlecry: Add a Ticket to your hand that gives your Mech +1/+1 and 1 Mana. Permanent Aftermath: Increase your Tickets's bonuses by 1.";
+            this.cardText = "Permanent Aftermath: Add a Ticket to your hand. It gives you +1/+1 and 1 Mana for each Ticket you're holding.";
             this.SetStats(7, 4, 4);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int ticketIndex = gameHandler.players[curPlayer].hand.AddCard(new IronmoonTicket());
+            //gameHandler.players[curPlayer].hand.AddCard(new IronmoonTicket());
             this.extraUpgradeEffects.Add(new SilasIronmoonEffect());
         }
     }

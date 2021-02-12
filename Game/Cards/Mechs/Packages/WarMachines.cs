@@ -42,6 +42,120 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
+    public class ArmOfExotron : Mech
+    {
+        public ArmOfExotron()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Arm of Exotron";
+            this.cardText = "Battlecry: Gain +2 Spikes.";
+            this.SetStats(2, 2, 1);
+        }
+
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
+        }
+
+        public override string GetInfo(GameHandler gameHandler, int player)
+        {
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
+
+            string ret = base.GetInfo(gameHandler, player);
+
+            if (list.Count() > 0) ret += " *(played before)*";
+
+            return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.WarMachines)]
+    public class LegOfExotron : Mech
+    {
+        public LegOfExotron()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Leg of Exotron";
+            this.cardText = "Battlecry: Gain +2 Shields.";
+            this.SetStats(2, 1, 2);
+        }
+
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
+        }
+
+        public override string GetInfo(GameHandler gameHandler, int player)
+        {
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
+
+            string ret = base.GetInfo(gameHandler, player);
+
+            if (list.Count() > 0) ret += " *(played before)*";
+
+            return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.WarMachines)]
+    public class MotherboardOfExotron : Mech
+    {
+        public MotherboardOfExotron()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Motherboard of Exotron";
+            this.cardText = "Tiebreaker. Overload: (1)";
+            this.SetStats(2, 2, 2);
+            this.creatureData.staticKeywords[StaticKeyword.Tiebreaker] = 1;
+            this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
+        }
+
+        public override string GetInfo(GameHandler gameHandler, int player)
+        {
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
+
+            string ret = base.GetInfo(gameHandler, player);
+
+            if (list.Count() > 0) ret += " *(played before)*";
+
+            return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.WarMachines)]
+    public class WheelOfExotron : Mech
+    {
+        public WheelOfExotron()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Wheel of Exotron";
+            this.cardText = "Battlecry: Gain +2 Spikes and +2 Shields.";
+            this.SetStats(2, 1, 1);
+        }
+
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
+        }
+
+        public override string GetInfo(GameHandler gameHandler, int player)
+        {
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, delegate (Card m) { return m.name.Equals(this.name); });
+
+            string ret = base.GetInfo(gameHandler, player);
+
+            if (list.Count() > 0) ret += " *(played before)*";
+
+            return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.WarMachines)]
     public class CopperplatedPrince : Mech
     {
         public CopperplatedPrince()
@@ -77,6 +191,38 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             gameHandler.players[curPlayer].creatureData.attack += 2 * gameHandler.players[curPlayer].curMana;
             gameHandler.combatOutputCollector.preCombatHeader.Add(
                 $"{gameHandler.players[curPlayer].name}'s Copperplated Princess gives it +{2 * gameHandler.players[curPlayer].curMana} Attack, leaving it with {gameHandler.players[curPlayer].creatureData.attack} Attack.");
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.WarMachines)]
+    public class PacifisticRecruitomatic : Mech
+    {
+        public PacifisticRecruitomatic()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Pacifistic Recruitomatic";
+            this.cardText = this.writtenEffect = "Aftermath: Add 3 random 0-Attack Upgrades to your shop.";
+            this.SetStats(2, 0, 3);
+        }
+
+        private bool Criteria(Mech m)
+        {
+            if (m.creatureData.attack == 0) return true;
+            return false;
+        }
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
+
+            for (int i = 0; i < 3; i++)
+            {
+                int pos = GameHandler.randomGenerator.Next(0, list.Count());
+                gameHandler.players[curPlayer].shop.AddUpgrade(list[pos]);
+            }
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                "Your Pacifistic Recruitomatic adds 3 random 0-Attack Upgrades to your shop.");
         }
     }
 
@@ -187,6 +333,87 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                 gameHandler.players[enemy].TakeDamage(10, gameHandler, curPlayer, enemy,
                     $"{gameHandler.players[curPlayer].name}'s Panic Button triggers, dealing 10 damage, ");
             }
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.WarMachines)]
+    public class ExotronTheForbidden : Mech
+    {
+        public ExotronTheForbidden()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Exotron the Forbidden";
+            this.cardText = this.writtenEffect = "Start of Combat: If you've bought all 5 parts of Exotron this game, destroy the enemy Mech.";
+            this.SetStats(15, 15, 15);
+        }
+
+        private bool Criteria(Card m)
+        {
+            if (m.name.Equals("Arm of Exotron")) return true;
+            if (m.name.Equals("Leg of Exotron")) return true;
+            if (m.name.Equals("Motherboard of Exotron")) return true;
+            if (m.name.Equals("Wheel of Exotron")) return true;
+            return false;
+        }
+
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, this.Criteria);
+
+            int arm = 0, leg = 0, mb = 0, wheel = 0;
+            for (int i = 0; i < list.Count(); i++)
+            {
+                if (list[i].name.Equals("Arm of Exotron")) arm = 1;
+                else if (list[i].name.Equals("Leg of Exotron")) leg = 1;
+                else if (list[i].name.Equals("Motherboard of Exotron")) mb = 1;
+                else if (list[i].name.Equals("Wheel of Exotron")) wheel = 1;
+            }
+
+            if (arm + leg + mb + wheel == 4)
+            {
+                gameHandler.players[enemy].destroyed = true;
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Exotron the Forbidden triggers, destroying {gameHandler.players[enemy].name}.");
+            }
+            else
+            {
+                gameHandler.combatOutputCollector.preCombatHeader.Add(
+                    $"{gameHandler.players[curPlayer].name}'s Exotron the Forbidden fails to trigger.");
+            }
+        }
+
+        public override string GetInfo(GameHandler gameHandler, int player)
+        {
+            string ret = base.GetInfo(gameHandler, player);
+
+            List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, this.Criteria);
+
+            int arm = 0, leg = 0, mb = 0, wheel = 0;
+            for (int i = 0; i < list.Count(); i++)
+            {
+                if (list[i].name.Equals("Arm of Exotron")) arm = 1;
+                else if (list[i].name.Equals("Leg of Exotron")) leg = 1;
+                else if (list[i].name.Equals("Motherboard of Exotron")) mb = 1;
+                else if (list[i].name.Equals("Wheel of Exotron")) wheel = 1;
+            }
+
+            if (arm + leg + mb + wheel == 4) return ret += " *(Ready!)*";
+            else if (arm + leg + mb + wheel == 0) return ret += " *(Missing: All)*";
+            else
+            {
+                ret += " *(Missing:";
+
+                if (arm == 0) ret += " Arm,";
+                if (leg == 0) ret += " Leg,";
+                if (mb == 0) ret += " Motherboard,";
+                if (wheel == 0) ret += " Wheel,";
+
+                ret = ret.Remove(ret.Length - 1, 1);
+                ret += ")*";
+            }
+
+            return ret;
         }
     }
 }

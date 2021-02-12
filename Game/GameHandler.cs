@@ -1,4 +1,5 @@
 ﻿using ScrapScramble.Game.Cards;
+using ScrapScramble.Game.Cards.Mechs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace ScrapScramble.Game
     public class GameHandler
     {
         public static Random randomGenerator = new Random();
+        public PackageHandler packageHandler;
         public MinionPool pool;
 
         public List<Player> players;
@@ -41,6 +43,7 @@ namespace ScrapScramble.Game
         {
             this.players = new List<Player>();
             this.pool = new MinionPool();
+            this.packageHandler = new PackageHandler();
             this.pairsHandler = new PairsHandler();
             this.combatOutputCollector = new CombatOutputCollector();
             this.shopRarities = new RarityBreakdown(4, 3, 2, 1);

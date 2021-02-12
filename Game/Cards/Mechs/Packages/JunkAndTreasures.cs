@@ -202,39 +202,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Echo] = 1;
         }
-    }
-
-    [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
-    public class PacifisticRecruitomatic : Mech
-    {
-        public PacifisticRecruitomatic()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Pacifistic Recruitomatic";
-            this.cardText = this.writtenEffect = "Aftermath: Add 3 random 0-Attack Upgrades to your shop.";
-            this.SetStats(2, 0, 3);
-        }
-
-        private bool Criteria(Mech m)
-        {
-            if (m.creatureData.attack == 0) return true;
-            return false;
-        }
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
-
-            for (int i = 0; i < 3; i++)
-            {
-                int pos = GameHandler.randomGenerator.Next(0, list.Count());
-                gameHandler.players[curPlayer].shop.AddUpgrade(list[pos]);
-            }
-
-            gameHandler.players[curPlayer].aftermathMessages.Add(
-                "Your Pacifistic Recruitomatic adds 3 random 0-Attack Upgrades to your shop.");
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
@@ -348,7 +316,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Epic;
             this.name = "Super Scooper";
-            this.cardText = this.writtenEffect = "Start of Combat: Steal the stats of the lowest-Cost Upgrade your opponent bought last turn from their Mech.";
+            this.cardText = this.writtenEffect = "Start of Combat: Steal the stats of the lowest-cost Upgrade your opponent bought last turn from their Mech.";
             this.SetStats(8, 3, 7);
         }
 
@@ -359,9 +327,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
             for (int i = 0; i < gameHandler.players[enemy].boughtThisTurn.Count(); i++)
             {
-                if (gameHandler.players[enemy].boughtThisTurn[i].cost < lowestCost && gameHandler.players[enemy].boughtThisTurn[i].creatureData.attack != 0 && gameHandler.players[enemy].boughtThisTurn[i].creatureData.health != 0)
+                if (gameHandler.players[enemy].boughtThisTurn[i].Cost < lowestCost && gameHandler.players[enemy].boughtThisTurn[i].creatureData.attack != 0 && gameHandler.players[enemy].boughtThisTurn[i].creatureData.health != 0)
                 {
-                    lowestCost = gameHandler.players[enemy].boughtThisTurn[i].cost;
+                    lowestCost = gameHandler.players[enemy].boughtThisTurn[i].Cost;
                     upgradesList.Clear();
                     upgradesList.Add(gameHandler.players[enemy].boughtThisTurn[i]);
                 }
@@ -430,7 +398,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.name = "Receipt";
             this.cardText = "Name a number of Attack or Health. Remove that much from your Mech and gain half that Mana this turn only (rounded down).";
-            this.cost = 0;
+            this.Cost = 0;
             this.rarity = SpellRarity.Spell;
         }
 

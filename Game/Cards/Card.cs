@@ -11,7 +11,8 @@ namespace ScrapScramble.Game.Cards
         public string name;
         public string cardText;
 
-        public int cost;
+        private int cost;
+        public int Cost { get { return cost; } set { cost = Math.Max(0, value); } }
 
         public bool inLimbo = false;
 

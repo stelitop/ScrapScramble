@@ -133,33 +133,30 @@ namespace ScrapScramble.Game.Effects
             this.options.Clear();
             this.options = kept;
 
-            List<Mech> subList = new List<Mech>();            
+            List<Mech> subList = new List<Mech>();
 
-            for (int i = 0; i < gameHandler.pool.mechs.Count(); i++) if (gameHandler.pool.mechs[i].rarity == Rarity.Legendary && gameHandler.pool.mechs[i].cost <= maxMana - 5) subList.Add(gameHandler.pool.mechs[i]);
+            subList = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary && x.Cost <= maxMana - 5);            
             for (int i = 0; i < legendaries; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
                 this.AddUpgrade(m);
             }
 
-            subList.Clear();
-            for (int i = 0; i < gameHandler.pool.mechs.Count(); i++) if (gameHandler.pool.mechs[i].rarity == Rarity.Epic && gameHandler.pool.mechs[i].cost <= maxMana - 5) subList.Add(gameHandler.pool.mechs[i]);
+            subList = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Epic && x.Cost <= maxMana - 5);
             for (int i = 0; i < epics; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
                 this.AddUpgrade(m);
             }
 
-            subList.Clear();
-            for (int i = 0; i < gameHandler.pool.mechs.Count(); i++) if (gameHandler.pool.mechs[i].rarity == Rarity.Rare && gameHandler.pool.mechs[i].cost <= maxMana - 5) subList.Add(gameHandler.pool.mechs[i]);
+            subList = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Rare && x.Cost <= maxMana - 5);
             for (int i = 0; i < rares; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
                 this.AddUpgrade(m);
             }
-
-            subList.Clear();
-            for (int i = 0; i < gameHandler.pool.mechs.Count(); i++) if (gameHandler.pool.mechs[i].rarity == Rarity.Common && gameHandler.pool.mechs[i].cost <= maxMana - 5) subList.Add(gameHandler.pool.mechs[i]);
+            
+            subList = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Common && x.Cost <= maxMana - 5);
             for (int i = 0; i < commons; i++)
             {
                 Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];

@@ -37,41 +37,6 @@ namespace ScrapScramble.Game.Cards.Mechs
                 $"Your Lady in Byte sets your Attack equal to Health, leaving you as a {gameHandler.players[curPlayer].creatureData.Stats()}");
         }
     }           
-
-    [TokenAttribute]
-    public class AbsoluteZero : Spell
-    {
-        public AbsoluteZero()
-        {
-            this.rarity = SpellRarity.Spell;
-            this.name = "Absolute Zero";
-            this.cardText = "Freeze an Upgrade. Return this to your hand.";
-            this.cost = 1;
-        }
-
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            PlayerInteraction.FreezeUpgradeInShop(gameHandler, curPlayer, enemy);
-            gameHandler.players[curPlayer].hand.AddCard(new AbsoluteZero());
-        }
-    }
-
-    [UpgradeAttribute]
-    public class CelsiorX : Mech
-    {
-        public CelsiorX()
-        {
-            this.rarity = Rarity.Legendary;
-            this.name = "Celsior X";
-            this.cardText = "Battlecry: Add a 1-Cost Absolute Zero to your hand. It Freezes an Upgrade and can be played any number of times.";
-            this.SetStats(2, 2, 2);
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].hand.AddCard(new AbsoluteZero());            
-        }
-    }
 }
 
 /*

@@ -155,7 +155,7 @@ namespace ScrapScramble.BotRelated.Commands
                 Title = "Game Cancelled Successfully",
                 Color = DiscordColor.Green
             }).ConfigureAwait(false);
-        }
+        }        
 
         [Command("nextround")]
         [Description("Proceeds to the next round of the game. Also sends each player their shop.")]
@@ -198,6 +198,7 @@ namespace ScrapScramble.BotRelated.Commands
             await CreateInteractivePlayerlist(ctx);
         }
 
+        [Aliases("pairlist")]
         [Command("pairslist")]
         [Description("Displays all pairs of players that will fight in the next round.")]
         [RequireIngame]
@@ -312,6 +313,7 @@ namespace ScrapScramble.BotRelated.Commands
             await ctx.RespondAsync(embed: fightMessage).ConfigureAwait(false);
         }
 
+        [Aliases("interactiveplayerslist")]
         [Command("interactiveplayerlist")]
         [RequireIngame]
         [RequireGuild]
@@ -429,7 +431,7 @@ namespace ScrapScramble.BotRelated.Commands
                     {
                         case "=":
                             BotInfoHandler.gameHandler.players[index].name = playerName;                                
-                            return false;
+                            return true;
 
                         default:
                             return false;

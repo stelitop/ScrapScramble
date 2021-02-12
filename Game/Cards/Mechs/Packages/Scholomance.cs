@@ -41,7 +41,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Common;
             this.name = "One Hit Wonder";
             this.cardText = this.writtenEffect = "Start of Combat: Gain +8 Attack.";
-            this.SetStats(7, 1, 5);
+            this.SetStats(5, 1, 5);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
@@ -145,6 +145,32 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
                 "Your Livewire Bramble replace two Upgrades in your shop with Livewire Brambles.");
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.ScholomanceAcademy)]
+    public class ArcaneAutomatron : Mech
+    {
+        public ArcaneAutomatron()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Arcane Automatron";
+            this.cardText = "Buying this Upgrade also counts as casting a spell.";
+            this.SetStats(2, 1, 3);
+        }
+
+        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
+            {
+                gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, gameHandler, curPlayer, enemy);
+            }
+
+            foreach (var extraEffect in gameHandler.players[curPlayer].extraUpgradeEffects)
+            {
+                extraEffect.OnSpellCast(this, gameHandler, curPlayer, enemy);
+            }
         }
     }
 
@@ -300,6 +326,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
+
     [TokenAttribute]    
     public class LightningBloom : Spell
     {
@@ -308,7 +335,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = SpellRarity.Spell;
             this.name = "Lightning Bloom";
             this.cardText = "Gain 2 Mana this turn only. Overload: (2).";
-            this.cost = 0;
+            this.Cost = 0;
         }
 
         public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
@@ -381,7 +408,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             if (gameHandler.AlivePlayers() <= 1) return;
 
-            var prompt = new PlayerInteraction("Name a Player", "The name needs to be exactly written.", "Capitalisation is ignored", AnswerType.StringAnswer);
+            var prompt = new PlayerInteraction("Name a Player other than yourself", "The name needs to be exactly written.", "Capitalisation is ignored", AnswerType.StringAnswer);
 
             string res;
             bool show = true;

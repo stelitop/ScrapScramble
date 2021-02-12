@@ -16,7 +16,8 @@ namespace ScrapScramble
     {        
         static void Main(string[] args)
         {
-            var bot = new Bot();            
+            var bot = new Bot();
+            
             bot.RunAsync().GetAwaiter().GetResult();            
 
             Console.Read();

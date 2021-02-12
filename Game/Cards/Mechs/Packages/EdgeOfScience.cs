@@ -21,27 +21,20 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.EdgeOfScience)]
-    public class ArcaneAutomatron : Mech
+    public class IndecisiveAutoshopper : Mech
     {
-        public ArcaneAutomatron()
+        public IndecisiveAutoshopper()
         {
             this.rarity = Rarity.Rare;
-            this.name = "Arcane Automatron";
-            this.cardText = "Buying this Upgrade also counts as casting a spell.";
-            this.SetStats(2, 1, 3);
+            this.name = "Indecisive Autoshopper";
+            this.cardText = "Binary. Battlecry: Refresh your shop.";
+            this.SetStats(4, 2, 4);
+            this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
-            {
-                gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, gameHandler, curPlayer, enemy);
-            }
-
-            foreach (var extraEffect in gameHandler.players[curPlayer].extraUpgradeEffects)
-            {
-                extraEffect.OnSpellCast(this, gameHandler, curPlayer, enemy);
-            }
+            gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.maxMana, false);
         }
     }
 
@@ -67,6 +60,46 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             {
                 gameHandler.combatOutputCollector.preCombatHeader.Add(
                     $"{gameHandler.players[curPlayer].name}'s Mass Accelerator fails to trigger.");
+            }
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.EdgeOfScience)]
+    public class PhilosophersStone : Mech
+    {
+        public PhilosophersStone()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Philosopher's Stone";
+            this.cardText = "Battlecry: Transform all Upgrades in your shop into ones of the next Rarity.";
+            this.SetStats(2, 1, 1);            
+        }
+
+        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Mech> legendaries = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary && x.Cost <= gameHandler.maxMana - 5);
+            List<Mech> epics = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Epic && x.Cost <= gameHandler.maxMana - 5);
+            List<Mech> rares = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Rare && x.Cost <= gameHandler.maxMana - 5);
+
+            List<int> shopIndexes = gameHandler.players[curPlayer].shop.GetAllUpgradeIndexes();
+
+            for (int i=0; i<shopIndexes.Count; i++)
+            {
+                switch (gameHandler.players[curPlayer].shop.At(shopIndexes[i]).rarity)
+                {
+                    case Rarity.Common:
+                        gameHandler.players[curPlayer].shop.TransformUpgrade(shopIndexes[i], rares[GameHandler.randomGenerator.Next(0, rares.Count())]);
+                        break;
+                    case Rarity.Rare:
+                        gameHandler.players[curPlayer].shop.TransformUpgrade(shopIndexes[i], epics[GameHandler.randomGenerator.Next(0, epics.Count())]);
+                        break;
+                    case Rarity.Epic:
+                        gameHandler.players[curPlayer].shop.TransformUpgrade(shopIndexes[i], legendaries[GameHandler.randomGenerator.Next(0, legendaries.Count())]);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

@@ -248,7 +248,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = SpellRarity.Spell;
             this.name = "Absolute Zero";
             this.cardText = "Freeze an Upgrade. Return this to your hand.";
-            this.cost = 1;
+            this.Cost = 1;
         }
 
         public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
@@ -266,13 +266,34 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Legendary;
             this.name = "Celsior X";
-            this.cardText = "Battlecry: Add a 1-Cost Absolute Zero to your hand. It Freezes an Upgrade and can be played any number of times.";
+            this.cardText = "Battlecry: Add a 1-cost Absolute Zero to your hand. It Freezes an Upgrade and can be played any number of times.";
             this.SetStats(2, 2, 2);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].hand.AddCard(new AbsoluteZero());
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.TinyInventions)]
+    public class TinyGamer : Mech
+    {
+        public TinyGamer()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Tiny Gamer";
+            this.cardText = this.writtenEffect = "The 1-Cost Upgrades in your shop have Echo.";
+            this.SetStats(1, 1, 1);
+        }
+
+        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (m.Cost == 1)
+            {
+                m.creatureData.staticKeywords[StaticKeyword.Echo] = Math.Max(m.creatureData.staticKeywords[StaticKeyword.Echo], 1);
+            }
         }
     }
 }

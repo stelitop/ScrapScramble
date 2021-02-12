@@ -11,7 +11,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     {
         public SPWhirlingBlades()
         {
-            this.cost = 1;
+            this.Cost = 1;
             this.name = "Whirling Blades";
             this.cardText = "Give your Mech +2 Attack and +4 Spikes.";
             this.rarity = SpellRarity.Spare_Part;
@@ -36,7 +36,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     {
         public SPArmorPlating()
         {
-            this.cost = 1;
+            this.Cost = 1;
             this.name = "Armor Plating";
             this.cardText = "Give your Mech +2 Health and +4 Shields.";
             this.rarity = SpellRarity.Spare_Part;
@@ -61,7 +61,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     {
         public SPReversingSwitch()
         {
-            this.cost = 1;
+            this.Cost = 1;
             this.name = "Reversing Switch";
             this.cardText = "Swap your Mech's Attack and Health.";
             this.rarity = SpellRarity.Spare_Part;
@@ -86,7 +86,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     {
         public SPTimeAccelerator()
         {
-            this.cost = 1;
+            this.Cost = 1;
             this.name = "Time Accelerator";
             this.cardText = "Give your Mech Rush.";
             this.rarity = SpellRarity.Spare_Part;
@@ -109,7 +109,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     {
         public SPRustyHorn()
         {
-            this.cost = 1;
+            this.Cost = 1;
             this.name = "Rusty Horn";
             this.cardText = "Give your Mech +3/+3 and Taunt.";
             this.rarity = SpellRarity.Spare_Part;
@@ -136,7 +136,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     {
         public SPManaCapsule()
         {
-            this.cost = 1;
+            this.Cost = 1;
             this.name = "Mana Capsule";
             this.cardText = "Gain 2 Mana this turn only.";
             this.rarity = SpellRarity.Spare_Part;
@@ -153,7 +153,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     {
         public SPEmergencyCoolant()
         {
-            this.cost = 1;
+            this.Cost = 1;
             this.name = "Emergency Coolant";
             this.cardText = "Freeze an Upgrade. Give it +4/+4.";
             this.rarity = SpellRarity.Spare_Part;

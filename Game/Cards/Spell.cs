@@ -13,7 +13,7 @@ namespace ScrapScramble.Game.Cards
 
         public Spell()
         {
-            this.cost = 0;
+            this.Cost = 0;
             this.name = string.Empty;
             this.cardText = string.Empty;
         }
@@ -24,15 +24,15 @@ namespace ScrapScramble.Game.Cards
             ret.name = this.name;
             ret.rarity = this.rarity;
             ret.cardText = this.cardText;
-            ret.cost = this.cost;
+            ret.Cost = this.Cost;
             return ret;
         }
 
         public override string GetInfo(GameHandler gameHandler, int player)
         {
             string ret = string.Empty;
-            if (this.rarity == SpellRarity.Spare_Part) ret = $"{this.name} - Spare Part - {this.cost} - {this.cardText}";
-            else ret = $"{this.name} - {this.rarity} - {this.cost} - {this.cardText}";
+            if (this.rarity == SpellRarity.Spare_Part) ret = $"{this.name} - Spare Part - {this.Cost} - {this.cardText}";
+            else ret = $"{this.name} - {this.rarity} - {this.Cost} - {this.cardText}";
             return ret;
         }
 
@@ -40,9 +40,9 @@ namespace ScrapScramble.Game.Cards
         {
             if (gameHandler.players[curPlayer].hand.totalSize <= handPos) return false;
             if (gameHandler.players[curPlayer].hand.At(handPos).name == BlankUpgrade.name) return false;
-            if (this.cost > gameHandler.players[curPlayer].curMana) return false;
+            if (this.Cost > gameHandler.players[curPlayer].curMana) return false;
 
-            gameHandler.players[curPlayer].curMana -= this.cost;
+            gameHandler.players[curPlayer].curMana -= this.Cost;
 
             for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
             {

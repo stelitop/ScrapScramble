@@ -38,7 +38,7 @@ namespace ScrapScramble
                 Token = configJson.Token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
-                MinimumLogLevel = LogLevel.Debug
+                MinimumLogLevel = LogLevel.Trace                
                 //UseInternalLoggingHandler = true
             };
 

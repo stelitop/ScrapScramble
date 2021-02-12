@@ -98,7 +98,15 @@ namespace ScrapScramble.BotRelated
                 msg.AddField("[Your Hand]", handValue[i]);
             }
 
-            await UIMessages[index].ModifyAsync(embed: msg.Build()).ConfigureAwait(false);  
+            try
+            {
+                await UIMessages[index].ModifyAsync(embed: msg.Build()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                await ctx.RespondAsync($"```If this is not steli copy paste this message to him. UIMessage[index].ModifyAsync failed to go off.\n" +
+                    $"Exception message: {e.Message}\nStack Trace: {e.StackTrace}\nSource: {e.Source}\nTarget Site: {e.TargetSite.ToString()}```");
+            }
         }
 
         public static async Task SendNewPlayerList(CommandContext ctx)

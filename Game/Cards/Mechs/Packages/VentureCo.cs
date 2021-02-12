@@ -369,6 +369,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
+
     public class SwitchboardEffect : Mech
     {
         bool comboTrig = false;

@@ -4,7 +4,9 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
 using ScrapScramble.BotRelated.Attributes;
+using ScrapScramble.Game;
 using ScrapScramble.Game.Cards;
+using ScrapScramble.Game.Cards.Mechs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,25 +20,9 @@ namespace ScrapScramble.BotRelated.Commands
         [Command("signup")]
         [Description("Signs you up for the next game.")]
         [RequireGuild]
-        public async Task SignUp(CommandContext ctx, [Description("The name of your Mech")]params string[] mechName)
+        public async Task SignUp(CommandContext ctx, [Description("The name of your Mech")][RemainingText]string mechName)
         {            
-            DiscordEmbedBuilder responseMessage;
-            if (mechName.Count() == 0)
-            {
-                responseMessage = new DiscordEmbedBuilder
-                {
-                    Title = "Incomplete command",
-                    Description = "You need to follow up the command with the name of your Mech.",
-                    Color = DiscordColor.Yellow
-                };
-
-                await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
-                return;
-            }
-
-            string name = mechName[0];      
-
-            for (int i = 1; i < mechName.Count(); i++) name = name + " " + mechName[i];
+            DiscordEmbedBuilder responseMessage;                  
 
             if (BotInfoHandler.participantsDiscordIds.Contains(ctx.User.Id))
             {
@@ -61,7 +47,7 @@ namespace ScrapScramble.BotRelated.Commands
             else
             {
                 bool appeared = false;
-                for (int i = 0; i < BotInfoHandler.gameHandler.players.Count(); i++) if (BotInfoHandler.gameHandler.players[i].name.Equals(name)) { appeared = true; break; }
+                for (int i = 0; i < BotInfoHandler.gameHandler.players.Count(); i++) if (BotInfoHandler.gameHandler.players[i].name.Equals(mechName)) { appeared = true; break; }
                 //new user                
 
                 if (appeared)
@@ -77,12 +63,12 @@ namespace ScrapScramble.BotRelated.Commands
                 else
                 {
                     //everything's correct
-                    BotInfoHandler.AddPlayer(ctx, name);                    
+                    BotInfoHandler.AddPlayer(ctx, mechName);                    
 
                     responseMessage = new DiscordEmbedBuilder
                     {
                         Title = "Signed up successfully",
-                        Description = $"Your Mech is called \"{name}\"",
+                        Description = $"Your Mech is called \"{mechName}\"",
                         Color = DiscordColor.Green
                     };
 
@@ -158,26 +144,9 @@ namespace ScrapScramble.BotRelated.Commands
         [Command("rename")]
         [Description("Renames your Mech.")]
         [RequireGuild]
-        public async Task MechRename(CommandContext ctx, [Description("The new name of your Mech")]params string[] mechName)
+        public async Task MechRename(CommandContext ctx, [Description("The new name of your Mech")][RemainingText]string mechName)
         {
             DiscordEmbedBuilder responseMessage;
-
-            if (mechName.Count() == 0)
-            {
-                responseMessage = new DiscordEmbedBuilder
-                {
-                    Title = "Incomplete command",
-                    Description = "You need to follow up the command with the new name of your Mech.",
-                    Color = DiscordColor.Yellow
-                };
-
-                await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
-                return;
-            }
-
-
-            string name = mechName[0];
-            for (int i = 1; i < mechName.Count(); i++) name = name + " " + mechName[i];
 
             if (!BotInfoHandler.participantsDiscordIds.Contains(ctx.User.Id))
             {
@@ -204,7 +173,7 @@ namespace ScrapScramble.BotRelated.Commands
                 //signed up user
 
                 bool appeared = false;
-                for (int i = 0; i < BotInfoHandler.gameHandler.players.Count(); i++) if (BotInfoHandler.gameHandler.players[i].name.Equals(name)) { appeared = true; break; }
+                for (int i = 0; i < BotInfoHandler.gameHandler.players.Count(); i++) if (BotInfoHandler.gameHandler.players[i].name.Equals(mechName)) { appeared = true; break; }
                 //new user                
 
                 if (appeared)
@@ -221,12 +190,12 @@ namespace ScrapScramble.BotRelated.Commands
                 {
                     int mechIndex = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
 
-                    BotInfoHandler.gameHandler.players[mechIndex].name = name;
+                    BotInfoHandler.gameHandler.players[mechIndex].name = mechName;
 
                     responseMessage = new DiscordEmbedBuilder
                     {
                         Title = "Mech renamed successfully.",
-                        Description = $"Your Mech is now called {name}",
+                        Description = $"Your Mech is now called {mechName}",
                         Color = DiscordColor.Green
                     };
                 }
@@ -235,6 +204,7 @@ namespace ScrapScramble.BotRelated.Commands
             await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
         }
 
+        [Aliases("playerslist")]
         [Command("playerlist")]
         [Description("Shows a list of all players currently signed up.")]
         public async Task PlayerList(CommandContext ctx)
@@ -268,7 +238,7 @@ namespace ScrapScramble.BotRelated.Commands
 
         [Command("lookup")]
         [Description("Shows information about an Upgrade.")]
-        public async Task LookupUpgrade(CommandContext ctx, [Description("Name of the Upgrade")]params string[] mechName)
+        public async Task LookupUpgrade(CommandContext ctx, [Description("Name of the Upgrade")][RemainingText]string mechName)
         {
             DiscordEmbedBuilder responseMessage;
             if (mechName.Count() == 0)
@@ -284,10 +254,7 @@ namespace ScrapScramble.BotRelated.Commands
                 return;
             }
 
-            string name = mechName[0];
-            for (int i = 1; i < mechName.Count(); i++) name = name + " " + mechName[i];
-
-            if (name.Length < 3)
+            if (mechName.Length < 3)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder{
                     Title = "Input Is Too Short",
@@ -301,7 +268,7 @@ namespace ScrapScramble.BotRelated.Commands
 
             for (int i=0; i<BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
             {
-                if (BotInfoHandler.gameHandler.pool.mechs[i].name.ToLower().Contains(name.ToLower()))
+                if (BotInfoHandler.gameHandler.pool.mechs[i].name.ToLower().Contains(mechName.ToLower()))
                 {
                     candidates.Add(i);
                 }
@@ -313,9 +280,15 @@ namespace ScrapScramble.BotRelated.Commands
                 responseMessage = new DiscordEmbedBuilder
                 {
                     Title = $"{mech.name}",
-                    Description = $"{mech.cost}/{mech.creatureData.attack}/{mech.creatureData.health} - {mech.rarity} Upgrade",
+                    Description = $"{mech.Cost}/{mech.creatureData.attack}/{mech.creatureData.health} - {mech.rarity} Upgrade",
                     Color = DiscordColor.Green
                 };
+
+                if (Attribute.IsDefined(mech.GetType(), typeof(PackageAttribute)))
+                {
+                    var package = ((PackageAttribute)Attribute.GetCustomAttribute(mech.GetType(), typeof(PackageAttribute))).Package;
+                    responseMessage.Description += $" | {PackageHandler.PackageAttributeToString[package]}";
+                }
 
                 if (!mech.cardText.Equals(string.Empty)) responseMessage.Description += $"\n{mech.cardText}";
 
@@ -383,7 +356,6 @@ namespace ScrapScramble.BotRelated.Commands
         }
 
         [Command("ulist2")]
-        [RequireGuild]
         public async Task BrowseMenuTest(CommandContext ctx)
         {
             int upgradesPerPage = Math.Min(BotInfoHandler.gameHandler.pool.mechs.Count(), 7);            
@@ -394,7 +366,6 @@ namespace ScrapScramble.BotRelated.Commands
             //await this.UpdateBrowseMenuAsync(ctx, menuMessage, upgradesPerPage, page, totalPages);
 
             var interactivity = ctx.Client.GetInteractivity();
-
 
             List<DSharpPlus.Interactivity.Page> allMenuPages = new List<DSharpPlus.Interactivity.Page>();
 
@@ -444,6 +415,7 @@ namespace ScrapScramble.BotRelated.Commands
             await interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, allMenuPages, paginationEmojis, DSharpPlus.Interactivity.Enums.PaginationBehaviour.WrapAround, timeoutoverride: TimeSpan.FromMinutes(7));
         }
 
+        [Aliases("upgradelist")]
         [Command("upgradeslist")]
         [Description("Displays an interactable menu, which lists the names of all available Upgrades.")]
         [RequireGuild]
@@ -551,6 +523,72 @@ namespace ScrapScramble.BotRelated.Commands
                 Description = msg,
                 Color = DiscordColor.Azure
             }).ConfigureAwait(false);
+        }
+
+        [Command("packages")]
+        public async Task ShowPackages(CommandContext ctx)
+        {
+            string msg = string.Empty;
+
+            int i = 1;
+            foreach (var key in BotInfoHandler.gameHandler.packageHandler.Packages.Keys)
+            {
+                msg += $"{i}) {key}\n";
+                i++;
+            }
+
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                Title = "List of Packages",
+                Description = msg,
+                Color = DiscordColor.Azure
+            }).ConfigureAwait(false);
+        }
+
+        [Aliases("package")]
+        [Command("packages")]        
+        public async Task ShowPackages(CommandContext ctx, [RemainingText]string packageName)
+        {
+            packageName = packageName.ToLower();
+            packageName = PackageHandler.PackageAttributeToString[PackageHandler.LowercaseToPackageAttribute[packageName]];
+
+            if (!BotInfoHandler.gameHandler.packageHandler.Packages.ContainsKey(packageName))
+            {
+                //package not found
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "No Such Package Found",
+                    Description = "Make sure you've typed the name correctly.",
+                    Color = DiscordColor.Red
+                }).ConfigureAwait(false);
+            }
+            else
+            {
+                var embed = new DiscordEmbedBuilder(){
+                    Title = $"{packageName}",
+                    Color = DiscordColor.Azure
+                };
+
+                string description = string.Empty;
+
+                Rarity lastRarity = Rarity.NO_RARITY;
+
+                for (int i = 0; i < BotInfoHandler.gameHandler.packageHandler.Packages[packageName].Count(); i++)
+                {
+                    if (lastRarity != BotInfoHandler.gameHandler.packageHandler.Packages[packageName][i].rarity)
+                    {
+                        if (lastRarity != Rarity.NO_RARITY)
+                        {
+                            embed.AddField(lastRarity.ToString(), description);
+                        }
+                        description = string.Empty;
+                        lastRarity = BotInfoHandler.gameHandler.packageHandler.Packages[packageName][i].rarity;
+                    }
+                    description += $"- {BotInfoHandler.gameHandler.packageHandler.Packages[packageName][i]}\n";
+                }
+                embed.AddField(lastRarity.ToString(), description);
+
+                await ctx.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
+            }            
         }
     }
 }

@@ -7,42 +7,6 @@ using System.Threading.Tasks;
 namespace ScrapScramble.Game.Cards.Mechs
 {
     [UpgradeAttribute]
-    public class GoldBolts : Mech
-    {
-        public GoldBolts()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Gold Bolts";
-            this.cardText = "Battlecry: Transform your Shields into Health.";
-            this.SetStats(3, 3, 2);
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields];
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] = 0;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class WupallSmasher : Mech
-    {
-        public WupallSmasher()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Wupall Smasher";
-            this.cardText = "Battlecry: Transform your Spikes into Attack.";
-            this.SetStats(5, 4, 5);
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes];
-            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] = 0;
-        }
-    }    
-
-    [UpgradeAttribute]
     public class CarbonCarapace : Mech
     {
         public CarbonCarapace()
@@ -59,25 +23,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.combatOutputCollector.preCombatHeader.Add(
                 $"{gameHandler.players[curPlayer].name}'s Carbon Carapace gives it +{gameHandler.players[enemy].creatureData.attack % 10} Shields, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields]} Shields.");
         }
-    }        
-
-    [UpgradeAttribute]
-    public class TwilightDrone : Mech
-    {
-        public TwilightDrone()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Twilight Drone";
-            this.cardText = "Battlecry: Give your Mech +1/+1 for each card in your hand.";
-            this.SetStats(4, 2, 4);
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].hand.OptionsCount();
-            gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].hand.OptionsCount();
-        }
-    }
+    }            
 
     [UpgradeAttribute]
     public class OffbrandShoe : Mech
@@ -130,7 +76,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Rare;
             this.name = "Lightning Weasel";
-            this.cardText = this.writtenEffect = "Aftermath: Replace the highest-Cost Upgrade in your opponent's shop with a Lightning Weasel.";
+            this.cardText = this.writtenEffect = "Aftermath: Replace the highest-cost Upgrade in your opponent's shop with a Lightning Weasel.";
             this.SetStats(2, 1, 1);
         }
 
@@ -145,13 +91,13 @@ namespace ScrapScramble.Game.Cards.Mechs
             int maxCost = -1;
             for (int i = 0; i < enemyIndexes.Count; i++)
             {
-                if (maxCost < gameHandler.players[enemy].shop.At(enemyIndexes[i]).cost) 
-                    maxCost = gameHandler.players[enemy].shop.At(enemyIndexes[i]).cost;
+                if (maxCost < gameHandler.players[enemy].shop.At(enemyIndexes[i]).Cost) 
+                    maxCost = gameHandler.players[enemy].shop.At(enemyIndexes[i]).Cost;
             }
 
             for (int i = 0; i < enemyIndexes.Count(); i++)
             {
-                if (gameHandler.players[enemy].shop.At(enemyIndexes[i]).cost == maxCost) highestCosts.Add(i);
+                if (gameHandler.players[enemy].shop.At(enemyIndexes[i]).Cost == maxCost) highestCosts.Add(i);
             }
 
             int pos = GameHandler.randomGenerator.Next(0, highestCosts.Count());
@@ -160,7 +106,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[enemy].shop.TransformUpgrade(highestCosts[pos], new LightningWeasel());
 
             gameHandler.players[enemy].aftermathMessages.Add(
-                $"{gameHandler.players[curPlayer].name}'s Lightning Weasel replaced your highest-Cost Upgrade ({oldName}) with a Lightning Weasel.");
+                $"{gameHandler.players[curPlayer].name}'s Lightning Weasel replaced your highest-cost Upgrade ({oldName}) with a Lightning Weasel.");
         }
     }
 
@@ -445,91 +391,6 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }   
 
-    [UpgradeAttribute]
-    public class BrawlersPlating : Mech
-    {
-        private bool enemyatk = false;
-        private bool meatk = false;
-        private bool activated = false;
-
-        public BrawlersPlating()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Brawler's Plating";
-            this.cardText = this.writtenEffect = "After both Mechs have attacked, gain +8 Shields.";
-            this.SetStats(2, 1, 2);
-        }        
-
-        private void Effect(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            if (!activated)
-            {
-                activated = true;
-                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 8;
-                gameHandler.combatOutputCollector.combatHeader.Add(
-                    $"{gameHandler.players[curPlayer].name}'s Brawler's Plating triggers and gives it +8 Shields, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields]} Shields.");
-            }   
-        }
-
-        public override void AfterThisAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            meatk = true;
-            if (meatk && enemyatk) this.Effect(gameHandler, curPlayer, enemy);
-        }
-
-        public override void AfterTheEnemyAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            enemyatk = true;
-            if (meatk && enemyatk) this.Effect(gameHandler, curPlayer, enemy);
-        }
-        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            meatk = enemyatk = activated = false;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class PowerGlove : Mech
-    {
-        private bool enemyatk = false;
-        private bool meatk = false;
-        private bool activated = false;
-
-        public PowerGlove()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Power Glove";
-            this.cardText = this.writtenEffect = "After both Mechs have attacked, deal 4 damage to the enemy Mech.";
-            this.SetStats(3, 2, 3);
-        }
-
-        private void Effect(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            if (!activated)
-            {
-                activated = true;
-                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 8;
-                gameHandler.players[enemy].TakeDamage(4, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Brawler's Plating triggers and deals 4 damage, ");                
-            }
-        }
-
-        public override void AfterThisAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            meatk = true;
-            if (meatk && enemyatk) this.Effect(gameHandler, curPlayer, enemy);
-        }
-
-        public override void AfterTheEnemyAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            enemyatk = true;
-            if (meatk && enemyatk) this.Effect(gameHandler, curPlayer, enemy);
-        }
-        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            meatk = enemyatk = activated = false;
-        }
-    }
-
     //[UpgradeAttribute]
     public class FuriousRelic : Mech
     {
@@ -647,25 +508,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].aftermathMessages.Add(
                 $"Due to your {this.name}, after you buy an Upgrade this turn, add a 1/1 Bee Bot to your shop.");
         }
-    }
-
-    [UpgradeAttribute]
-    public class IndecisiveAutoshopper : Mech
-    {
-        public IndecisiveAutoshopper()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Indecisive Autoshopper";
-            this.cardText = "Binary. Battlecry: Refresh your shop.";
-            this.SetStats(4, 2, 4);
-            this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
-        }
-
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.maxMana, false);
-        }
-    }
+    }    
 }
 
 /*

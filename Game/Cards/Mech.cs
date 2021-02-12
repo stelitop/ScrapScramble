@@ -28,7 +28,7 @@ namespace ScrapScramble.Game.Cards
         {
             this.creatureData.attack = attack;
             this.creatureData.health = health;
-            this.cost = cost;
+            this.Cost = cost;
         }
         //public Mech(string name, string cardText, int cost, int attack, int health, Rarity rarity)
         //{
@@ -45,8 +45,8 @@ namespace ScrapScramble.Game.Cards
             string rarity = $"{this.rarity} - ";
             if (this.rarity == Rarity.NO_RARITY) rarity = string.Empty;
 
-            if (this.cardText.Equals(string.Empty) ) ret = $"{this.name} - {rarity}{this.cost}/{this.creatureData.attack}/{this.creatureData.health}";
-            else ret = $"{this.name} - {rarity}{this.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
+            if (this.cardText.Equals(string.Empty) ) ret = $"{this.name} - {rarity}{this.Cost}/{this.creatureData.attack}/{this.creatureData.health}";
+            else ret = $"{this.name} - {rarity}{this.Cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
 
             if (this.creatureData.staticKeywords[StaticKeyword.Freeze] == 1) ret = $"(Frozen for 1 turn) {ret}";
             else if (this.creatureData.staticKeywords[StaticKeyword.Freeze] > 1) ret = $"(Frozen for {this.creatureData.staticKeywords[StaticKeyword.Freeze]} turns) {ret}";
@@ -59,8 +59,8 @@ namespace ScrapScramble.Game.Cards
             string rarity = $"{this.rarity} - ";
             if (this.rarity == Rarity.NO_RARITY) rarity = string.Empty;
 
-            if (this.cardText.Equals(string.Empty)) ret = $"{this.name} - {rarity}{this.cost}/{this.creatureData.attack}/{this.creatureData.health}";
-            else ret = $"{this.name} - {rarity}{this.cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
+            if (this.cardText.Equals(string.Empty)) ret = $"{this.name} - {rarity}{this.Cost}/{this.creatureData.attack}/{this.creatureData.health}";
+            else ret = $"{this.name} - {rarity}{this.Cost}/{this.creatureData.attack}/{this.creatureData.health} - {this.cardText}";
 
             return ret;
         }
@@ -79,9 +79,9 @@ namespace ScrapScramble.Game.Cards
         {
             if (gameHandler.players[curPlayer].hand.totalSize <= handPos) return false;
             if (gameHandler.players[curPlayer].hand.At(handPos).name == BlankUpgrade.name) return false;
-            if (this.cost > gameHandler.players[curPlayer].curMana) return false;
+            if (this.Cost > gameHandler.players[curPlayer].curMana) return false;
 
-            gameHandler.players[curPlayer].curMana -= this.cost;
+            gameHandler.players[curPlayer].curMana -= this.Cost;
 
             gameHandler.players[curPlayer].AttachMech(this, gameHandler, curPlayer, enemy);
             return true;
@@ -89,7 +89,7 @@ namespace ScrapScramble.Game.Cards
 
         public bool BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].curMana -= this.cost;
+            gameHandler.players[curPlayer].curMana -= this.Cost;
 
             for (int i=0; i<gameHandler.players[curPlayer].attachedMechs.Count(); i++)
             {                
@@ -111,7 +111,7 @@ namespace ScrapScramble.Game.Cards
             if (this.name == BlankUpgrade.name) return false;
             if (this.creatureData.staticKeywords[StaticKeyword.Freeze] > 0) return false;
             if (this.inLimbo) return false;
-            if (this.cost > gameHandler.players[curPlayer].curMana) return false;
+            if (this.Cost > gameHandler.players[curPlayer].curMana) return false;
 
             return true;
         }
@@ -149,7 +149,8 @@ namespace ScrapScramble.Game.Cards
             ret.name = this.name;
             ret.rarity = this.rarity;
             ret.cardText = this.cardText;            
-            ret.creatureData = this.creatureData.DeepCopy();            
+            ret.creatureData = this.creatureData.DeepCopy();
+            ret.Cost = this.Cost;
             ret.writtenEffect = this.writtenEffect;
             ret.extraUpgradeEffects.Clear();
 
