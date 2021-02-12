@@ -222,7 +222,7 @@ namespace ScrapScramble.BotRelated.Commands
             
             var responseMessage = new DiscordEmbedBuilder
             {
-                Title = "List of Mech Pairs for Combat",
+                Title = "List of Upgrade Pairs for Combat",
                 Description = msg,
                 Color = DiscordColor.Azure
             };

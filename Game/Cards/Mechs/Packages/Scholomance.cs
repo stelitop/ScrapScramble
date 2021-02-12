@@ -8,7 +8,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 {
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class Tinkerpet : Mech
+    public class Tinkerpet : Upgrade
     {
         private bool spellburst = true;
 
@@ -16,7 +16,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Common;
             this.name = "Tinkerpet";
-            this.cardText = this.writtenEffect = "Spellburst: Give your Mech +4 Spikes and +4 Shields.";
+            this.cardText = this.writtenEffect = "Spellburst: Give your Upgrade +4 Spikes and +4 Shields.";
             this.SetStats(2, 1, 1);
         }
 
@@ -34,7 +34,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class OneHitWonder : Mech
+    public class OneHitWonder : Upgrade
     {
         public OneHitWonder()
         {
@@ -54,7 +54,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class SurveillanceBird : Mech
+    public class SurveillanceBird : Upgrade
     {
         public SurveillanceBird()
         {
@@ -73,7 +73,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class OnyxCrowbot : Mech
+    public class OnyxCrowbot : Upgrade
     {
         public OnyxCrowbot()
         {
@@ -92,7 +92,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class SulfurNanoPhoenix : Mech
+    public class SulfurNanoPhoenix : Upgrade
     {
         public SulfurNanoPhoenix()
         {
@@ -111,7 +111,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class LivewireBramble : Mech
+    public class LivewireBramble : Upgrade
     {
         public LivewireBramble()
         {
@@ -150,7 +150,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class ArcaneAutomatron : Mech
+    public class ArcaneAutomatron : Upgrade
     {
         public ArcaneAutomatron()
         {
@@ -176,13 +176,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class TightropeChampion : Mech
+    public class TightropeChampion : Upgrade
     {
         public TightropeChampion()
         {
             this.rarity = Rarity.Rare;
             this.name = "Tightrope Champion";
-            this.cardText = this.writtenEffect = "Start of Combat: If your Mech's Attack is equal to its Health, gain +2/+2.";
+            this.cardText = this.writtenEffect = "Start of Combat: If your Upgrade's Attack is equal to its Health, gain +2/+2.";
             this.SetStats(4, 4, 4);
         }
 
@@ -205,7 +205,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class CobaltConqueror : Mech
+    public class CobaltConqueror : Upgrade
     {
         private bool comboTrig = false;
         private bool effectTrig = false;
@@ -227,7 +227,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.comboTrig = true;
         }
 
-        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (this.comboTrig && !this.effectTrig)
             {
@@ -247,14 +247,14 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class Naptron : Mech
+    public class Naptron : Upgrade
     {
         public Naptron()
         {
             this.rarity = Rarity.Epic;
             this.name = "Naptron";
-            this.cardText = "Taunt x2. Aftermath: Give your Mech Rush x2.";
-            this.writtenEffect = "Aftermath: Give your Mech Rush x2.";
+            this.cardText = "Taunt x2. Aftermath: Give your Upgrade Rush x2.";
+            this.writtenEffect = "Aftermath: Give your Upgrade Rush x2.";
             this.SetStats(4, 1, 10);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] += 2;
         }
@@ -269,7 +269,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class Bibliobot : Mech
+    public class Bibliobot : Upgrade
     {
         private string letter = "  ";
 
@@ -308,7 +308,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             }
         }
 
-        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
         {
             Console.WriteLine(m.name[0] + " " + this.letter);
             if (m.name.StartsWith(this.letter, StringComparison.OrdinalIgnoreCase))
@@ -347,7 +347,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class TitaniumBloomer : Mech
+    public class TitaniumBloomer : Upgrade
     {
         public TitaniumBloomer()
         {
@@ -365,7 +365,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class SpellPrinter : Mech
+    public class SpellPrinter : Upgrade
     {
         private bool spellburst = true;
 
@@ -391,7 +391,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
-    public class LordBarox : Mech
+    public class LordBarox : Upgrade
     {
         int bet = -1;
 
@@ -399,7 +399,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Legendary;
             this.name = "Lord Barox";
-            this.cardText = "Battlecry: Name ANY other Mech. Aftermath: If it won last round, gain 5 Mana this turn only.";
+            this.cardText = "Battlecry: Name ANY other Upgrade. Aftermath: If it won last round, gain 5 Mana this turn only.";
             this.SetStats(3, 3, 2);
             this.printEffectInCombat = false;
         }

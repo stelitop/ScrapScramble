@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ScrapScramble.Game.Cards.Mechs.Packages
 {
     [TokenAttribute]
-    public class Mechathun : Mech
+    public class Mechathun : Upgrade
     {
         public Mechathun()
         {
@@ -29,9 +29,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             return ret;
         }
 
-        public override Mech BasicCopy()
+        public override Upgrade BasicCopy()
         {
-            Mech ret = new Mechathun();
+            Upgrade ret = new Mechathun();
             ret.creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
             return ret;
         }
@@ -66,7 +66,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.MonstersReanimated)]
-    public class MechaThunsSeeker : Mech
+    public class MechaThunsSeeker : Upgrade
     {
         public MechaThunsSeeker()
         {
@@ -89,7 +89,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.MonstersReanimated)]
-    public class MechaThunsSlayer : Mech
+    public class MechaThunsSlayer : Upgrade
     {
         public MechaThunsSlayer()
         {
@@ -113,7 +113,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.MonstersReanimated)]
-    public class MechaThunsHarbinger : Mech
+    public class MechaThunsHarbinger : Upgrade
     {
         public MechaThunsHarbinger()
         {
@@ -137,7 +137,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.MonstersReanimated)]
-    public class MechaThunsLiege : Mech
+    public class MechaThunsLiege : Upgrade
     {
         public MechaThunsLiege()
         {
@@ -161,13 +161,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.MonstersReanimated)]
-    public class MechaThunsElder : Mech
+    public class MechaThunsElder : Upgrade
     {
         public MechaThunsElder()
         {
             this.rarity = Rarity.Rare;
             this.name = "Mecha'thun's Elder";
-            this.cardText = "Battlecry: Give your Mech -1/-1 for each turn your Mecha'thun has left to thaw.";
+            this.cardText = "Battlecry: Give your Upgrade -1/-1 for each turn your Mecha'thun has left to thaw.";
             this.SetStats(4, 12, 12);
         }
 
@@ -183,7 +183,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.MonstersReanimated)]
-    public class MechaThunsLynchpin : Mech
+    public class MechaThunsLynchpin : Upgrade
     {
         public MechaThunsLynchpin()
         {
@@ -207,7 +207,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.MonstersReanimated)]
-    public class MechaThunsGenerator : Mech
+    public class MechaThunsGenerator : Upgrade
     {
         public MechaThunsGenerator()
         {
@@ -223,7 +223,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
         }
 
-        private bool Criteria(Mech mech)
+        private bool Criteria(Upgrade mech)
         {
             if (mech.name == this.name) return false;
 
@@ -232,7 +232,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, this.Criteria);
 
             for (int i = 0; i < 3; i++)
             {
@@ -248,7 +248,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.MonstersReanimated)]
-    public class MechaThunsLord : Mech
+    public class MechaThunsLord : Upgrade
     {
         private bool spellburst = true;
 
@@ -284,7 +284,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.MonstersReanimated)]
-    public class DungeonDragonling : Mech
+    public class DungeonDragonling : Upgrade
     {
         public DungeonDragonling()
         {
@@ -305,7 +305,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
 
     [TokenAttribute]
-    public class HackathaAmalgam : Mech
+    public class HackathaAmalgam : Upgrade
     {
         public HackathaAmalgam()
         {
@@ -316,9 +316,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    //[UpgradeAttribute]
-    //[Package(UpgradePackage.MonstersReanimated)]
-    public class Hackatha : Mech
+    [UpgradeAttribute]
+    [Package(UpgradePackage.MonstersReanimated)]
+    public class Hackatha : Upgrade
     {
         public Hackatha()
         {
@@ -343,16 +343,16 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
                     for (int i = 0; i < gameHandler.players[enemy].playHistory[gameHandler.currentRound - 2].Count(); i++)
                     {
-                        Card upgrade = (Mech)gameHandler.players[enemy].playHistory[gameHandler.currentRound - 2][i];
+                        Card upgrade = (Upgrade)gameHandler.players[enemy].playHistory[gameHandler.currentRound - 2][i];
 
-                        if ((upgrade.GetType().IsSubclassOf(typeof(Mech)) || upgrade.GetType() == typeof(Mech)) && upgrade.name != "Hackatha")
+                        if ((upgrade.GetType().IsSubclassOf(typeof(Upgrade)) || upgrade.GetType() == typeof(Upgrade)) && upgrade.name != "Hackatha" && upgrade.name != "Hackatha's Amalgam")
                         {
-                            amalgam.extraUpgradeEffects.Add((Mech)upgrade.DeepCopy());
+                            amalgam.extraUpgradeEffects.Add((Upgrade)upgrade.DeepCopy());
 
-                            if (extraTextLength < 40)
+                            if (extraTextLength < 50)
                             {
                                 amalgam.cardText += $" {upgrade.name},";
-                                extraTextLength += upgrade.cardText.Length;
+                                extraTextLength += upgrade.name.Length;
                             }
                             else
                             {

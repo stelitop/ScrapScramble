@@ -8,13 +8,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 {
     [UpgradeAttribute]
     [Package(UpgradePackage.TinyInventions)]
-    public class Healthbox : Mech
+    public class Healthbox : Upgrade
     {
         public Healthbox()
         {
             this.rarity = Rarity.Common;
             this.name = "Healthbox";
-            this.cardText = this.writtenEffect = "Start of Combat: Give the enemy Mech +8 Health.";
+            this.cardText = this.writtenEffect = "Start of Combat: Give the enemy Upgrade +8 Health.";
             this.SetStats(0, 0, 8);
         }
 
@@ -28,7 +28,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.TinyInventions)]
-    public class Microchip : Mech
+    public class Microchip : Upgrade
     {
         public Microchip()
         {
@@ -42,7 +42,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.TinyInventions)]
-    public class RefurbishePlating : Mech
+    public class RefurbishePlating : Upgrade
     {
         public RefurbishePlating()
         {
@@ -60,13 +60,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.TinyInventions)]
-    public class BootPolisher : Mech
+    public class BootPolisher : Upgrade
     {
         public BootPolisher()
         {
             this.rarity = Rarity.Common;
             this.name = "Boot Polisher";
-            this.cardText = this.writtenEffect = "Start of Combat: If the enemy Mech has Attack Priority, gain +4 Shields.";
+            this.cardText = this.writtenEffect = "Start of Combat: If the enemy Upgrade has Attack Priority, gain +4 Shields.";
             this.SetStats(3, 2, 3);
         }
 
@@ -88,13 +88,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.TinyInventions)]
-    public class CutleryDispencer : Mech
+    public class CutleryDispencer : Upgrade
     {
         public CutleryDispencer()
         {
             this.rarity = Rarity.Common;
             this.name = "Cutlery Dispencer";
-            this.cardText = this.writtenEffect = "Start of Combat: If your Mech has Attack Priority, gain +4 Spikes.";
+            this.cardText = this.writtenEffect = "Start of Combat: If your Upgrade has Attack Priority, gain +4 Spikes.";
             this.SetStats(3, 3, 2);
         }
 
@@ -116,7 +116,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.TinyInventions)]
-    public class GoldBolts : Mech
+    public class GoldBolts : Upgrade
     {
         public GoldBolts()
         {
@@ -135,7 +135,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.TinyInventions)]
-    public class WupallSmasher : Mech
+    public class WupallSmasher : Upgrade
     {
         public WupallSmasher()
         {
@@ -154,7 +154,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.TinyInventions)]
-    public class BrawlersPlating : Mech
+    public class BrawlersPlating : Upgrade
     {
         private bool enemyatk = false;
         private bool meatk = false;
@@ -198,7 +198,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.TinyInventions)]
-    public class PowerGlove : Mech
+    public class PowerGlove : Upgrade
     {
         private bool enemyatk = false;
         private bool meatk = false;
@@ -208,7 +208,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Rare;
             this.name = "Power Glove";
-            this.cardText = this.writtenEffect = "After both Mechs have attacked, deal 4 damage to the enemy Mech.";
+            this.cardText = this.writtenEffect = "After both Mechs have attacked, deal 4 damage to the enemy Upgrade.";
             this.SetStats(3, 2, 3);
         }
 
@@ -260,7 +260,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.TinyInventions)]
-    public class CelsiorX : Mech
+    public class CelsiorX : Upgrade
     {
         public CelsiorX()
         {
@@ -278,7 +278,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.TinyInventions)]
-    public class TinyGamer : Mech
+    public class TinyGamer : Upgrade
     {
         public TinyGamer()
         {
@@ -288,7 +288,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(1, 1, 1);
         }
 
-        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (m.Cost == 1)
             {

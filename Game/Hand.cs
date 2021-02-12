@@ -55,7 +55,7 @@ namespace ScrapScramble.Game
             }
             return ret;
         }
-        public List<Card> GetAllUpgrades()
+        public List<Card> GetAllCards()
         {
             List<Card> ret = new List<Card>();
             for (int i = 0; i < cards.Count(); i++)
@@ -64,7 +64,7 @@ namespace ScrapScramble.Game
             }
             return ret;
         }
-        public List<int> GetAllUpgradeIndexes()
+        public List<int> GetAllCardIndexes()
         {
             List<int> ret = new List<int>();
             for (int i = 0; i < cards.Count(); i++)

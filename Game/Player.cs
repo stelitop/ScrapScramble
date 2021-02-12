@@ -20,17 +20,17 @@ namespace ScrapScramble.Game
 
         public string name;
 
-        public List<Mech> attachedMechs;
+        public List<Upgrade> attachedMechs;
         public SpecificEffects specificEffects;
 
         public List<List<Card>> playHistory;
-        public List<Mech> boughtThisTurn;
-        public List<Mech> extraUpgradeEffects;
+        public List<Upgrade> boughtThisTurn;
+        public List<Upgrade> extraUpgradeEffects;
 
         public bool destroyed;
 
         public List<string> aftermathMessages;
-        public List<Mech> nextRoundEffects;
+        public List<Upgrade> nextRoundEffects;
 
         public bool ready;
 
@@ -44,7 +44,7 @@ namespace ScrapScramble.Game
             this.shop = new Shop();
             this.hand = new Hand();
             this.name = "No name";
-            this.attachedMechs = new List<Mech>();
+            this.attachedMechs = new List<Upgrade>();
             this.curMana = 10;
             this.destroyed = false;
             this.aftermathMessages = new List<string>();
@@ -53,10 +53,10 @@ namespace ScrapScramble.Game
             this.lives = 0;
             this.playHistory = new List<List<Card>>();
             this.playHistory.Add(new List<Card>());
-            this.boughtThisTurn = new List<Mech>();
+            this.boughtThisTurn = new List<Upgrade>();
             this.specificEffects = new SpecificEffects();
-            this.extraUpgradeEffects = new List<Mech>();
-            this.nextRoundEffects = new List<Mech>();
+            this.extraUpgradeEffects = new List<Upgrade>();
+            this.nextRoundEffects = new List<Upgrade>();
         }
         public Player(string name) : this()
         {
@@ -163,7 +163,7 @@ namespace ScrapScramble.Game
             return ret;
         }
 
-        public void AttachMech(Mech mech, GameHandler gameHandler, int curPlayer, int enemy)
+        public void AttachMech(Upgrade mech, GameHandler gameHandler, int curPlayer, int enemy)
         {
             mech.OnPlay(gameHandler, curPlayer, enemy);
 
@@ -189,7 +189,7 @@ namespace ScrapScramble.Game
             {
                 mech.creatureData.staticKeywords[StaticKeyword.Binary]--;
 
-                Mech binaryLessCopy = mech.BasicCopy();                
+                Upgrade binaryLessCopy = mech.BasicCopy();                
                 binaryLessCopy.cardText += " (No Binary)";
                 binaryLessCopy.creatureData.staticKeywords[StaticKeyword.Binary]--;
 
@@ -223,12 +223,12 @@ namespace ScrapScramble.Game
                 }
             }
 
-            this.attachedMechs.Add((Mech)mech.DeepCopy());
+            this.attachedMechs.Add((Upgrade)mech.DeepCopy());
 
             foreach (var extraEffect in mech.extraUpgradeEffects)
             {
                 Console.WriteLine("sadge'");
-                this.extraUpgradeEffects.Add((Mech)extraEffect.DeepCopy());
+                this.extraUpgradeEffects.Add((Upgrade)extraEffect.DeepCopy());
             }
             Console.WriteLine("a");
         }
@@ -243,11 +243,11 @@ namespace ScrapScramble.Game
             this.shop.RemoveUpgrade(shopPos);
 
             this.shop.At(shopPos).inLimbo = true;
-            ((Mech)card).BuyCard(shopPos, gameHandler, curPlayer, enemy);
+            ((Upgrade)card).BuyCard(shopPos, gameHandler, curPlayer, enemy);
             this.shop.At(shopPos).inLimbo = false;
 
             this.playHistory[this.playHistory.Count() - 1].Add(card.DeepCopy());
-            this.boughtThisTurn.Add((Mech)card.DeepCopy());
+            this.boughtThisTurn.Add((Upgrade)card.DeepCopy());
             
             return result;
         }

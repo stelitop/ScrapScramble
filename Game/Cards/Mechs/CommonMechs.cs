@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace ScrapScramble.Game.Cards.Mechs
 {
     [UpgradeAttribute]
-    public class HardPuncher : Mech
+    public class HardPuncher : Upgrade
     {
         public HardPuncher()
         {
@@ -20,7 +20,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }    
 
     [UpgradeAttribute]
-    public class RunawayTire : Mech
+    public class RunawayTire : Upgrade
     {
         public RunawayTire()
         {
@@ -33,7 +33,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class MedievalSpikeball : Mech
+    public class MedievalSpikeball : Upgrade
     {
         public MedievalSpikeball()
         {
@@ -51,7 +51,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class HeavyDutyPlating : Mech
+    public class HeavyDutyPlating : Upgrade
     {
         public HeavyDutyPlating()
         {
@@ -64,7 +64,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class Oilmental : Mech
+    public class Oilmental : Upgrade
     {
         public Oilmental()
         {
@@ -78,7 +78,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            Mech m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
+            Upgrade m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
             m.creatureData.attack += 2;
             m.creatureData.health += 2;
             gameHandler.players[curPlayer].aftermathMessages.Add($"Your Oilmental gives the {m.name} in your shop +2/+2.");
@@ -86,7 +86,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class RustedJunkwarden : Mech
+    public class RustedJunkwarden : Upgrade
     {
         public RustedJunkwarden()
         {
@@ -99,7 +99,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class SwindlersCoin : Mech
+    public class SwindlersCoin : Upgrade
     {
         public SwindlersCoin()
         {
@@ -114,7 +114,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }  
 
     [UpgradeAttribute]
-    public class ChainMail : Mech
+    public class ChainMail : Upgrade
     {
         public ChainMail()
         {
@@ -133,7 +133,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class TrafficCone : Mech
+    public class TrafficCone : Upgrade
     {
         public TrafficCone()
         {
@@ -152,7 +152,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class MetalgillSnapper : Mech
+    public class MetalgillSnapper : Upgrade
     {
         public MetalgillSnapper()
         {
@@ -165,7 +165,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }    
 
     [UpgradeAttribute]
-    public class ProtectiveFirewall : Mech
+    public class ProtectiveFirewall : Upgrade
     {
         public ProtectiveFirewall()
         {
@@ -179,7 +179,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class RivetedTrinked : Mech
+    public class RivetedTrinked : Upgrade
     {
         public RivetedTrinked()
         {
@@ -197,7 +197,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class TankTreads : Mech
+    public class TankTreads : Upgrade
     {
         public TankTreads()
         {
@@ -216,7 +216,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }      
 
     [UpgradeAttribute]
-    public class ShieldbotClanker : Mech
+    public class ShieldbotClanker : Upgrade
     {
         public ShieldbotClanker()
         {
@@ -240,7 +240,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class SpikebotShanker : Mech
+    public class SpikebotShanker : Upgrade
     {
         public SpikebotShanker()
         {
@@ -264,7 +264,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class SpeedyProcessor : Mech
+    public class SpeedyProcessor : Upgrade
     {
         public SpeedyProcessor()
         {
@@ -278,7 +278,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class LeadHead : Mech
+    public class LeadHead : Upgrade
     {
         public LeadHead()
         {
@@ -291,7 +291,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }    
 
     [UpgradeAttribute]
-    public class Steamfunk : Mech
+    public class Steamfunk : Upgrade
     {
         public Steamfunk()
         {
@@ -303,7 +303,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            Mech m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
+            Upgrade m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
             m.creatureData.attack += 2;
             m.creatureData.health += 2;
             gameHandler.players[curPlayer].aftermathMessages.Add($"Your Steamfunk gives the {m.name} in your shop +2/+2.");
@@ -311,7 +311,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class PrismaticBarrier : Mech
+    public class PrismaticBarrier : Upgrade
     {
         public PrismaticBarrier()
         {
@@ -330,7 +330,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }    
 
     [UpgradeAttribute]
-    public class TwoHeadedColossus : Mech
+    public class TwoHeadedColossus : Upgrade
     {
         public TwoHeadedColossus()
         {
@@ -343,7 +343,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class ThreeFacedEmojitron : Mech
+    public class ThreeFacedEmojitron : Upgrade
     {
         public ThreeFacedEmojitron()
         {
@@ -386,7 +386,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }              
 
     [UpgradeAttribute]
-    public class SystemRebooter : Mech
+    public class SystemRebooter : Upgrade
     {
         public SystemRebooter()
         {
@@ -408,7 +408,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class BigFan : Mech
+    public class BigFan : Upgrade
     {
         public BigFan()
         {
@@ -434,7 +434,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     
 
     [UpgradeAttribute]
-    public class DjinniDecelerator : Mech
+    public class DjinniDecelerator : Upgrade
     {
         public DjinniDecelerator()
         {
@@ -448,7 +448,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]    
-    public class SyntheticSnowball : Mech
+    public class SyntheticSnowball : Upgrade
     {
         public SyntheticSnowball()
         {
@@ -474,7 +474,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 /*
 
 [UpgradeAttribute]
-public class NextMech : Mech
+public class NextMech : Upgrade
 {
     public NextMech()
     {

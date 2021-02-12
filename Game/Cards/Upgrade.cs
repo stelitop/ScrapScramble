@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace ScrapScramble.Game.Cards
 {
     [Serializable]
-    public class Mech : Card, IComparable<Mech>
+    public class Upgrade : Card, IComparable<Upgrade>
     {       
         public CreatureData creatureData = new CreatureData();
         public Rarity rarity;
@@ -16,7 +16,7 @@ namespace ScrapScramble.Game.Cards
         public bool printEffectInCombat = true;
         public string writtenEffect;
 
-        public Mech()
+        public Upgrade()
         {
             this.rarity = Rarity.NO_RARITY;
             this.name = string.Empty;
@@ -30,7 +30,7 @@ namespace ScrapScramble.Game.Cards
             this.creatureData.health = health;
             this.Cost = cost;
         }
-        //public Mech(string name, string cardText, int cost, int attack, int health, Rarity rarity)
+        //public Upgrade(string name, string cardText, int cost, int attack, int health, Rarity rarity)
         //{
         //    this.SetStats(cost, attack, health);            
         //    this.rarity = rarity;
@@ -65,7 +65,7 @@ namespace ScrapScramble.Game.Cards
             return ret;
         }
 
-        //public Mech(MechJsonTemplate mechJson)
+        //public Upgrade(MechJsonTemplate mechJson)
         //{
         //    this.SetStats();
         //    this.creatureData.cost = mechJson.cost;
@@ -125,7 +125,7 @@ namespace ScrapScramble.Game.Cards
         public virtual void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy) { }
-        public virtual void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void Combo(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void OnBeingFrozen(GameHandler gameHandler, int curPlayer, int enemy) { }
@@ -135,7 +135,7 @@ namespace ScrapScramble.Game.Cards
         public virtual void AfterTheEnemyAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void BeforeTakingDamage(ref int damage, GameHandler gameHandler, int curPlayer, int enemy, ref string msg) {}
 
-        public int CompareTo(Mech other)
+        public int CompareTo(Upgrade other)
         {
             if (this.rarity > other.rarity) return -1;
             else if (this.rarity < other.rarity) return 1;
@@ -145,7 +145,7 @@ namespace ScrapScramble.Game.Cards
 
         public override Card DeepCopy()
         {
-            Mech ret = (Mech)Activator.CreateInstance(this.GetType());            
+            Upgrade ret = (Upgrade)Activator.CreateInstance(this.GetType());            
             ret.name = this.name;
             ret.rarity = this.rarity;
             ret.cardText = this.cardText;            
@@ -155,13 +155,13 @@ namespace ScrapScramble.Game.Cards
             ret.extraUpgradeEffects.Clear();
 
             for (int i = 0; i < this.extraUpgradeEffects.Count(); i++)
-                ret.extraUpgradeEffects.Add((Mech)this.extraUpgradeEffects[i].DeepCopy());
+                ret.extraUpgradeEffects.Add((Upgrade)this.extraUpgradeEffects[i].DeepCopy());
             
             return ret;            
         }
-        public virtual Mech BasicCopy()
+        public virtual Upgrade BasicCopy()
         {
-            return (Mech)Activator.CreateInstance(this.GetType());
+            return (Upgrade)Activator.CreateInstance(this.GetType());
         }        
     }
 }

@@ -337,7 +337,7 @@ namespace ScrapScramble.Game
 
                 for (int j=0; j<gameHandler.players[i].nextRoundEffects.Count(); j++)
                 {
-                    gameHandler.players[i].extraUpgradeEffects.Add((Mech)gameHandler.players[i].nextRoundEffects[j].DeepCopy());
+                    gameHandler.players[i].extraUpgradeEffects.Add((Upgrade)gameHandler.players[i].nextRoundEffects[j].DeepCopy());
                 }
                 
                 gameHandler.players[i].nextRoundEffects.Clear();

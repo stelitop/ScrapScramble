@@ -13,7 +13,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             return m.name.Contains("Venture Co.");
         }
     }
-    public class VentureCoMechNaming : Mech
+    public class VentureCoMechNaming : Upgrade
     {
         public override string GetInfo(GameHandler gameHandler, int player)
         {
@@ -23,7 +23,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [PackageAttribute(UpgradePackage.VentureCo)]
     [UpgradeAttribute]
-    public class VentureCoSticker : Mech
+    public class VentureCoSticker : Upgrade
     {
         public VentureCoSticker()
         {
@@ -103,7 +103,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Epic;
             this.name = "Venture Co. Flamethrower";
-            this.cardText = this.writtenEffect = "Start of Combat: Deal 2 damage to the enemy Mech for each Venture Co. Upgrade you've played this game.";
+            this.cardText = this.writtenEffect = "Start of Combat: Deal 2 damage to the enemy Upgrade for each Venture Co. Upgrade you've played this game.";
             this.SetStats(4, 2, 2);            
         }
 
@@ -117,7 +117,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [PackageAttribute(UpgradePackage.VentureCo)]
     [UpgradeAttribute]
-    public class VentureCoVault : Mech
+    public class VentureCoVault : Upgrade
     {
         public VentureCoVault()
         {
@@ -131,7 +131,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, VentureCo.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, VentureCo.Criteria);
 
             for (int i=list.Count()-1; i>=0; i--)
             {
@@ -153,7 +153,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [PackageAttribute(UpgradePackage.VentureCo)]
     [UpgradeAttribute]
-    public class VentureCoCoolant : Mech
+    public class VentureCoCoolant : Upgrade
     {
         public VentureCoCoolant()
         {
@@ -178,13 +178,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [PackageAttribute(UpgradePackage.VentureCo)]
     [UpgradeAttribute]
-    public class SponsorshipScrubber : Mech
+    public class SponsorshipScrubber : Upgrade
     {
         public SponsorshipScrubber()
         {
             this.rarity = Rarity.Epic;
             this.name = "Sponsorship Scrubber";
-            this.cardText = this.writtenEffect = "Start of Combat: If your opponent has purchased a Venture Co. Upgrade this game, steal 6 Attack from their Mech.";
+            this.cardText = this.writtenEffect = "Start of Combat: If your opponent has purchased a Venture Co. Upgrade this game, steal 6 Attack from their Upgrade.";
             this.SetStats(3, 1, 2);
         }
 
@@ -233,7 +233,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [PackageAttribute(UpgradePackage.VentureCo)]
     [UpgradeAttribute]
-    public class Shieldmobile : Mech
+    public class Shieldmobile : Upgrade
     {
         public Shieldmobile()
         {
@@ -253,7 +253,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [PackageAttribute(UpgradePackage.VentureCo)]
     [UpgradeAttribute]
-    public class Spikecycle : Mech
+    public class Spikecycle : Upgrade
     {
         public Spikecycle()
         {
@@ -273,7 +273,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     
     [PackageAttribute(UpgradePackage.VentureCo)]
     [UpgradeAttribute]
-    public class CopyShredder : Mech
+    public class CopyShredder : Upgrade
     {
         public CopyShredder()
         {
@@ -307,7 +307,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [PackageAttribute(UpgradePackage.VentureCo)]
     [UpgradeAttribute]
-    public class IllegalThermodynamo : Mech
+    public class IllegalThermodynamo : Upgrade
     {
         public IllegalThermodynamo()
         {
@@ -326,13 +326,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [PackageAttribute(UpgradePackage.VentureCo)]
     [UpgradeAttribute]
-    public class SiliconGrenadeBelt : Mech
+    public class SiliconGrenadeBelt : Upgrade
     {
         public SiliconGrenadeBelt()
         {
             this.rarity = Rarity.Rare;
             this.name = "Silicon Grenade Belt";
-            this.cardText = this.writtenEffect = "Start of Combat: Deal 1 damage to the enemy Mech, twice.";
+            this.cardText = this.writtenEffect = "Start of Combat: Deal 1 damage to the enemy Upgrade, twice.";
             this.SetStats(4, 4, 2);
         }
 
@@ -345,13 +345,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [PackageAttribute(UpgradePackage.VentureCo)]
     [UpgradeAttribute]
-    public class Investrotron : Mech
+    public class Investrotron : Upgrade
     {
         public Investrotron()
         {
             this.rarity = Rarity.Epic;
             this.name = "Investotron";
-            this.cardText = this.writtenEffect = "Aftermath: Transform a random Upgrade in your shop into an Investotron. Give your Mech +4/+4.";
+            this.cardText = this.writtenEffect = "Aftermath: Transform a random Upgrade in your shop into an Investotron. Give your Upgrade +4/+4.";
             this.SetStats(5, 4, 4);
         }
 
@@ -370,7 +370,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
 
-    public class SwitchboardEffect : Mech
+    public class SwitchboardEffect : Upgrade
     {
         bool comboTrig = false;
         bool spellburst = true;
@@ -406,7 +406,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [PackageAttribute(UpgradePackage.VentureCo)]
     [UpgradeAttribute]
-    public class EncodedSwitchboard : Mech
+    public class EncodedSwitchboard : Upgrade
     {
         public EncodedSwitchboard()
         {
@@ -418,7 +418,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> legendaries = CardsFilter.FilterList<Mech>(gameHandler.players[curPlayer].shop.GetAllUpgrades(), x => x.rarity == Rarity.Legendary);
+            List<Upgrade> legendaries = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].shop.GetAllUpgrades(), x => x.rarity == Rarity.Legendary);
             int index = GameHandler.randomGenerator.Next(0, legendaries.Count());
 
             legendaries[index].extraUpgradeEffects.Add(new SwitchboardEffect());
@@ -430,7 +430,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [PackageAttribute(UpgradePackage.VentureCo)]
     [UpgradeAttribute]
-    public class NeatoMagnetMagneto : Mech
+    public class NeatoMagnetMagneto : Upgrade
     {
         private bool spellburst = true;
 
@@ -470,7 +470,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 /*
  
 [UpgradeAttribute]
-public class VentureCo : Mech
+public class VentureCo : Upgrade
 {
     public VentureCo()
     {

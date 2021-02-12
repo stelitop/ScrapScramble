@@ -24,7 +24,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         public static Dictionary<string, UpgradePackage> StringToPackageAttribute = PackageAttributeToString.ToDictionary((x) => x.Value, (x) => x.Key);
         public static Dictionary<string, UpgradePackage> LowercaseToPackageAttribute = PackageAttributeToString.ToDictionary((x) => x.Value.ToLower(), (x) => x.Key);
 
-        public Dictionary<string, List<Mech> > Packages { get; private set; }
+        public Dictionary<string, List<Upgrade> > Packages { get; private set; }
 
         public PackageHandler()
         {
@@ -33,7 +33,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         protected void LoadPackages()
         {            
-            this.Packages = new Dictionary<string, List<Mech>>();
+            this.Packages = new Dictionary<string, List<Upgrade>>();
 
             var allMechClasses =
                 // Note the AsParallel here, this will parallelize everything after.
@@ -45,7 +45,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             foreach (var x in allMechClasses)
             {
-                Mech m = (Mech)(Activator.CreateInstance(x.Type));
+                Upgrade m = (Upgrade)(Activator.CreateInstance(x.Type));
 
                 if (!Attribute.IsDefined(m.GetType(), typeof(PackageAttribute))) continue;
 
@@ -61,7 +61,7 @@ namespace ScrapScramble.Game.Cards.Mechs
                 }
                 else
                 {
-                    this.Packages.Add(packageName, new List<Mech>() { m });
+                    this.Packages.Add(packageName, new List<Upgrade>() { m });
                 }
             }
 

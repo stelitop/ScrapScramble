@@ -8,7 +8,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 {
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class ToyRocket : Mech
+    public class ToyRocket : Upgrade
     {
         public ToyRocket()
         {
@@ -22,7 +22,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class ToyTank : Mech
+    public class ToyTank : Upgrade
     {
         public ToyTank()
         {
@@ -36,7 +36,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
 
     [TokenAttribute]
-    public class PlushieClawMachine : Mech
+    public class PlushieClawMachine : Upgrade
     {
         public PlushieClawMachine()
         {
@@ -47,7 +47,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class ClawMachine : Mech
+    public class ClawMachine : Upgrade
     {
         public ClawMachine()
         {
@@ -67,7 +67,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class FerrisWheel : Mech
+    public class FerrisWheel : Upgrade
     {
         public FerrisWheel()
         {
@@ -79,7 +79,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            Mech copy = (Mech)this.DeepCopy();
+            Upgrade copy = (Upgrade)this.DeepCopy();
             copy.Cost = Math.Max(0, copy.Cost - 1);
             gameHandler.players[curPlayer].shop.AddUpgrade(copy);
         }
@@ -87,14 +87,14 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class MalfunctioningGuard : Mech
+    public class MalfunctioningGuard : Upgrade
     {
         public MalfunctioningGuard()
         {
             this.rarity = Rarity.Common;
             this.name = "Malfunctioning Guard";
-            this.cardText = "Start of Combat: Your Mech loses -4 Attack. Overload: (1)";
-            this.writtenEffect = "Start of Combat: Your Mech loses -4 Attack.";
+            this.cardText = "Start of Combat: Your Upgrade loses -4 Attack. Overload: (1)";
+            this.writtenEffect = "Start of Combat: Your Upgrade loses -4 Attack.";
             this.SetStats(4, 4, 8);
         }
 
@@ -110,7 +110,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class PeekABot : Mech
+    public class PeekABot : Upgrade
     {
         public PeekABot()
         {
@@ -129,7 +129,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                 return;
             }
 
-            List<Mech> enemyMechs = gameHandler.players[enemy].shop.GetAllUpgrades();
+            List<Upgrade> enemyMechs = gameHandler.players[enemy].shop.GetAllUpgrades();
             List<int> highestCosts = new List<int>();
             int maxCost = -1;
 
@@ -151,7 +151,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class RoboRabbit : Mech
+    public class RoboRabbit : Upgrade
     {
         public RoboRabbit()
         {
@@ -182,13 +182,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class TrickRoomster : Mech
+    public class TrickRoomster : Upgrade
     {
         public TrickRoomster()
         {
             this.rarity = Rarity.Rare;
             this.name = "Trick Roomster";
-            this.cardText = this.writtenEffect = "The Mech with the lower Attack Priority goes first instead.";
+            this.cardText = this.writtenEffect = "The Upgrade with the lower Attack Priority goes first instead.";
             this.SetStats(4, 1, 1);
         }
 
@@ -200,13 +200,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class PrizeStacker : Mech
+    public class PrizeStacker : Upgrade
     {
         public PrizeStacker()
         {
             this.rarity = Rarity.Rare;
             this.name = "Prize Stacker";
-            this.cardText = "Battlecry: Give your Mech +1/+1 for each card in your hand.";
+            this.cardText = "Battlecry: Give your Upgrade +1/+1 for each card in your hand.";
             this.SetStats(4, 2, 4);
         }
 
@@ -219,13 +219,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class SpringloadedJester : Mech
+    public class SpringloadedJester : Upgrade
     {
         public SpringloadedJester()
         {
             this.rarity = Rarity.Epic;
             this.name = "Springloaded Jester";
-            this.cardText = this.writtenEffect = "After this attacks, swap your Mech's Attack and Health.";
+            this.cardText = this.writtenEffect = "After this attacks, swap your Upgrade's Attack and Health.";
             this.SetStats(2, 1, 1);
         }
 
@@ -239,7 +239,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class FortuneWheel : Mech
+    public class FortuneWheel : Upgrade
     {
         public FortuneWheel()
         {
@@ -281,7 +281,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class HighRoller : Mech
+    public class HighRoller : Upgrade
     {
         public HighRoller()
         {
@@ -295,7 +295,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
-            Mech m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
+            Upgrade m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
             m.Cost -= 4;
             if (m.Cost < 0) m.Cost = 0;
 
@@ -305,7 +305,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class Mirrordome : Mech
+    public class Mirrordome : Upgrade
     {
         public Mirrordome()
         {
@@ -333,7 +333,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class HatChucker8000 : Mech
+    public class HatChucker8000 : Upgrade
     {
         private Rarity chosenRarity = Rarity.NO_RARITY;
         public HatChucker8000()
@@ -376,7 +376,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> upgrades = gameHandler.players[curPlayer].shop.GetAllUpgrades();
+            List<Upgrade> upgrades = gameHandler.players[curPlayer].shop.GetAllUpgrades();
 
             for (int i = 0; i < upgrades.Count(); i++)
             {
@@ -398,7 +398,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                 if (j == curPlayer) continue;
                 if (gameHandler.players[j].lives <= 0) continue;
 
-                List<Mech> upgrades = gameHandler.players[j].shop.GetAllUpgrades();
+                List<Upgrade> upgrades = gameHandler.players[j].shop.GetAllUpgrades();
 
                 for (int i = 0; i < upgrades.Count(); i++)
                 {
@@ -473,7 +473,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int amountOfTickets = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].hand.GetAllUpgrades(), x => x.name == this.name).Count();
+            int amountOfTickets = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].hand.GetAllCards(), x => x.name == this.name).Count();
 
             gameHandler.players[curPlayer].creatureData.attack += amountOfTickets;
             gameHandler.players[curPlayer].creatureData.health += amountOfTickets;
@@ -482,13 +482,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override string GetInfo(GameHandler gameHandler, int player)
         {
-            List<Card> amountOfTickets = CardsFilter.FilterList<Card>(gameHandler.players[player].hand.GetAllUpgrades(), x => x.name == this.name);
+            List<Card> amountOfTickets = CardsFilter.FilterList<Card>(gameHandler.players[player].hand.GetAllCards(), x => x.name == this.name);
 
             return base.GetInfo(gameHandler, player) + $" *({amountOfTickets.Count()})*";
         }
     }
 
-    public class SilasIronmoonEffect : Mech
+    public class SilasIronmoonEffect : Upgrade
     {
         public SilasIronmoonEffect()
         {
@@ -498,7 +498,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            //List<Card> handCards = gameHandler.players[curPlayer].hand.GetAllUpgrades();
+            //List<Card> handCards = gameHandler.players[curPlayer].hand.GetAllCards();
 
             //foreach (var card in handCards)
             //{
@@ -516,13 +516,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.IronmoonFaire)]
-    public class SilasIronmoon : Mech
+    public class SilasIronmoon : Upgrade
     {
         public SilasIronmoon()
         {
             this.rarity = Rarity.Legendary;
             this.name = "Silas Ironmoon";
-            //this.cardText = "Battlecry: Add a Ticket to your hand that gives your Mech +1/+1 and 1 Mana. Permanent Aftermath: Increase your Tickets's bonuses by 1.";
+            //this.cardText = "Battlecry: Add a Ticket to your hand that gives your Upgrade +1/+1 and 1 Mana. Permanent Aftermath: Increase your Tickets's bonuses by 1.";
             this.cardText = "Permanent Aftermath: Add a Ticket to your hand. It gives you +1/+1 and 1 Mana for each Ticket you're holding.";
             this.SetStats(7, 4, 4);
         }

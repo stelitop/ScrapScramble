@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace ScrapScramble.Game.Cards.Mechs
 {
     [UpgradeAttribute]
-    public class CarbonCarapace : Mech
+    public class CarbonCarapace : Upgrade
     {
         public CarbonCarapace()
         {
             this.rarity = Rarity.Rare;
             this.name = "Carbon Carapace";
-            this.cardText = this.writtenEffect = "Start of Combat: Gain Shields equal to the last digit of the enemy Mech's Attack.";
+            this.cardText = this.writtenEffect = "Start of Combat: Gain Shields equal to the last digit of the enemy Upgrade's Attack.";
             this.SetStats(6, 5, 5);
         }
 
@@ -26,13 +26,13 @@ namespace ScrapScramble.Game.Cards.Mechs
     }            
 
     [UpgradeAttribute]
-    public class OffbrandShoe : Mech
+    public class OffbrandShoe : Upgrade
     {
         public OffbrandShoe()
         {
             this.rarity = Rarity.Rare;
             this.name = "Offbrand Shoe";
-            this.cardText = this.writtenEffect = "Aftermath: Deal 6 damage to your Mech.";
+            this.cardText = this.writtenEffect = "Aftermath: Deal 6 damage to your Upgrade.";
             this.SetStats(1, 0, 6);
         }
 
@@ -44,7 +44,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }    
 
     [UpgradeAttribute]
-    public class MkIVSuperCobra : Mech
+    public class MkIVSuperCobra : Upgrade
     {
         public MkIVSuperCobra()
         {
@@ -70,7 +70,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }    
 
     [UpgradeAttribute]
-    public class LightningWeasel : Mech
+    public class LightningWeasel : Upgrade
     {
         public LightningWeasel()
         {
@@ -111,7 +111,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class SocietyProgressor : Mech
+    public class SocietyProgressor : Upgrade
     {
         public SocietyProgressor()
         {
@@ -140,7 +140,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }    
 
     [UpgradeAttribute]
-    public class ElectricBoogaloo : Mech
+    public class ElectricBoogaloo : Upgrade
     {
         public ElectricBoogaloo()
         {
@@ -156,7 +156,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
-            Mech m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
+            Upgrade m = gameHandler.players[curPlayer].shop.GetRandomUpgrade();
             m.creatureData.attack += 4;
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
@@ -165,7 +165,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class Pacerager : Mech
+    public class Pacerager : Upgrade
     {
         public Pacerager()
         {
@@ -186,14 +186,14 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     //[UpgradeAttribute]
-    public class PrismaticReflectotron : Mech
+    public class PrismaticReflectotron : Upgrade
     {
         private bool triggered;
         public PrismaticReflectotron()
         {
             this.rarity = Rarity.Rare;
             this.name = "Prismatic Reflectotron";
-            this.cardText = this.writtenEffect = "After your Mech takes damage for the first time, deal the same amount to the enemy Mech.";
+            this.cardText = this.writtenEffect = "After your Upgrade takes damage for the first time, deal the same amount to the enemy Upgrade.";
             this.SetStats(6, 2, 2);
             this.triggered = false;
         }
@@ -210,13 +210,13 @@ namespace ScrapScramble.Game.Cards.Mechs
     }    
 
     [UpgradeAttribute]
-    public class Autobalancer : Mech
+    public class Autobalancer : Upgrade
     {
         public Autobalancer()
         {
             this.rarity = Rarity.Rare;
             this.name = "Autobalancer";
-            this.cardText = this.writtenEffect = "Start of Combat: The player who bought fewer Upgrades last turn gives their Mech +2/+2. If tied, gain +1/+1.";
+            this.cardText = this.writtenEffect = "Start of Combat: The player who bought fewer Upgrades last turn gives their Upgrade +2/+2. If tied, gain +1/+1.";
             this.SetStats(4, 4, 4);
         }
 
@@ -247,14 +247,14 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class PlatedBeetleDrone : Mech
+    public class PlatedBeetleDrone : Upgrade
     {
         private int attacks;
         public PlatedBeetleDrone()
         {
             this.rarity = Rarity.Rare;
             this.name = "Plated Beetle Drone";
-            this.cardText = this.writtenEffect = "The first time your Mech takes damage, gain +3 Shields. The second time, gain +2. The third, +1.";
+            this.cardText = this.writtenEffect = "The first time your Upgrade takes damage, gain +3 Shields. The second time, gain +2. The third, +1.";
             this.SetStats(4, 2, 3);
             this.attacks = 0;
         }
@@ -272,7 +272,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class ByteBarker : Mech
+    public class ByteBarker : Upgrade
     {
         public ByteBarker()
         {
@@ -314,7 +314,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class ThreeDPrinter : Mech
+    public class ThreeDPrinter : Upgrade
     {
         public ThreeDPrinter()
         {
@@ -358,7 +358,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class BrassBracer : Mech
+    public class BrassBracer : Upgrade
     {
         public BrassBracer()
         {
@@ -375,7 +375,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class RadiatingCrucible : Mech
+    public class RadiatingCrucible : Upgrade
     {
         public RadiatingCrucible()
         {
@@ -392,7 +392,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }   
 
     //[UpgradeAttribute]
-    public class FuriousRelic : Mech
+    public class FuriousRelic : Upgrade
     {
         bool triggered = false;
 
@@ -400,7 +400,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Rare;
             this.name = "Furious Relic";
-            this.cardText = this.writtenEffect = "Start of Combat: The next time your Mech attacks, it attacks twice in a row.";
+            this.cardText = this.writtenEffect = "Start of Combat: The next time your Upgrade attacks, it attacks twice in a row.";
             this.SetStats(6, 2, 2);
         }
 
@@ -442,14 +442,14 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     //[UpgradeAttribute]
-    public class DivineRelic : Mech
+    public class DivineRelic : Upgrade
     {
         private bool triggered = false;
         public DivineRelic()
         {
             this.rarity = Rarity.Rare;
             this.name = "Divine Relic";
-            this.cardText = this.writtenEffect = "Start of Combat: The next time your Mech would take damage this turn, ignore it.";
+            this.cardText = this.writtenEffect = "Start of Combat: The next time your Upgrade would take damage this turn, ignore it.";
             this.SetStats(6, 2, 2);
         }
 
@@ -466,7 +466,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     }    
 
     [TokenAttribute]
-    public class BeeBot : Mech
+    public class BeeBot : Upgrade
     {
         public BeeBot()
         {
@@ -476,7 +476,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    public class HiveMindEffect : Mech
+    public class HiveMindEffect : Upgrade
     {
         public HiveMindEffect()
         {
@@ -484,14 +484,14 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.writtenEffect = "After you buy an Upgrade this turn, add a 1/1 Bee Bot to your shop.";
         }
 
-        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].shop.AddUpgrade(new BeeBot());
         }
     }
 
     [UpgradeAttribute]
-    public class HiveMind : Mech
+    public class HiveMind : Upgrade
     {
         public HiveMind()
         {
@@ -514,7 +514,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 /*
 
 [UpgradeAttribute]
-public class NextMech : Mech
+public class NextMech : Upgrade
 {
     public NextMech()
     {

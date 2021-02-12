@@ -9,21 +9,21 @@ namespace ScrapScramble.Game.Effects
 {   
     public class Shop
     {
-        private List<Mech> options;
+        private List<Upgrade> options;
         public int totalSize { get { return options.Count(); } }
 
         public Shop()
         {
-            this.options = new List<Mech>();
+            this.options = new List<Upgrade>();
         }
 
-        public int AddUpgrade(Mech m)
+        public int AddUpgrade(Upgrade m)
         {
-            this.options.Add((Mech)m.DeepCopy());
+            this.options.Add((Upgrade)m.DeepCopy());
 
             return this.options.Count() - 1;
         }
-        public Mech At(int index)
+        public Upgrade At(int index)
         {
             if (index < 0 || index >= this.options.Count()) return new BlankUpgrade();
             else if (this.options[index].name == BlankUpgrade.name) return new BlankUpgrade();
@@ -45,7 +45,7 @@ namespace ScrapScramble.Game.Effects
             }
             return ret;
         }
-        public Mech GetRandomUpgrade()
+        public Upgrade GetRandomUpgrade()
         {
             List<int> indexes = new List<int>();
             for (int i=0; i<options.Count(); i++)
@@ -67,16 +67,16 @@ namespace ScrapScramble.Game.Effects
             if (indexes.Count() == 0) return -1;
             return indexes[GameHandler.randomGenerator.Next(0, indexes.Count())];
         }
-        public void TransformUpgrade(int index, Mech m)
+        public void TransformUpgrade(int index, Upgrade m)
         {
             if (index < 0 || index >= this.options.Count()) return;
             else if (this.options[index].name == BlankUpgrade.name) return;
 
-            this.options[index] = (Mech)m.DeepCopy();
+            this.options[index] = (Upgrade)m.DeepCopy();
         }
-        public List<Mech> GetAllUpgrades()
+        public List<Upgrade> GetAllUpgrades()
         {
-            List<Mech> ret = new List<Mech>();
+            List<Upgrade> ret = new List<Upgrade>();
             for (int i=0; i<options.Count(); i++)
             {
                 if (options[i].name != BlankUpgrade.name) ret.Add(options[i]);
@@ -113,7 +113,7 @@ namespace ScrapScramble.Game.Effects
         {
             int commons = gameHandler.shopRarities.common, rares = gameHandler.shopRarities.rare, epics = gameHandler.shopRarities.epic, legendaries = gameHandler.shopRarities.legendary;
 
-            List<Mech> kept = new List<Mech>();
+            List<Upgrade> kept = new List<Upgrade>();
 
             for (int i=0; i<this.options.Count(); i++)
             {
@@ -121,7 +121,7 @@ namespace ScrapScramble.Game.Effects
                 {                    
                     if (decreaseFreeze) this.options[i].creatureData.staticKeywords[StaticKeyword.Freeze]--;
                     
-                    kept.Add((Mech)this.options[i].DeepCopy());
+                    kept.Add((Upgrade)this.options[i].DeepCopy());
                     
                     if (this.options[i].rarity == Rarity.Common) commons--;
                     else if (this.options[i].rarity == Rarity.Rare) rares--;
@@ -133,33 +133,33 @@ namespace ScrapScramble.Game.Effects
             this.options.Clear();
             this.options = kept;
 
-            List<Mech> subList = new List<Mech>();
+            List<Upgrade> subList = new List<Upgrade>();
 
-            subList = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary && x.Cost <= maxMana - 5);            
+            subList = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary && x.Cost <= maxMana - 5);            
             for (int i = 0; i < legendaries; i++)
             {
-                Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
+                Upgrade m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
                 this.AddUpgrade(m);
             }
 
-            subList = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Epic && x.Cost <= maxMana - 5);
+            subList = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Epic && x.Cost <= maxMana - 5);
             for (int i = 0; i < epics; i++)
             {
-                Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
+                Upgrade m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
                 this.AddUpgrade(m);
             }
 
-            subList = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Rare && x.Cost <= maxMana - 5);
+            subList = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Rare && x.Cost <= maxMana - 5);
             for (int i = 0; i < rares; i++)
             {
-                Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
+                Upgrade m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
                 this.AddUpgrade(m);
             }
             
-            subList = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Common && x.Cost <= maxMana - 5);
+            subList = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Common && x.Cost <= maxMana - 5);
             for (int i = 0; i < commons; i++)
             {
-                Mech m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
+                Upgrade m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
                 this.AddUpgrade(m);
             }
 
@@ -200,7 +200,7 @@ namespace ScrapScramble.Game.Effects
         }       
     }
 
-    public class BlankUpgrade : Mech
+    public class BlankUpgrade : Upgrade
     {
         public new const string name = "Blank";
 

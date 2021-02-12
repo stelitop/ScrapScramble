@@ -12,19 +12,19 @@ namespace ScrapScramble.Game
 {    
     public class MinionPool
     {
-        public List<Mech> mechs;
+        public List<Upgrade> mechs;
         public List<Spell> spareparts;
         
         public MinionPool()
         {
-            this.mechs = new List<Mech>();
+            this.mechs = new List<Upgrade>();
             this.spareparts = new List<Spell>();
             this.FillGenericMinionPool();
         }        
 
-        public MinionPool(List<Mech> mechs)
+        public MinionPool(List<Upgrade> mechs)
         {
-            this.mechs = new List<Mech>(mechs);
+            this.mechs = new List<Upgrade>(mechs);
         }
 
         public void GenericMinionPollSort()
@@ -34,7 +34,7 @@ namespace ScrapScramble.Game
 
         public void FillGenericMinionPool()
         {
-            this.mechs = new List<Mech>();
+            this.mechs = new List<Upgrade>();
 
             var allMechClasses =
                 // Note the AsParallel here, this will parallelize everything after.
@@ -46,7 +46,7 @@ namespace ScrapScramble.Game
 
             foreach (var x in allMechClasses)
             {
-                this.mechs.Add((Mech)(Activator.CreateInstance(x.Type)));
+                this.mechs.Add((Upgrade)(Activator.CreateInstance(x.Type)));
             }
 
             this.spareparts = new List<Spell>();
@@ -82,7 +82,7 @@ namespace ScrapScramble.Game
 
         //    var mechJson = JsonConvert.DeserializeObject<MechJsonTemplate>(json);            
 
-        //    Mech mech = new Mech(mechJson);
+        //    Upgrade mech = new Upgrade(mechJson);
 
         //    this.mechs.Add(mech);
 

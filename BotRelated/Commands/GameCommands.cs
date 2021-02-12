@@ -20,7 +20,7 @@ namespace ScrapScramble.BotRelated.Commands
         [Command("signup")]
         [Description("Signs you up for the next game.")]
         [RequireGuild]
-        public async Task SignUp(CommandContext ctx, [Description("The name of your Mech")][RemainingText]string mechName)
+        public async Task SignUp(CommandContext ctx, [Description("The name of your Upgrade")][RemainingText]string mechName)
         {            
             DiscordEmbedBuilder responseMessage;                  
 
@@ -68,7 +68,7 @@ namespace ScrapScramble.BotRelated.Commands
                     responseMessage = new DiscordEmbedBuilder
                     {
                         Title = "Signed up successfully",
-                        Description = $"Your Mech is called \"{mechName}\"",
+                        Description = $"Your Upgrade is called \"{mechName}\"",
                         Color = DiscordColor.Green
                     };
 
@@ -96,7 +96,7 @@ namespace ScrapScramble.BotRelated.Commands
                 responseMessage = new DiscordEmbedBuilder
                 {
                     Title = "You have not signed up",
-                    Description = "You can signup using ?signup (Your Mech name here).",
+                    Description = "You can signup using ?signup (Your Upgrade name here).",
                     Color = DiscordColor.Red
                 };
             }
@@ -142,9 +142,9 @@ namespace ScrapScramble.BotRelated.Commands
         }
 
         [Command("rename")]
-        [Description("Renames your Mech.")]
+        [Description("Renames your Upgrade.")]
         [RequireGuild]
-        public async Task MechRename(CommandContext ctx, [Description("The new name of your Mech")][RemainingText]string mechName)
+        public async Task MechRename(CommandContext ctx, [Description("The new name of your Upgrade")][RemainingText]string mechName)
         {
             DiscordEmbedBuilder responseMessage;
 
@@ -154,7 +154,7 @@ namespace ScrapScramble.BotRelated.Commands
                 responseMessage = new DiscordEmbedBuilder
                 {
                     Title = "You have not signed up",
-                    Description = "You can signup using ?signup (Your Mech name here).",
+                    Description = "You can signup using ?signup (Your Upgrade name here).",
                     Color = DiscordColor.Red
                 };
             }
@@ -164,7 +164,7 @@ namespace ScrapScramble.BotRelated.Commands
                 responseMessage = new DiscordEmbedBuilder
                 {
                     Title = "A game has already started",
-                    Description = "You cannot change your Mech name while in game.",
+                    Description = "You cannot change your Upgrade name while in game.",
                     Color = DiscordColor.Red
                 };
             }
@@ -194,8 +194,8 @@ namespace ScrapScramble.BotRelated.Commands
 
                     responseMessage = new DiscordEmbedBuilder
                     {
-                        Title = "Mech renamed successfully.",
-                        Description = $"Your Mech is now called {mechName}",
+                        Title = "Upgrade renamed successfully.",
+                        Description = $"Your Upgrade is now called {mechName}",
                         Color = DiscordColor.Green
                     };
                 }
@@ -276,7 +276,7 @@ namespace ScrapScramble.BotRelated.Commands
 
             if (candidates.Count() == 1)
             {
-                Mech mech = BotInfoHandler.gameHandler.pool.mechs[candidates[0]];
+                Upgrade mech = BotInfoHandler.gameHandler.pool.mechs[candidates[0]];
                 responseMessage = new DiscordEmbedBuilder
                 {
                     Title = $"{mech.name}",
@@ -513,10 +513,10 @@ namespace ScrapScramble.BotRelated.Commands
             
             msg += $"\n\nUpgrade Pool Rarity Breakdown:\n";
             msg += $"C-R-E-L: ";
-            msg += $"{CardsFilter.FilterList<Mech>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Common).Count()}-";
-            msg += $"{CardsFilter.FilterList<Mech>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Rare).Count()}-";
-            msg += $"{CardsFilter.FilterList<Mech>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Epic).Count()}-";
-            msg += $"{CardsFilter.FilterList<Mech>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary).Count()}";
+            msg += $"{CardsFilter.FilterList<Upgrade>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Common).Count()}-";
+            msg += $"{CardsFilter.FilterList<Upgrade>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Rare).Count()}-";
+            msg += $"{CardsFilter.FilterList<Upgrade>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Epic).Count()}-";
+            msg += $"{CardsFilter.FilterList<Upgrade>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary).Count()}";
 
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
                 Title = "Game Info",

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ScrapScramble.Game.Cards.Mechs
 {                          
     [UpgradeAttribute]
-    public class OddsEvener : Mech
+    public class OddsEvener : Upgrade
     {
         public OddsEvener()
         {
@@ -43,7 +43,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 /*
 
 [UpgradeAttribute]
-public class NextMech : Mech
+public class NextMech : Upgrade
 {
     public NextMech()
     {

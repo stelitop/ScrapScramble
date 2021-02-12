@@ -79,7 +79,7 @@ namespace ScrapScramble.BotRelated
             string aftermathMsg = gameHandler.players[index].GetAftermathMessages();            
             if (!aftermathMsg.Equals(string.Empty)) msg.AddField("[Aftermath]", aftermathMsg);
 
-            msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfoGeneral(BotInfoHandler.gameHandler, index) + "\n", true);                       
+            msg.AddField("[Upgrade Info]", gameHandler.players[index].PrintInfoGeneral(BotInfoHandler.gameHandler, index) + "\n", true);                       
             msg.AddField("[Keywords]", gameHandler.players[index].PrintInfoKeywords(BotInfoHandler.gameHandler) + "\n", true);
             msg.AddField("[Upgrades]", gameHandler.players[index].PrintInfoUpgrades(BotInfoHandler.gameHandler) + "\n", true);
             msg.AddField("[Effects]", gameHandler.players[index].PrintInfoEffects(BotInfoHandler.gameHandler) + "\n");

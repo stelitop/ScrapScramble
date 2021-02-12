@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ScrapScramble.Game.Cards.Mechs
 {
     //[UpgradeAttribute]
-    public class CheapFillerLegendary : Mech
+    public class CheapFillerLegendary : Upgrade
     {
         public CheapFillerLegendary()
         {
@@ -20,13 +20,13 @@ namespace ScrapScramble.Game.Cards.Mechs
     }
 
     [UpgradeAttribute]
-    public class LadyInByte : Mech
+    public class LadyInByte : Upgrade
     {
         public LadyInByte()
         {
             this.rarity = Rarity.Legendary;
             this.name = "Lady in Byte";
-            this.cardText = this.writtenEffect = "Aftermath: Set your Mech's Attack equal to its Health.";
+            this.cardText = this.writtenEffect = "Aftermath: Set your Upgrade's Attack equal to its Health.";
             this.SetStats(6, 5, 5);
         }
 
@@ -42,7 +42,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 /*
 
 [UpgradeAttribute]
-public class NextMech : Mech
+public class NextMech : Upgrade
 {
     public NextMech()
     {

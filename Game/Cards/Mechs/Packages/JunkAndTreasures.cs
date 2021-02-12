@@ -8,7 +8,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 {
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class BronzeBruiser : Mech
+    public class BronzeBruiser : Upgrade
     {
         public BronzeBruiser()
         {
@@ -18,14 +18,14 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 2);
         }
 
-        private bool Criteria(Mech m)
+        private bool Criteria(Upgrade m)
         {
             if (m.rarity == Rarity.Common) return true;
             return false;
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, this.Criteria);
 
             for (int i = 0; i < 4; i++)
             {
@@ -40,7 +40,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class SilverShogun : Mech
+    public class SilverShogun : Upgrade
     {
         public SilverShogun()
         {
@@ -50,14 +50,14 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(3, 2, 3);
         }
 
-        private bool Criteria(Mech m)
+        private bool Criteria(Upgrade m)
         {
             if (m.rarity == Rarity.Rare) return true;
             return false;
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, this.Criteria);
 
             for (int i = 0; i < 3; i++)
             {
@@ -72,7 +72,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class GoldenGunner : Mech
+    public class GoldenGunner : Upgrade
     {
         public GoldenGunner()
         {
@@ -82,14 +82,14 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(4, 3, 4);
         }
 
-        private bool Criteria(Mech m)
+        private bool Criteria(Upgrade m)
         {
             if (m.rarity == Rarity.Epic) return true;
             return false;
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, this.Criteria);
 
             for (int i = 0; i < 2; i++)
             {
@@ -104,7 +104,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class PlatinumParagon : Mech
+    public class PlatinumParagon : Upgrade
     {
         public PlatinumParagon()
         {
@@ -114,14 +114,14 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(5, 4, 5);
         }
 
-        private bool Criteria(Mech m)
+        private bool Criteria(Upgrade m)
         {
             if (m.rarity == Rarity.Legendary) return true;
             return false;
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, this.Criteria);
 
             for (int i = 0; i < 1; i++)
             {
@@ -136,7 +136,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class CircusCircuit : Mech
+    public class CircusCircuit : Upgrade
     {
         public CircusCircuit()
         {
@@ -159,7 +159,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class MagnetBall : Mech
+    public class MagnetBall : Upgrade
     {
         public MagnetBall()
         {
@@ -175,7 +175,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class BoomerangMagnet : Mech
+    public class BoomerangMagnet : Upgrade
     {
         public BoomerangMagnet()
         {
@@ -191,7 +191,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class TrashCube : Mech
+    public class TrashCube : Upgrade
     {
         public TrashCube()
         {
@@ -206,13 +206,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class Scrapbarber : Mech
+    public class Scrapbarber : Upgrade
     {
         public Scrapbarber()
         {
             this.rarity = Rarity.Rare;
             this.name = "Scrapbarber";
-            this.cardText = this.writtenEffect = "After this attacks the enemy Mech, steal 2 Attack and Health from it.";
+            this.cardText = this.writtenEffect = "After this attacks the enemy Upgrade, steal 2 Attack and Health from it.";
             this.SetStats(5, 3, 3);
         }
 
@@ -235,7 +235,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class ScrapStacker : Mech
+    public class ScrapStacker : Upgrade
     {
         public ScrapStacker()
         {
@@ -246,7 +246,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(8, 4, 4);
         }
 
-        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += 2;
             gameHandler.players[curPlayer].creatureData.health += 2;
@@ -255,7 +255,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class FallenReaver : Mech
+    public class FallenReaver : Upgrade
     {
         public FallenReaver()
         {
@@ -282,19 +282,19 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class CompetentScrapper : Mech
+    public class CompetentScrapper : Upgrade
     {
         public CompetentScrapper()
         {
             this.rarity = Rarity.Epic;
             this.name = "Competent Scrapper";
-            this.cardText = "Battlecry: Discard all Spare Parts in your hand. Give your Mech +3/+3 for each.";
+            this.cardText = "Battlecry: Discard all Spare Parts in your hand. Give your Upgrade +3/+3 for each.";
             this.SetStats(4, 3, 4);
         }
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<int> handIndexes = gameHandler.players[curPlayer].hand.GetAllUpgradeIndexes();
+            List<int> handIndexes = gameHandler.players[curPlayer].hand.GetAllCardIndexes();
 
             for (int i = 0; i < handIndexes.Count(); i++)
             {
@@ -310,20 +310,20 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class SuperScooper : Mech
+    public class SuperScooper : Upgrade
     {
         public SuperScooper()
         {
             this.rarity = Rarity.Epic;
             this.name = "Super Scooper";
-            this.cardText = this.writtenEffect = "Start of Combat: Steal the stats of the lowest-cost Upgrade your opponent bought last turn from their Mech.";
+            this.cardText = this.writtenEffect = "Start of Combat: Steal the stats of the lowest-cost Upgrade your opponent bought last turn from their Upgrade.";
             this.SetStats(8, 3, 7);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int lowestCost = 9999;
-            List<Mech> upgradesList = new List<Mech>();
+            List<Upgrade> upgradesList = new List<Upgrade>();
 
             for (int i = 0; i < gameHandler.players[enemy].boughtThisTurn.Count(); i++)
             {
@@ -364,7 +364,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class Solartron3000 : Mech
+    public class Solartron3000 : Upgrade
     {
         private bool triggered;
 
@@ -379,7 +379,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.triggered = false;
         }
 
-        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (triggered == false)
             {
@@ -397,7 +397,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         public Receipt()
         {
             this.name = "Receipt";
-            this.cardText = "Name a number of Attack or Health. Remove that much from your Mech and gain half that Mana this turn only (rounded down).";
+            this.cardText = "Name a number of Attack or Health. Remove that much from your Upgrade and gain half that Mana this turn only (rounded down).";
             this.Cost = 0;
             this.rarity = SpellRarity.Spell;
         }
@@ -443,11 +443,11 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    public class Scrap4CashEffect : Mech
+    public class Scrap4CashEffect : Upgrade
     {
         public Scrap4CashEffect()
         {
-            this.writtenEffect = "Permanent Aftermath: Add a Receipt to your hand. It can refund your Mech's stats for Mana.";
+            this.writtenEffect = "Permanent Aftermath: Add a Receipt to your hand. It can refund your Upgrade's stats for Mana.";
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -459,13 +459,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.JunkAndTreasures)]
-    public class MrScrap4Cash : Mech
+    public class MrScrap4Cash : Upgrade
     {
         public MrScrap4Cash()
         {
             this.rarity = Rarity.Legendary;
             this.name = "Mr. Scrap-4-Cash";
-            this.cardText = "Permanent Aftermath: Add a Receipt to your hand. It can refund your Mech's stats for Mana.";
+            this.cardText = "Permanent Aftermath: Add a Receipt to your hand. It can refund your Upgrade's stats for Mana.";
             this.SetStats(5, 5, 5);
             this.extraUpgradeEffects.Add(new Scrap4CashEffect());
         }

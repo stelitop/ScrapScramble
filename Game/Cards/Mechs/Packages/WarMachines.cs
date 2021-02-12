@@ -8,7 +8,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 {
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class HelicopterBlades : Mech
+    public class HelicopterBlades : Upgrade
     {
         public HelicopterBlades()
         {
@@ -28,7 +28,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class SixpistolConstable : Mech
+    public class SixpistolConstable : Upgrade
     {
         public SixpistolConstable()
         {
@@ -42,7 +42,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class ArmOfExotron : Mech
+    public class ArmOfExotron : Upgrade
     {
         public ArmOfExotron()
         {
@@ -71,7 +71,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class LegOfExotron : Mech
+    public class LegOfExotron : Upgrade
     {
         public LegOfExotron()
         {
@@ -100,7 +100,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class MotherboardOfExotron : Mech
+    public class MotherboardOfExotron : Upgrade
     {
         public MotherboardOfExotron()
         {
@@ -126,7 +126,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class WheelOfExotron : Mech
+    public class WheelOfExotron : Upgrade
     {
         public WheelOfExotron()
         {
@@ -156,7 +156,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class CopperplatedPrince : Mech
+    public class CopperplatedPrince : Upgrade
     {
         public CopperplatedPrince()
         {
@@ -176,7 +176,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class CopperplatedPrincess : Mech
+    public class CopperplatedPrincess : Upgrade
     {
         public CopperplatedPrincess()
         {
@@ -196,7 +196,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class PacifisticRecruitomatic : Mech
+    public class PacifisticRecruitomatic : Upgrade
     {
         public PacifisticRecruitomatic()
         {
@@ -206,14 +206,14 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 0, 3);
         }
 
-        private bool Criteria(Mech m)
+        private bool Criteria(Upgrade m)
         {
             if (m.creatureData.attack == 0) return true;
             return false;
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> list = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, this.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, this.Criteria);
 
             for (int i = 0; i < 3; i++)
             {
@@ -228,13 +228,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class HomingMissile : Mech
+    public class HomingMissile : Upgrade
     {
         public HomingMissile()
         {
             this.rarity = Rarity.Rare;
             this.name = "Homing Missile";
-            this.cardText = this.writtenEffect = "Aftermath: Reduce the Health of your opponent's Mech by 5 (but not below 1).";
+            this.cardText = this.writtenEffect = "Aftermath: Reduce the Health of your opponent's Upgrade by 5 (but not below 1).";
             this.SetStats(4, 3, 3);
         }
 
@@ -245,19 +245,19 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             gameHandler.players[enemy].creatureData.health -= 5;
             if (gameHandler.players[enemy].creatureData.health < 1) gameHandler.players[enemy].creatureData.health = 1;
             gameHandler.players[enemy].aftermathMessages.Add(
-                $"{gameHandler.players[curPlayer].name}'s Homing Missile reduced your Mech's Health to {gameHandler.players[enemy].creatureData.health}.");
+                $"{gameHandler.players[curPlayer].name}'s Homing Missile reduced your Upgrade's Health to {gameHandler.players[enemy].creatureData.health}.");
         }
     }
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class Hypnodrone : Mech
+    public class Hypnodrone : Upgrade
     {
         public Hypnodrone()
         {
             this.rarity = Rarity.Rare;
             this.name = "Hypnodrone";
-            this.cardText = this.writtenEffect = "Aftermath: Reduce the Attack of your opponent's Mech by 5 (but not below 1).";
+            this.cardText = this.writtenEffect = "Aftermath: Reduce the Attack of your opponent's Upgrade by 5 (but not below 1).";
             this.SetStats(7, 6, 6);
         }
 
@@ -267,13 +267,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
             gameHandler.players[enemy].creatureData.attack -= 5;
             if (gameHandler.players[enemy].creatureData.attack < 1) gameHandler.players[enemy].creatureData.attack = 1;
-            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Hypnodrone reduced your Mech's Attack by 5, leaving it with {gameHandler.players[enemy].creatureData.attack} Attack.");
+            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Hypnodrone reduced your Upgrade's Attack by 5, leaving it with {gameHandler.players[enemy].creatureData.attack} Attack.");
         }
     }
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class CopperCommander : Mech
+    public class CopperCommander : Upgrade
     {
         public CopperCommander()
         {
@@ -291,13 +291,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class DeflectOShield : Mech
+    public class DeflectOShield : Upgrade
     {
         public DeflectOShield()
         {
             this.rarity = Rarity.Epic;
             this.name = "Deflect-o-Shield";
-            this.cardText = this.writtenEffect = "Prevent any damage to your Mech that would deal 2 or less damage.";
+            this.cardText = this.writtenEffect = "Prevent any damage to your Upgrade that would deal 2 or less damage.";
             this.SetStats(4, 2, 2);
         }
 
@@ -313,14 +313,14 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class PanicButton : Mech
+    public class PanicButton : Upgrade
     {
         private bool triggered;
         public PanicButton()
         {
             this.rarity = Rarity.Epic;
             this.name = "Panic Button";
-            this.cardText = this.writtenEffect = "After your Mech is reduced to 5 or less Health, deal 10 damage to the enemy Mech.";
+            this.cardText = this.writtenEffect = "After your Upgrade is reduced to 5 or less Health, deal 10 damage to the enemy Upgrade.";
             this.SetStats(5, 3, 3);
             this.triggered = false;
         }
@@ -338,13 +338,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.WarMachines)]
-    public class ExotronTheForbidden : Mech
+    public class ExotronTheForbidden : Upgrade
     {
         public ExotronTheForbidden()
         {
             this.rarity = Rarity.Legendary;
             this.name = "Exotron the Forbidden";
-            this.cardText = this.writtenEffect = "Start of Combat: If you've bought all 5 parts of Exotron this game, destroy the enemy Mech.";
+            this.cardText = this.writtenEffect = "Start of Combat: If you've bought all 5 parts of Exotron this game, destroy the enemy Upgrade.";
             this.SetStats(15, 15, 15);
         }
 

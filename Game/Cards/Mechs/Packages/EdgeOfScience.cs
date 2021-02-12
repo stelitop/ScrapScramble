@@ -8,7 +8,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 {
     [UpgradeAttribute]
     [Package(UpgradePackage.EdgeOfScience)]
-    public class OrbitalMechanosphere : Mech
+    public class OrbitalMechanosphere : Upgrade
     {
         public OrbitalMechanosphere()
         {
@@ -21,7 +21,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.EdgeOfScience)]
-    public class IndecisiveAutoshopper : Mech
+    public class IndecisiveAutoshopper : Upgrade
     {
         public IndecisiveAutoshopper()
         {
@@ -40,13 +40,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.EdgeOfScience)]
-    public class MassAccelerator : Mech
+    public class MassAccelerator : Upgrade
     {
         public MassAccelerator()
         {
             this.rarity = Rarity.Epic;
             this.name = "Mass Accelerator";
-            this.cardText = this.writtenEffect = "Start of Combat: If you're Overloaded, deal 5 damage to the enemy Mech.";
+            this.cardText = this.writtenEffect = "Start of Combat: If you're Overloaded, deal 5 damage to the enemy Upgrade.";
             this.SetStats(6, 5, 5);
         }
 
@@ -66,7 +66,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.EdgeOfScience)]
-    public class PhilosophersStone : Mech
+    public class PhilosophersStone : Upgrade
     {
         public PhilosophersStone()
         {
@@ -78,9 +78,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Mech> legendaries = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary && x.Cost <= gameHandler.maxMana - 5);
-            List<Mech> epics = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Epic && x.Cost <= gameHandler.maxMana - 5);
-            List<Mech> rares = CardsFilter.FilterList<Mech>(gameHandler.pool.mechs, x => x.rarity == Rarity.Rare && x.Cost <= gameHandler.maxMana - 5);
+            List<Upgrade> legendaries = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary && x.Cost <= gameHandler.maxMana - 5);
+            List<Upgrade> epics = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Epic && x.Cost <= gameHandler.maxMana - 5);
+            List<Upgrade> rares = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Rare && x.Cost <= gameHandler.maxMana - 5);
 
             List<int> shopIndexes = gameHandler.players[curPlayer].shop.GetAllUpgradeIndexes();
 
@@ -106,7 +106,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.EdgeOfScience)]
-    public class ChaosPrism : Mech
+    public class ChaosPrism : Upgrade
     {
         private int spellbursts = 3;
 
@@ -135,7 +135,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.EdgeOfScience)]
-    public class ParadoxEngine : Mech
+    public class ParadoxEngine : Upgrade
     {
         public ParadoxEngine()
         {
@@ -146,7 +146,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(12, 10, 10);
         }
 
-        public override void OnBuyingAMech(Mech m, GameHandler gameHandler, int curPlayer, int enemy)
+        public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.maxMana, false);
         }

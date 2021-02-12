@@ -13,7 +13,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.Cost = 1;
             this.name = "Whirling Blades";
-            this.cardText = "Give your Mech +2 Attack and +4 Spikes.";
+            this.cardText = "Give your Upgrade +2 Attack and +4 Spikes.";
             this.rarity = SpellRarity.Spare_Part;
         }
 
@@ -38,7 +38,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.Cost = 1;
             this.name = "Armor Plating";
-            this.cardText = "Give your Mech +2 Health and +4 Shields.";
+            this.cardText = "Give your Upgrade +2 Health and +4 Shields.";
             this.rarity = SpellRarity.Spare_Part;
         }
 
@@ -63,7 +63,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.Cost = 1;
             this.name = "Reversing Switch";
-            this.cardText = "Swap your Mech's Attack and Health.";
+            this.cardText = "Swap your Upgrade's Attack and Health.";
             this.rarity = SpellRarity.Spare_Part;
         }
 
@@ -76,7 +76,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            Mech m = gameHandler.players[curPlayer].shop.At(shopPos);
+            Upgrade m = gameHandler.players[curPlayer].shop.At(shopPos);
             GeneralFunctions.Swap<int>(ref m.creatureData.attack, ref m.creatureData.health);
         }
     }
@@ -88,7 +88,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.Cost = 1;
             this.name = "Time Accelerator";
-            this.cardText = "Give your Mech Rush.";
+            this.cardText = "Give your Upgrade Rush.";
             this.rarity = SpellRarity.Spare_Part;
         }
 
@@ -111,7 +111,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.Cost = 1;
             this.name = "Rusty Horn";
-            this.cardText = "Give your Mech +3/+3 and Taunt.";
+            this.cardText = "Give your Upgrade +3/+3 and Taunt.";
             this.rarity = SpellRarity.Spare_Part;
         }
 

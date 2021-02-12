@@ -22,7 +22,7 @@ namespace ScrapScramble.BotRelated.Commands
 
         //    DiscordEmbedBuilder responseMessage = new DiscordEmbedBuilder
         //    {
-        //        Title = "Your Mech's Data",
+        //        Title = "Your Upgrade's Data",
         //        Description = BotInfoHandler.gameHandler.players[index].PrintInfo(BotInfoHandler.gameHandler),
         //        Color = DiscordColor.Brown
         //    };
@@ -50,7 +50,7 @@ namespace ScrapScramble.BotRelated.Commands
         }
 
         [Command("buy")]
-        [Description("Buys an Upgrade in your shop and attaches it to your Mech.")]
+        [Description("Buys an Upgrade in your shop and attaches it to your Upgrade.")]
         public async Task BuyUpgrade(CommandContext ctx, [Description("Index of the Upgrade in your shop")]int shopPos)
         {
             shopPos--;
@@ -81,7 +81,7 @@ namespace ScrapScramble.BotRelated.Commands
         }
 
         [Command("play")]
-        [Description("Plays an Upgrade from your hand and attaches it to your Mech.")]
+        [Description("Plays an Upgrade from your hand and attaches it to your Upgrade.")]
         public async Task PlayCard(CommandContext ctx, [Description("Index of the Upgrade in your hand")]int handPos)
         {
             handPos--;
@@ -112,7 +112,7 @@ namespace ScrapScramble.BotRelated.Commands
         }
 
         [Command("refreshui")]
-        [Description("Sends a new UI that displays your Mech's information and deletes the old one (if possible).")]
+        [Description("Sends a new UI that displays your Upgrade's information and deletes the old one (if possible).")]
         public async Task NewUI(CommandContext ctx)
         {
             int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
@@ -141,7 +141,7 @@ namespace ScrapScramble.BotRelated.Commands
                 responseMessage = new DiscordEmbedBuilder
                 {
                     Title = "You Have Readied Successfully",
-                    Description = "You can still make changes to your Mech but you will need to use >ready again.",
+                    Description = "You can still make changes to your Upgrade but you will need to use >ready again.",
                     Color = DiscordColor.Green
                 };
                 BotInfoHandler.gameHandler.players[index].ready = true;
