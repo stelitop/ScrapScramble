@@ -17,7 +17,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += 2;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
@@ -42,7 +42,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.health += 2;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
@@ -67,7 +67,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int mid = gameHandler.players[curPlayer].creatureData.attack;
             gameHandler.players[curPlayer].creatureData.attack = gameHandler.players[curPlayer].creatureData.health;
@@ -92,7 +92,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush]++;
         }
@@ -115,7 +115,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Taunt]++;
             gameHandler.players[curPlayer].creatureData.attack += 3;
@@ -142,7 +142,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].curMana += 2;
         }
@@ -159,15 +159,12 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int pos = PlayerInteraction.FreezeUpgradeInShop(gameHandler, curPlayer, enemy, 1);
+            Upgrade chosen = await PlayerInteraction.FreezeUpgradeInShopAsync(gameHandler, curPlayer, enemy, 1);
 
-            if (pos != -1)
-            {
-                gameHandler.players[curPlayer].shop.At(pos).creatureData.attack += 4;
-                gameHandler.players[curPlayer].shop.At(pos).creatureData.health += 4;
-            }
+            chosen.creatureData.attack += 4;
+            chosen.creatureData.health += 4;            
         }
 
         public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
@@ -196,7 +193,7 @@ public class SP : Spell
         this.rarity = SpellRarity.Spare_Part;
     }
 
-    public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+    public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
     {
         base.OnPlay(gameHandler, curPlayer, enemy);
     }

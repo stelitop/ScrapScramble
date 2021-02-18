@@ -68,8 +68,8 @@ namespace ScrapScramble.Game
         public void StartNewGame()
         {
             this.maxMana = 10;
-            this.pool = new MinionPool();
-            this.pool.FillGenericMinionPool();
+            //this.pool = new MinionPool();
+            //this.pool.FillGenericMinionPool();
 
             for (int i=0; i<this.players.Count(); i++)
             {                

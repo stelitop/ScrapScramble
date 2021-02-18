@@ -253,8 +253,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    //[UpgradeAttribute]
+    //[Package(UpgradePackage.JunkAndTreasures)]
     public class GemRefiner : Upgrade
     {
         public GemRefiner()
@@ -265,14 +265,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(3, 1, 1);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int chosenUpgrade = PlayerInteraction.ChooseUpgradeInShop(gameHandler, curPlayer, enemy);
-            if (chosenUpgrade < 0) return;
+            Upgrade chosen = await PlayerInteraction.ChooseUpgradeInShopAsync(gameHandler, curPlayer, enemy);
 
-            gameHandler.players[curPlayer].shop.At(chosenUpgrade).Cost = 1;
-            gameHandler.players[curPlayer].shop.At(chosenUpgrade).creatureData.health = 1;
-            gameHandler.players[curPlayer].shop.At(chosenUpgrade).creatureData.health = 1;
+            chosen.Cost = 1;
+            chosen.creatureData.health = 1;
+            chosen.creatureData.health = 1;
         }
     }
 
@@ -315,7 +314,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(4, 3, 4);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<int> handIndexes = gameHandler.players[curPlayer].hand.GetAllCardIndexes();
 
@@ -416,7 +415,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Epic;
             this.name = "Grand Vault";
             this.cardText = "Permanent Aftermath: Add 3 random Upgrades to your shop.";
-            this.SetStats(7, 7, 7);
+            this.SetStats(8, 7, 7);
             this.extraUpgradeEffects.Add(new GrandVaultEffect());
         }
     }
@@ -461,44 +460,37 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = SpellRarity.Spell;
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        private bool InteractionCheck(string s, GameHandler gameHandler, int curPlayer)
+        {
+            var msg = s.Split();
+            if (msg.Count() != 2) return false;
+            if (!int.TryParse(msg[0], out int amount)) return false;
+            if (amount < 0) return false;
+
+            if (!(msg[1].Equals("attack", StringComparison.OrdinalIgnoreCase) || msg[1].Equals("health", StringComparison.OrdinalIgnoreCase))) return false;
+
+            if (msg[1].Equals("attack", StringComparison.OrdinalIgnoreCase))
+            {
+                if (gameHandler.players[curPlayer].creatureData.attack <= amount) return false;
+                gameHandler.players[curPlayer].creatureData.attack -= amount;
+            }
+            else if (msg[1].Equals("health", StringComparison.OrdinalIgnoreCase))
+            {
+                if (gameHandler.players[curPlayer].creatureData.health <= amount) return false;
+                gameHandler.players[curPlayer].creatureData.health -= amount;
+            }
+            else return false;
+
+            gameHandler.players[curPlayer].curMana += amount / 2;
+            return true;
+        }
+
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             PlayerInteraction playerInteraction = new PlayerInteraction("Name a number of Attack or Health", "First type the number, followed by 'Attack' or 'Health'", "Capitalisation is ignored", AnswerType.StringAnswer);
+            string defaultAns = "0 Attack";
 
-            string res;
-            bool show = true;
-            while (true)
-            {
-                res = playerInteraction.SendInteractionAsync(curPlayer, show).Result;
-                show = false;
-                if (res.Equals(string.Empty)) continue;
-                if (res.Equals("TimeOut"))
-                {
-                    show = true;
-                    continue;
-                }
-
-                var msg = res.Split();
-
-                if (msg.Count() != 2) continue;
-
-                int numb;
-
-                if (int.TryParse(msg[0], out numb) && (msg[1].Equals("attack", StringComparison.OrdinalIgnoreCase) || msg[1].Equals("health", StringComparison.OrdinalIgnoreCase)))
-                {
-                    if (numb < 0) continue;
-
-                    ref int stat = ref gameHandler.players[curPlayer].creatureData.attack;
-                    if (msg[1].Equals("health", StringComparison.OrdinalIgnoreCase)) stat = ref gameHandler.players[curPlayer].creatureData.health;
-
-                    if (numb >= stat) continue;
-                    stat -= numb;
-                    gameHandler.players[curPlayer].curMana += numb / 2;
-                }
-                else continue;
-
-                break;
-            }
+            await playerInteraction.SendInteractionAsync(curPlayer, this.InteractionCheck, defaultAns);            
         }
     }
 

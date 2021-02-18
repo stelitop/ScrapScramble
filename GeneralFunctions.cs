@@ -8,11 +8,20 @@ namespace ScrapScramble
 {
     public class GeneralFunctions
     {
-        static public void Swap<T>(ref T x, ref T y)
+        public static void Swap<T>(ref T x, ref T y)
         {
             T t = x;
             x = y;
             y = t; 
+        }
+
+        public static bool Within(string s, int a, int b)
+        {
+            if (int.TryParse(s, out int parsed))
+            {
+                return (a <= parsed && parsed <= b);
+            }
+            else return false;
         }
     }
 }

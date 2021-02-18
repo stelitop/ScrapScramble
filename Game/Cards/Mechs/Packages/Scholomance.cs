@@ -160,7 +160,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 3);
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
             {
@@ -282,30 +282,16 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(5, 5, 3);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             var playerInteraction = new PlayerInteraction("Name a Letter", string.Empty, "Capitalisation is ignored", AnswerType.CharAnswer);
 
-            string res;
-            bool show = true;
-            while (true)
-            {
-                res = playerInteraction.SendInteractionAsync(curPlayer, show).Result;
-                show = false;
-                if (res.Equals(string.Empty)) continue;
-                if (res.Equals("TimeOut"))
-                {
-                    show = true;
-                    continue;
-                }
+            string ret = await playerInteraction.SendInteractionAsync(curPlayer, (x, y, z) => x.Count() == 1, ((char)GameHandler.randomGenerator.Next('a', 'z')).ToString());
 
-                letter = res;
+            letter = ret;
 
-                this.writtenEffect = $"After you buy an Upgrade that starts with the letter '{letter}', gain +2 Attack.";
-                this.printEffectInCombat = false;
-
-                break;
-            }
+            this.writtenEffect = $"After you buy an Upgrade that starts with the letter '{letter}', gain +2 Attack.";
+            this.printEffectInCombat = false;
         }
 
         public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
@@ -338,7 +324,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.Cost = 0;
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].curMana += 2;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload] += 2;
@@ -357,7 +343,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(4, 4, 2);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].hand.AddCard(new LightningBloom());
         }
@@ -371,7 +357,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public SpellPrinter()
         {
-            this.rarity = Rarity.Epic;
+            this.rarity = Rarity.Rare;
             this.name = "Spell Printer";
             this.cardText = this.writtenEffect = "Spellburst: Add a copy of the spell to your hand.";
             this.SetStats(5, 4, 5);
@@ -391,6 +377,25 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
+    public class ShiningStudent : Upgrade
+    {
+        public ShiningStudent()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Shining Student";
+            this.cardText = this.writtenEffect = "After you cast a spell, cast another copy of it. You can choose new targets.";
+            this.SetStats(4, 3, 2);
+            this.printEffectInCombat = false;
+        }
+
+        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            spell.OnPlay(gameHandler, curPlayer, enemy);
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.ScholomanceAcademy)]
     public class LordBarox : Upgrade
     {
         int bet = -1;
@@ -404,43 +409,31 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.printEffectInCombat = false;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.AlivePlayers() <= 1) return;
 
+            string defaultAns = string.Empty;
+
+            List<string> playerNames = new List<string>();
+            for (int i = 0; i < gameHandler.players.Count(); i++)
+            {
+                if (i == curPlayer) playerNames.Add(string.Empty);
+                else
+                {
+                    playerNames.Add(gameHandler.players[i].name.ToLower());
+                    defaultAns = gameHandler.players[i].name;
+                }
+            }
+
             var prompt = new PlayerInteraction("Name a Player other than yourself", "The name needs to be exactly written.", "Capitalisation is ignored", AnswerType.StringAnswer);
 
-            string res;
-            bool show = true;
-            while (true)
-            {
-                res = prompt.SendInteractionAsync(curPlayer, show).Result;
-                show = false;
-                if (res.Equals(string.Empty)) continue;
-                if (res.Equals("TimeOut"))
-                {
-                    show = true;
-                    continue;
-                }
+            string ret = (await prompt.SendInteractionAsync(curPlayer, (x, y, z) => playerNames.Contains(x.ToLower()), defaultAns)).ToLower();
 
-                for (int i = 0; i < gameHandler.players.Count(); i++)
-                {
-                    if (gameHandler.players[i].name.Equals(res, StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (gameHandler.players[i].lives <= 0) break;
-                        if (i == curPlayer) break;
-                        this.bet = i;
-                        break;
-                    }
-                }
+            this.bet = playerNames.IndexOf(ret);
 
-                if (this.bet == -1) continue;
-
-                this.writtenEffect = $"You have bet on {gameHandler.players[this.bet].name}! If they win their next fight, you'll gain 5 Mana next turn.";
-                this.printEffectInCombat = false;
-
-                break;
-            }
+            this.writtenEffect = $"You have bet on {gameHandler.players[this.bet].name}! If they win their next fight, you'll gain 5 Mana next turn.";
+            this.printEffectInCombat = false;            
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {

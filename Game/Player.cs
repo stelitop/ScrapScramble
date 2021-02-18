@@ -124,8 +124,7 @@ namespace ScrapScramble.Game
         }
         public string PrintInfoUpgrades(GameHandler gameHandler)
         {
-            int filler = 0;
-            string ret = this.GetUpgradesList(out filler, false);
+            string ret = this.GetUpgradesList(out int filler, false);
 
             if (ret.Equals(string.Empty) || filler == 0) return "(none)";
             return ret;
@@ -163,20 +162,20 @@ namespace ScrapScramble.Game
             return ret;
         }
 
-        public void AttachMech(Upgrade mech, GameHandler gameHandler, int curPlayer, int enemy)
+        public async Task AttachMech(Upgrade mech, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            mech.OnPlay(gameHandler, curPlayer, enemy);
+            await mech.OnPlay(gameHandler, curPlayer, enemy);
 
             foreach (var extraEffect in mech.extraUpgradeEffects)
             {
-                extraEffect.OnPlay(gameHandler, curPlayer, enemy);
+                await extraEffect.OnPlay(gameHandler, curPlayer, enemy);
             }
 
             if (mech.creatureData.staticKeywords[StaticKeyword.Magnetic] > 0)
             {
                 for (int i = 0; i < mech.creatureData.staticKeywords[StaticKeyword.Magnetic]; i++)
                 {
-                    PlayerInteraction.ActivateMagnetic(gameHandler, curPlayer, enemy);
+                    await PlayerInteraction.ActivateMagneticAsync(gameHandler, curPlayer, enemy);
                 }
             }
 
@@ -206,11 +205,11 @@ namespace ScrapScramble.Game
             this.creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 0;
 
-            mech.Battlecry(gameHandler, curPlayer, enemy);
+            await mech.Battlecry(gameHandler, curPlayer, enemy);
 
             foreach (var extraEffect in mech.extraUpgradeEffects)
             {
-                extraEffect.Battlecry(gameHandler, curPlayer, enemy);                
+                await extraEffect.Battlecry(gameHandler, curPlayer, enemy);                
             }
 
             if (gameHandler.players[curPlayer].playHistory[gameHandler.players[curPlayer].playHistory.Count()-1].Count() > 0)
@@ -226,14 +225,12 @@ namespace ScrapScramble.Game
             this.attachedMechs.Add((Upgrade)mech.DeepCopy());
 
             foreach (var extraEffect in mech.extraUpgradeEffects)
-            {
-                Console.WriteLine("sadge'");
+            {                
                 this.extraUpgradeEffects.Add((Upgrade)extraEffect.DeepCopy());
             }
-            Console.WriteLine("a");
         }
 
-        public bool BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
+        public async Task<bool> BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
             bool result = this.shop.At(shopPos).CanBeBought(shopPos, gameHandler, curPlayer, enemy);
             if (!result) return false;
@@ -242,30 +239,41 @@ namespace ScrapScramble.Game
 
             this.shop.RemoveUpgrade(shopPos);
 
-            this.shop.At(shopPos).inLimbo = true;
-            ((Upgrade)card).BuyCard(shopPos, gameHandler, curPlayer, enemy);
-            this.shop.At(shopPos).inLimbo = false;
+            await ((Upgrade)card).BuyCard(shopPos, gameHandler, curPlayer, enemy);            
 
             this.playHistory[this.playHistory.Count() - 1].Add(card.DeepCopy());
             this.boughtThisTurn.Add((Upgrade)card.DeepCopy());
             
             return result;
         }
-        public bool PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
+        public async Task<bool> PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (handPos >= this.hand.totalSize) return false;
-            if (this.hand.At(handPos).name == BlankUpgrade.name) return false;
+            bool result = this.hand.At(handPos).CanBePlayed(handPos, gameHandler, curPlayer, enemy);
+            if (!result) return false;
+
             Card card = this.hand.At(handPos).DeepCopy();
 
-            bool result = this.hand.At(handPos).PlayCard(handPos, gameHandler, curPlayer, enemy);
+            this.hand.RemoveCard(handPos);
 
-            if (result)
-            {
-                this.playHistory[this.playHistory.Count() - 1].Add(card.DeepCopy());
+            await card.PlayCard(handPos, gameHandler, curPlayer, enemy);
 
-                this.hand.RemoveCard(handPos);
-            }
+            this.playHistory[this.playHistory.Count() - 1].Add(card.DeepCopy());
+
             return result;
+
+            //if (handPos >= this.hand.LastIndex) return false;
+            //if (this.hand.At(handPos).name == BlankUpgrade.name) return false;
+            //Card card = this.hand.At(handPos).DeepCopy();
+
+            //bool result = this.hand.At(handPos).PlayCard(handPos, gameHandler, curPlayer, enemy);
+
+            //if (result)
+            //{
+            //    this.playHistory[this.playHistory.Count() - 1].Add(card.DeepCopy());
+
+            //    this.hand.RemoveCard(handPos);
+            //}
+            //return result;
         }
 
         public int AttackMech(GameHandler gameHandler, int attacker, int defender)
@@ -374,7 +382,7 @@ namespace ScrapScramble.Game
                 if (this.attachedMechs[i].writtenEffect.StartsWith("Spellburst:")) continue;
 
                 if (isVanilla) preCombatEffects = this.attachedMechs[i].writtenEffect;
-                else preCombatEffects = preCombatEffects + $"\n{this.attachedMechs[i].writtenEffect}";
+                else preCombatEffects += $"\n{this.attachedMechs[i].writtenEffect}";
                 isVanilla = false;
             }
 

@@ -46,7 +46,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             int ret = -1;
 
-            for (int i = 0; i < gameHandler.players[player].shop.totalSize; i++)
+            for (int i = 0; i < gameHandler.players[player].shop.LastIndex; i++)
             {
                 if (gameHandler.players[player].shop.At(i).name.Equals("Mecha'thun"))
                 {
@@ -76,7 +76,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 2);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -100,7 +100,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -124,7 +124,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -148,7 +148,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -171,7 +171,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(4, 12, 12);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -193,7 +193,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(8, 8, 8);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -217,7 +217,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(5, 2, 5);
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -260,7 +260,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(10, 10, 10);
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -328,7 +328,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(8, 5, 5);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.currentRound > 1 && gameHandler.pairsHandler.opponents[curPlayer] != curPlayer)
             {

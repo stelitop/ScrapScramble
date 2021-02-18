@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using ScrapScramble.Game.Cards;
+using ScrapScramble.Game.Cards.Mechs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -49,6 +50,38 @@ namespace ScrapScramble.Game
                 this.mechs.Add((Upgrade)(Activator.CreateInstance(x.Type)));
             }
 
+            this.FillSpareParts();
+
+            this.GenericMinionPollSort();
+        }
+
+        public void FillMinionPoolWithPackages(int packageAmount, PackageHandler packageHandler)
+        {
+            this.mechs = new List<Upgrade>();
+
+            List<string> packagesList = new List<string>();
+            foreach (var package in packageHandler.Packages)
+            {
+                packagesList.Add(package.Key);
+            }
+
+            packagesList.Sort((x, y) => GameHandler.randomGenerator.Next(-2, 0)*2+3);
+
+            for (int i=0; i<packageAmount && i <packagesList.Count(); i++)
+            {
+                for (int j=0; j < packageHandler.Packages[packagesList[i]].Count(); j++)
+                {
+                    this.mechs.Add((Upgrade)packageHandler.Packages[packagesList[i]][j].DeepCopy());
+                }
+            }
+
+            this.FillSpareParts();
+
+            this.GenericMinionPollSort();
+        }
+
+        public void FillSpareParts()
+        {
             this.spareparts = new List<Spell>();
 
             var allSparePartClasses =
@@ -63,8 +96,6 @@ namespace ScrapScramble.Game
             {
                 this.spareparts.Add((Spell)(Activator.CreateInstance(x.Type)));
             }
-
-            this.GenericMinionPollSort();
         }
 
         public void PrintMechNames()

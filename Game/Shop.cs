@@ -10,7 +10,7 @@ namespace ScrapScramble.Game.Effects
     public class Shop
     {
         private List<Upgrade> options;
-        public int totalSize { get { return options.Count(); } }
+        public int LastIndex { get { return options.Count(); } }
 
         public Shop()
         {
@@ -98,7 +98,7 @@ namespace ScrapScramble.Game.Effects
         } 
         private void RemoveLeadingBlankUpgrades()
         {
-            for (int i=totalSize-1; i>=0; i--)
+            for (int i=LastIndex-1; i>=0; i--)
             {
                 if (options[i].name == BlankUpgrade.name)
                 {
@@ -179,7 +179,7 @@ namespace ScrapScramble.Game.Effects
             string ret = string.Empty;
             bool lastBlank = false;
 
-            for (int i = 0; i < this.totalSize; i++)
+            for (int i = 0; i < this.LastIndex; i++)
             {
                 string newBit = $"{i + 1}) " + this.options[i].GetInfo(gameHandler, player);
                 if (this.At(i).name == BlankUpgrade.name) newBit = string.Empty;
@@ -191,7 +191,7 @@ namespace ScrapScramble.Game.Effects
                 }
 
                 ret += newBit;
-                if (i != this.totalSize - 1 && !(lastBlank && newBit == string.Empty)) ret += '\n';
+                if (i != this.LastIndex - 1 && !(lastBlank && newBit == string.Empty)) ret += '\n';
 
                 lastBlank = (this.At(i).name == BlankUpgrade.name);
             }

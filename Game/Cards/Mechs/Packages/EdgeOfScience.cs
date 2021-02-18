@@ -32,7 +32,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.maxMana, false);
         }
@@ -76,7 +76,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 1);            
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Upgrade> legendaries = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary && x.Cost <= gameHandler.maxMana - 5);
             List<Upgrade> epics = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Epic && x.Cost <= gameHandler.maxMana - 5);

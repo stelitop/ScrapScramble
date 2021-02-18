@@ -58,12 +58,12 @@ namespace ScrapScramble.BotRelated.Commands
 
             BotInfoHandler.gameHandler.players[index].ctx = ctx;
 
-            if (shopPos >= BotInfoHandler.gameHandler.players[index].shop.totalSize || shopPos < 0)
+            if (shopPos >= BotInfoHandler.gameHandler.players[index].shop.LastIndex || shopPos < 0)
             {
                 //invalid shop position
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
             }
-            else if (!BotInfoHandler.gameHandler.players[index].BuyCard(shopPos, BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.pairsHandler.opponents[index]))
+            else if (!await BotInfoHandler.gameHandler.players[index].BuyCard(shopPos, BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.pairsHandler.opponents[index]))
             {
                 //upgrade is too expensive
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
@@ -89,12 +89,12 @@ namespace ScrapScramble.BotRelated.Commands
 
             BotInfoHandler.gameHandler.players[index].ctx = ctx;
 
-            if (handPos >= BotInfoHandler.gameHandler.players[index].hand.totalSize || handPos < 0)
+            if (handPos >= BotInfoHandler.gameHandler.players[index].hand.LastIndex || handPos < 0)
             {
                 //invalid hand position
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);
             }
-            else if (!BotInfoHandler.gameHandler.players[index].PlayCard(handPos, BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.pairsHandler.opponents[index]))
+            else if (!(await BotInfoHandler.gameHandler.players[index].PlayCard(handPos, BotInfoHandler.gameHandler, index, BotInfoHandler.gameHandler.pairsHandler.opponents[index])))
             {
                 //upgrade is too expensive
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:")).ConfigureAwait(false);

@@ -57,7 +57,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(3, 3, 2);            
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].hand.AddCard(new PlushieClawMachine());
             gameHandler.players[curPlayer].hand.AddCard(new PlushieClawMachine());
@@ -83,7 +83,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             copy.Cost = Math.Max(0, copy.Cost - 1);
             gameHandler.players[curPlayer].shop.AddUpgrade(copy);
             gameHandler.players[curPlayer].aftermathMessages.Add(
-                $"Your Ferris Wheel has returned to your shop. It now costs {copy.Cost}");
+                $"Your Ferris Wheel has returned to your shop. It now costs {copy.Cost}.");
         }
     }
 
@@ -168,7 +168,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             return m.name.Equals("Robo-Rabbit");
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, this.Criteria);
 
@@ -194,7 +194,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(4, 1, 1);
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.invertAttackPriority = true;
         }
@@ -212,7 +212,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(4, 2, 4);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].hand.OptionsCount();
             gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].hand.OptionsCount();
@@ -265,7 +265,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
                 if (sparePart.name == "Mana Capsule")
                 {
-                    sparePart.OnPlay(gameHandler, curPlayer, enemy);
+                    //await sparePart.OnPlay(gameHandler, curPlayer, enemy);
+                    gameHandler.players[curPlayer].curMana += 2;
                 }
                 else
                 {
@@ -323,7 +324,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
             gameHandler.players[curPlayer].shop.Clear();
 
-            for (int i = 0; i < gameHandler.players[enemy].shop.totalSize; i++)
+            for (int i = 0; i < gameHandler.players[enemy].shop.LastIndex; i++)
             {
                 gameHandler.players[curPlayer].shop.AddUpgrade(gameHandler.players[enemy].shop.At(i));
             }
@@ -346,37 +347,22 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(3, 3, 3);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             var prompt = new PlayerInteraction("Name a Rarity", "Common, Rare, Epic or Legendary", "Capitalisation is ignored", AnswerType.StringAnswer);
+            List<string> rarities = new List<string>(){ "common", "rare", "epic", "legendary"};
+            string defaultAns = rarities[GameHandler.randomGenerator.Next(4)];
 
-            string res;
-            bool show = true;
-            while (true)
-            {
-                res = prompt.SendInteractionAsync(curPlayer, show).Result;
-                show = false;
-                if (res.Equals(string.Empty)) continue;
-                if (res.Equals("TimeOut"))
-                {
-                    show = true;
-                    continue;
-                }
+            string ret = await prompt.SendInteractionAsync(curPlayer, (x, y, z) => rarities.Contains(x.ToLower()), defaultAns);
 
-                if (res.Equals("common", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Common;
-                else if (res.Equals("rare", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Rare;
-                else if (res.Equals("epic", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Epic;
-                else if (res.Equals("legendary", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Legendary;
-                else continue;
-
-                this.writtenEffect = $"Aftermath: Give all players' Upgrades of rarity {this.chosenRarity} +2/+2.";
-                this.printEffectInCombat = false;
-
-                break;
-            }
+            if (ret.Equals("common", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Common;
+            else if (ret.Equals("rare", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Rare;
+            else if (ret.Equals("epic", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Epic;
+            else if (ret.Equals("legendary", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Legendary;
+            else this.chosenRarity = Rarity.NO_RARITY;            
         }
 
-        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Upgrade> upgrades = gameHandler.players[curPlayer].shop.GetAllUpgrades();
 
@@ -391,16 +377,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
                 $"Your Hat Chucker 8000 gave your {this.chosenRarity} Upgrades +2/+2.");
-        }
 
-        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
-        {
             for (int j = 0; j < gameHandler.players.Count(); j++)
             {
                 if (j == curPlayer) continue;
                 if (gameHandler.players[j].lives <= 0) continue;
 
-                List<Upgrade> upgrades = gameHandler.players[j].shop.GetAllUpgrades();
+                upgrades = gameHandler.players[j].shop.GetAllUpgrades();
 
                 for (int i = 0; i < upgrades.Count(); i++)
                 {
@@ -413,7 +396,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
                 gameHandler.players[j].aftermathMessages.Add(
                     $"{gameHandler.players[curPlayer].name}'s Hat Chucker 8000 gave your {this.chosenRarity} Upgrades +2/+2.");
-            }
+            }            
         }
 
         public override Card DeepCopy()
@@ -442,7 +425,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     //        this.cardText = $"Gain +{value}/+{value}. Gain {value} Mana this turn only.";
     //    }
 
-    //    public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+    //    public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
     //    {
     //        gameHandler.players[curPlayer].creatureData.attack += value;
     //        gameHandler.players[curPlayer].creatureData.health += value;
@@ -473,7 +456,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.Cost = 0;
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int amountOfTickets = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].hand.GetAllCards(), x => x.name == this.name).Count();
 
@@ -531,7 +514,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(7, 4, 4);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             //gameHandler.players[curPlayer].hand.AddCard(new IronmoonTicket());
             this.extraUpgradeEffects.Add(new SilasIronmoonEffect());

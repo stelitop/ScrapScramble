@@ -404,7 +404,7 @@ namespace ScrapScramble.BotRelated.Commands
                 case "shop":
                     if (arguments.Count() < 3) break;
                     string shopName = arguments[2];
-                    for (int i = 3; i < arguments.Count(); i++) shopName = shopName + $" {arguments[i]}";
+                    for (int i = 3; i < arguments.Count(); i++) shopName += $" {arguments[i]}";
 
                     switch (arguments[1])
                     {
@@ -422,10 +422,31 @@ namespace ScrapScramble.BotRelated.Commands
                             return false;
                     }
 
+                case "hand":
+                    if (arguments.Count() < 3) break;
+                    string handName = arguments[2];
+                    for (int i = 3; i < arguments.Count(); i++) handName += $" {arguments[i]}";
+
+                    switch (arguments[1])
+                    {
+                        case "+=":
+
+                            for (int i = 0; i < BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
+                                if (BotInfoHandler.gameHandler.pool.mechs[i].name.Equals(handName, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    BotInfoHandler.gameHandler.players[index].hand.AddCard(BotInfoHandler.gameHandler.pool.mechs[i]);
+                                    return true;
+                                }
+                            return false;
+
+                        default:
+                            return false;
+                    }
+
                 case "name":
                     if (arguments.Count() < 3) break;
                     string playerName = arguments[2];
-                    for (int i = 3; i < arguments.Count(); i++) playerName = playerName + $" {arguments[i]}";
+                    for (int i = 3; i < arguments.Count(); i++) playerName += $" {arguments[i]}";
 
                     switch (arguments[1])
                     {
@@ -573,6 +594,12 @@ namespace ScrapScramble.BotRelated.Commands
                 Description = $"The new breakdown is {c}-{r}-{e}-{l}.",
                 Color = DiscordColor.Azure
             }).ConfigureAwait(false);
+        }
+
+        [Command("frog")]
+        public async Task Froggg(CommandContext ctx, int packages = 4)
+        {
+            BotInfoHandler.gameHandler.pool.FillMinionPoolWithPackages(packages, BotInfoHandler.gameHandler.packageHandler);
         }
     }
 }

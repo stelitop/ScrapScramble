@@ -11,7 +11,7 @@ namespace ScrapScramble.Game
     public class Hand
     {
         private List<Card> cards;
-        public int totalSize { get { return cards.Count(); } }
+        public int LastIndex { get { return cards.Count(); } }
 
         public Hand()
         {
@@ -79,7 +79,7 @@ namespace ScrapScramble.Game
         }
         private void RemoveLeadingBlankUpgrades()
         {
-            for (int i = totalSize - 1; i >= 0; i--)
+            for (int i = LastIndex - 1; i >= 0; i--)
             {
                 if (cards[i].name == BlankUpgrade.name)
                 {

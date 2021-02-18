@@ -125,7 +125,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             if (curPlayer == enemy) return;
 
-            for (int i = 0; i < gameHandler.players[enemy].shop.totalSize; i++)
+            for (int i = 0; i < gameHandler.players[enemy].shop.LastIndex; i++)
             {
                 if (gameHandler.players[enemy].shop.At(i).creatureData.staticKeywords[StaticKeyword.Binary] > 0)
                 {
@@ -257,34 +257,21 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(6, 4, 4);
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
         }
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             PlayerInteraction chooseOne = new PlayerInteraction("Choose One", "1) Gain +6 Spikes\n2) Gain +6 Shields", "Write the corresponding number", AnswerType.IntAnswer);
-            string res;
-            bool show = true;
-            while (true)
+            string defaultAns = GameHandler.randomGenerator.Next(1, 3).ToString();
+
+            string ret = await chooseOne.SendInteractionAsync(curPlayer, (x, y, z) => GeneralFunctions.Within(x, 1, 2), defaultAns);
+
+            if (int.Parse(ret) == 1)
             {
-                res = chooseOne.SendInteractionAsync(curPlayer, show).Result;
-                show = false;
-                if (res.Equals(string.Empty)) continue;
-                if (res.Equals("TimeOut"))
-                {
-                    continue;
-                }
-                else
-                {
-                    if (int.Parse(res) == 1)
-                    {
-                        gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 6;
-                    }
-                    else if (int.Parse(res) == 2)
-                    {
-                        gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 6;
-                    }
-                    else continue;
-                    break;
-                }
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 6;
             }
+            else if (int.Parse(ret) == 2)
+            {
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 6;
+            }            
         }
     }
 
@@ -299,36 +286,21 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(5, 0, 7);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
+            List<string> upgradeNames = new List<string>();
+            for (int i=0; i<gameHandler.pool.mechs.Count(); i++)
+            {
+                upgradeNames.Add(gameHandler.pool.mechs[i].name.ToLower());
+            }
+
             var playerInteraction = new PlayerInteraction("Name an Upgrade", string.Empty, "Capitalisation is ignored", AnswerType.StringAnswer);
 
-            string res;
-            bool show = true;
-            while (true)
-            {
-                res = playerInteraction.SendInteractionAsync(curPlayer, show).Result;
-                show = false;
-                if (res.Equals(string.Empty)) continue;
-                if (res.Equals("TimeOut"))
-                {
-                    show = true;
-                    continue;
-                }
-                else
-                {
-                    bool end = false;
-                    for (int i = 0; i < gameHandler.pool.mechs.Count(); i++)
-                        if (gameHandler.pool.mechs[i].name.Equals(res, StringComparison.OrdinalIgnoreCase))
-                        {
-                            gameHandler.players[curPlayer].shop.AddUpgrade(gameHandler.pool.mechs[i]);
-                            end = true;
-                            break;
-                        }
-                    if (end) break;
-                    continue;
-                }
-            }
+            string ret = (await playerInteraction.SendInteractionAsync(curPlayer, (x, y, z) => upgradeNames.Contains(x.ToLower()), "3D Printer")).ToLower();
+
+            int pos = upgradeNames.IndexOf(ret);
+
+            gameHandler.players[curPlayer].shop.AddUpgrade(gameHandler.pool.mechs[pos]);            
         }
     }
 
@@ -340,10 +312,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = Rarity.Rare;
             this.name = "Brass Bracer";
             this.cardText = this.writtenEffect = "This minion ignores damage from Spikes.";
-            this.SetStats(5, 3,4);
+            this.SetStats(5, 3, 4);
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.ignoreSpikes = true;
         }
@@ -360,7 +332,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(5, 4, 3);
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.ignoreShields = true;
         }
@@ -483,7 +455,26 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].aftermathMessages.Add(
                 $"Due to your {this.name}, after you buy an Upgrade this turn, add a 1/1 Bee Bot to your shop.");
         }
-    }    
+    }
+
+    [UpgradeAttribute]
+    public class DiscoverTest : Upgrade
+    {
+        public DiscoverTest()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Discover Test";
+            this.cardText = "Battlecry: Discover a 3-Cost Upgrade.";
+            this.SetStats(2, 1, 1);
+        }
+
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Upgrade> pool = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.Cost == 3);
+
+            await PlayerInteraction.DiscoverACardAsync<Upgrade>(gameHandler, curPlayer, enemy, "3-Cost Upgrade", pool);
+        }
+    }
 }
 
 /*

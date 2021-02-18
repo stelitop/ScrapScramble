@@ -17,7 +17,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.cardText = string.Empty;
             this.SetStats(2, 3, 1);
         }
-    }    
+    }
 
     [UpgradeAttribute]
     public class RunawayTire : Upgrade
@@ -43,7 +43,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(7, 5, 5);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
@@ -111,7 +111,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Tiebreaker] = 1;
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
         }
-    }  
+    }
 
     [UpgradeAttribute]
     public class ChainMail : Upgrade
@@ -126,7 +126,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
         }
@@ -145,7 +145,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
         }
@@ -162,7 +162,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(2, 4, 2);
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 2;
         }
-    }    
+    }
 
     [UpgradeAttribute]
     public class ProtectiveFirewall : Upgrade
@@ -190,7 +190,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
         }
@@ -209,11 +209,11 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
         }
-    }      
+    }
 
     [UpgradeAttribute]
     public class ShieldbotClanker : Upgrade
@@ -227,7 +227,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(5, 2, 3);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 8;
         }
@@ -251,7 +251,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(5, 3, 2);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 8;
         }
@@ -288,7 +288,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(6, 6, 10);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 2;
         }
-    }    
+    }
 
     [UpgradeAttribute]
     public class Steamfunk : Upgrade
@@ -327,7 +327,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.combatOutputCollector.preCombatHeader.Add(
                 $"{gameHandler.players[curPlayer].name}'s Prismatic Barrier gives it +10 Shields, leaving it with {gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields]} Shields.");
         }
-    }    
+    }
 
     [UpgradeAttribute]
     public class TwoHeadedColossus : Upgrade
@@ -353,37 +353,24 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(5, 4, 2);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             PlayerInteraction chooseOne = new PlayerInteraction("Choose One", "1) Gain Rush\n2) Gain +2/+2", "Write the corresponding number", AnswerType.IntAnswer);
-            string res;
-            bool show = true;
-            while (true)
+            string defaultAns = GameHandler.randomGenerator.Next(1, 3).ToString();
+
+            string ret = await chooseOne.SendInteractionAsync(curPlayer, (x, y, z) => GeneralFunctions.Within(x, 1, 2), defaultAns);
+
+            if (int.Parse(ret) == 1)
             {
-                res = chooseOne.SendInteractionAsync(curPlayer, show).Result;
-                show = false;
-                if (res.Equals(string.Empty)) continue;
-                if (res.Equals("TimeOut"))
-                {
-                    continue;
-                }
-                else
-                {
-                    if (int.Parse(res) == 1)
-                    {
-                        gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush]++;
-                    }
-                    else if (int.Parse(res) == 2)
-                    {
-                        gameHandler.players[curPlayer].creatureData.attack += 2;
-                        gameHandler.players[curPlayer].creatureData.health += 2;
-                    }
-                    else continue;
-                    break;
-                }
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush]++;
+            }
+            else if (int.Parse(ret) == 2)
+            {
+                gameHandler.players[curPlayer].creatureData.attack += 2;
+                gameHandler.players[curPlayer].creatureData.health += 2;
             }
         }
-    }              
+    }
 
     [UpgradeAttribute]
     public class SystemRebooter : Upgrade
@@ -396,14 +383,14 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(4, 3, 3);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
-            int shopIndex = PlayerInteraction.FreezeUpgradeInShop(gameHandler, curPlayer, enemy);
+            Upgrade chosen = await PlayerInteraction.FreezeUpgradeInShopAsync(gameHandler, curPlayer, enemy);
 
-            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.staticKeywords[StaticKeyword.Rush]++;
-            gameHandler.players[curPlayer].shop.At(shopIndex).cardText += " (Rush)";
+            chosen.creatureData.staticKeywords[StaticKeyword.Rush]++;
+            chosen.cardText += " (Rush)";
         }
     }
 
@@ -418,20 +405,20 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(4, 3, 3);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
-            int shopIndex = PlayerInteraction.FreezeUpgradeInShop(gameHandler, curPlayer, enemy);
+            Upgrade chosen = await PlayerInteraction.FreezeUpgradeInShopAsync(gameHandler, curPlayer, enemy);
 
-            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.staticKeywords[StaticKeyword.Taunt]++;
-            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack += 3;
-            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.health += 3;
-            gameHandler.players[curPlayer].shop.At(shopIndex).cardText += " (Taunt)";
+            chosen.creatureData.staticKeywords[StaticKeyword.Taunt]++;
+            chosen.creatureData.attack += 3;
+            chosen.creatureData.health += 3;
+            chosen.cardText += " (Taunt)";
         }
     }
 
-    
+
 
     [UpgradeAttribute]
     public class DjinniDecelerator : Upgrade
@@ -443,11 +430,11 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.cardText = "Magnetic, Taunt x2";
             this.SetStats(5, 6, 6);
             this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
-            this.creatureData.staticKeywords[StaticKeyword.Taunt] = 2;            
+            this.creatureData.staticKeywords[StaticKeyword.Taunt] = 2;
         }
     }
 
-    [UpgradeAttribute]    
+    [UpgradeAttribute]
     public class SyntheticSnowball : Upgrade
     {
         public SyntheticSnowball()
@@ -459,14 +446,27 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Echo] = 1;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
-            int shopIndex = PlayerInteraction.FreezeUpgradeInShop(gameHandler, curPlayer, enemy);
+            Upgrade chosen = await PlayerInteraction.FreezeUpgradeInShopAsync(gameHandler, curPlayer, enemy);
 
-            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack += 2;
-            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.health += 2;
+            chosen.creatureData.attack += 2;
+            chosen.creatureData.health += 2;
+        }
+    }
+
+    [UpgradeAttribute]
+    public class TestGuy : Upgrade
+    {
+        public TestGuy()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Lmao";
+            this.cardText = "Magnetic x2";
+            this.SetStats(3, 2, 2);
+            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 2;
         }
     }
 }

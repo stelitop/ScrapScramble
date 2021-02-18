@@ -52,7 +52,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 0, 2);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Taunt] * 2;
         }
@@ -126,7 +126,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(3, 3, 2);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields];
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] = 0;
@@ -145,7 +145,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(5, 4, 5);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes];
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] = 0;
@@ -251,9 +251,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.Cost = 1;
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            PlayerInteraction.FreezeUpgradeInShop(gameHandler, curPlayer, enemy);
+            await PlayerInteraction.FreezeUpgradeInShopAsync(gameHandler, curPlayer, enemy);
             gameHandler.players[curPlayer].hand.AddCard(new AbsoluteZero());
         }
     }
@@ -270,7 +270,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 2, 2);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].hand.AddCard(new AbsoluteZero());
         }
@@ -284,7 +284,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Legendary;
             this.name = "Tiny Gamer";
-            this.cardText = this.writtenEffect = "The 1-Cost Upgrades in your shop have Echo.";
+            this.cardText = this.writtenEffect = "The 1-Cost Upgrades in your shop have Binary.";
             this.SetStats(1, 1, 1);
         }
 
@@ -292,7 +292,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             if (m.Cost == 1)
             {
-                m.creatureData.staticKeywords[StaticKeyword.Echo] = Math.Max(m.creatureData.staticKeywords[StaticKeyword.Echo], 1);
+                m.creatureData.staticKeywords[StaticKeyword.Binary] = Math.Max(m.creatureData.staticKeywords[StaticKeyword.Binary], 1);
             }
         }
     }

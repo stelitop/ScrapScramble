@@ -579,7 +579,7 @@ namespace ScrapScramble.BotRelated.Commands
                     {
                         if (lastRarity != Rarity.NO_RARITY)
                         {
-                            embed.AddField($"{lastRarity.ToString()} ({rarityCount})", description);                            
+                            embed.AddField($"{lastRarity} ({rarityCount})", description);                            
                         }
                         description = string.Empty;
                         rarityCount = 0;
@@ -588,7 +588,7 @@ namespace ScrapScramble.BotRelated.Commands
                     rarityCount++;
                     description += $"- {BotInfoHandler.gameHandler.packageHandler.Packages[packageName][i]}\n";
                 }
-                embed.AddField($"{lastRarity.ToString()} ({rarityCount})", description);
+                embed.AddField($"{lastRarity} ({rarityCount})", description);
 
                 await ctx.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
             }            

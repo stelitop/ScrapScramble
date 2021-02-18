@@ -30,19 +30,17 @@ namespace ScrapScramble.Game.Cards
 
         public override string GetInfo(GameHandler gameHandler, int player)
         {
-            string ret = string.Empty;
+            string ret;
             if (this.rarity == SpellRarity.Spare_Part) ret = $"{this.name} - Spare Part - {this.Cost} - {this.cardText}";
             else ret = $"{this.name} - {this.rarity} - {this.Cost} - {this.cardText}";
             return ret;
         }
 
-        public override bool PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task<bool> PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].hand.totalSize <= handPos) return false;
-            if (gameHandler.players[curPlayer].hand.At(handPos).name == BlankUpgrade.name) return false;
-            if (this.Cost > gameHandler.players[curPlayer].curMana) return false;
-
             gameHandler.players[curPlayer].curMana -= this.Cost;
+
+            await this.OnPlay(gameHandler, curPlayer, enemy);
 
             for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
             {
@@ -52,8 +50,6 @@ namespace ScrapScramble.Game.Cards
             {
                 extraEffect.OnSpellCast(this, gameHandler, curPlayer, enemy);
             }
-
-            this.OnPlay(gameHandler, curPlayer, enemy);
 
             return true;
         }

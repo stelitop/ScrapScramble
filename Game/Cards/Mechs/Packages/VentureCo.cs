@@ -46,7 +46,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 1);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
             gameHandler.players[curPlayer].creatureData.attack += list.Count();
@@ -66,7 +66,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
             gameHandler.players[curPlayer].creatureData.attack += list.Count();
@@ -87,7 +87,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
             gameHandler.players[curPlayer].creatureData.attack += list.Count();
@@ -164,15 +164,14 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return;
 
-            int shopIndex = PlayerInteraction.FreezeUpgradeInShop(gameHandler, curPlayer, enemy);
+            Upgrade chosen = await PlayerInteraction.FreezeUpgradeInShopAsync(gameHandler, curPlayer, enemy);
 
-            gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack -= 4;
-            if (gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack < 0)
-                gameHandler.players[curPlayer].shop.At(shopIndex).creatureData.attack = 0;
+            chosen.creatureData.attack -= 4;
+            if (chosen.creatureData.attack < 0) chosen.creatureData.attack = 0;
         }
     }
 
@@ -221,7 +220,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(6, 4, 4);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
 
@@ -245,7 +244,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 6;
         }
@@ -265,7 +264,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 4;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 6;
         }

@@ -20,7 +20,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
         }
@@ -52,7 +52,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 2, 1);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
         }
@@ -81,7 +81,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 2);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
         }
@@ -136,7 +136,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 1);
         }
 
-        public override void Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
@@ -283,7 +283,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(4, 3, 3);
         }
 
-        public override void OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.multiplierStartOfCombat = 2;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScrapScramble.Game.Effects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,10 +19,20 @@ namespace ScrapScramble.Game.Cards
 
         public List<Upgrade> extraUpgradeEffects = new List<Upgrade>();
 
-        public abstract bool PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy);
+        public virtual async Task<bool> PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy) { return false; }
         public abstract string GetInfo(GameHandler gameHandler, int player);
         public abstract Card DeepCopy();
 
-        public virtual void OnPlay(GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy) { }
+
+        public virtual bool CanBePlayed(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (handPos >= gameHandler.players[curPlayer].hand.LastIndex) return false;
+            if (this.name == BlankUpgrade.name) return false;            
+            if (this.inLimbo) return false;
+            if (this.Cost > gameHandler.players[curPlayer].curMana) return false;
+
+            return true;
+        }
     }
 }

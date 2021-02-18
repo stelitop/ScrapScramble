@@ -41,7 +41,7 @@ namespace ScrapScramble.Game.Cards
 
         public override string GetInfo(GameHandler gameHandler, int player)
         {
-            string ret = string.Empty;
+            string ret;
             string rarity = $"{this.rarity} - ";
             if (this.rarity == Rarity.NO_RARITY) rarity = string.Empty;
 
@@ -55,7 +55,7 @@ namespace ScrapScramble.Game.Cards
 
         public override string ToString()
         {
-            string ret = string.Empty;
+            string ret;
             string rarity = $"{this.rarity} - ";
             if (this.rarity == Rarity.NO_RARITY) rarity = string.Empty;
 
@@ -75,19 +75,15 @@ namespace ScrapScramble.Game.Cards
         //    this.name = mechJson.name;         
         //}
 
-        public override bool PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
+        public override async Task<bool> PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].hand.totalSize <= handPos) return false;
-            if (gameHandler.players[curPlayer].hand.At(handPos).name == BlankUpgrade.name) return false;
-            if (this.Cost > gameHandler.players[curPlayer].curMana) return false;
-
             gameHandler.players[curPlayer].curMana -= this.Cost;
 
-            gameHandler.players[curPlayer].AttachMech(this, gameHandler, curPlayer, enemy);
+            await gameHandler.players[curPlayer].AttachMech(this, gameHandler, curPlayer, enemy);
             return true;
         }
 
-        public bool BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
+        public async Task<bool> BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].curMana -= this.Cost;
 
@@ -101,13 +97,24 @@ namespace ScrapScramble.Game.Cards
                 extraEffect.OnBuyingAMech(this, gameHandler, curPlayer, enemy);
             }
 
-            gameHandler.players[curPlayer].AttachMech(this, gameHandler, curPlayer, enemy);
+            await gameHandler.players[curPlayer].AttachMech(this, gameHandler, curPlayer, enemy);
             return true;
         }
 
         public virtual bool CanBeBought(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (shopPos >= gameHandler.players[curPlayer].shop.totalSize) return false;
+            if (shopPos >= gameHandler.players[curPlayer].shop.LastIndex) return false;
+            if (this.name == BlankUpgrade.name) return false;
+            if (this.creatureData.staticKeywords[StaticKeyword.Freeze] > 0) return false;
+            if (this.inLimbo) return false;
+            if (this.Cost > gameHandler.players[curPlayer].curMana) return false;
+
+            return true;
+        }
+
+        public override bool CanBePlayed(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (handPos >= gameHandler.players[curPlayer].hand.LastIndex) return false;
             if (this.name == BlankUpgrade.name) return false;
             if (this.creatureData.staticKeywords[StaticKeyword.Freeze] > 0) return false;
             if (this.inLimbo) return false;
@@ -121,7 +128,7 @@ namespace ScrapScramble.Game.Cards
         //    Console.WriteLine($"{this.name}: {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health} {} - \"{this.cardText}\"");
         //}
 
-        public virtual void Battlecry(GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy) { }
