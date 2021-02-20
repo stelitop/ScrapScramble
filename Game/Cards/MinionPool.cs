@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ScrapScramble.Game.Cards;
 using ScrapScramble.Game.Cards.Mechs;
+using ScrapScramble.Game.Effects;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,29 +14,50 @@ namespace ScrapScramble.Game
 {    
     public class MinionPool
     {
-        public List<Upgrade> mechs;
+        public List<Upgrade> upgrades;
         public List<Spell> spareparts;
+        public List<Card> tokens;
         
         public MinionPool()
         {
-            this.mechs = new List<Upgrade>();
-            this.spareparts = new List<Spell>();
             this.FillGenericMinionPool();
         }        
 
+        public MinionPool(MinionPool x)
+        {
+            this.upgrades = new List<Upgrade>();
+            this.spareparts = new List<Spell>();
+            this.tokens = new List<Card>();
+
+            foreach (var card in x.upgrades)
+            {
+                this.upgrades.Add((Upgrade)card.DeepCopy());
+            }
+
+            foreach (var card in x.spareparts)
+            {
+                this.spareparts.Add((Spell)card.DeepCopy());
+            }
+
+            foreach (var card in x.tokens)
+            {              
+                this.tokens.Add((Card)card.DeepCopy());
+            }
+        }
+
         public MinionPool(List<Upgrade> mechs)
         {
-            this.mechs = new List<Upgrade>(mechs);
+            this.upgrades = new List<Upgrade>(mechs);
         }
 
         public void GenericMinionPollSort()
         {
-            this.mechs.Sort();
+            this.upgrades.Sort();
         }
 
         public void FillGenericMinionPool()
         {
-            this.mechs = new List<Upgrade>();
+            this.upgrades = new List<Upgrade>();
 
             var allMechClasses =
                 // Note the AsParallel here, this will parallelize everything after.
@@ -47,17 +69,20 @@ namespace ScrapScramble.Game
 
             foreach (var x in allMechClasses)
             {
-                this.mechs.Add((Upgrade)(Activator.CreateInstance(x.Type)));
+                this.upgrades.Add((Upgrade)(Activator.CreateInstance(x.Type)));
             }
 
             this.FillSpareParts();
+            this.FillTokens();
 
             this.GenericMinionPollSort();
         }
 
-        public void FillMinionPoolWithPackages(int packageAmount, PackageHandler packageHandler)
+        public List<string> FillMinionPoolWithPackages(int packageAmount, PackageHandler packageHandler)
         {
-            this.mechs = new List<Upgrade>();
+            List<string> ret = new List<string>();
+
+            this.upgrades = new List<Upgrade>();
 
             List<string> packagesList = new List<string>();
             foreach (var package in packageHandler.Packages)
@@ -65,19 +90,23 @@ namespace ScrapScramble.Game
                 packagesList.Add(package.Key);
             }
 
-            packagesList.Sort((x, y) => GameHandler.randomGenerator.Next(-2, 0)*2+3);
+            packagesList = packagesList.OrderBy(x => GameHandler.randomGenerator.Next()).ToList();
 
             for (int i=0; i<packageAmount && i <packagesList.Count(); i++)
             {
+                ret.Add(packagesList[i]);
                 for (int j=0; j < packageHandler.Packages[packagesList[i]].Count(); j++)
                 {
-                    this.mechs.Add((Upgrade)packageHandler.Packages[packagesList[i]][j].DeepCopy());
+                    this.upgrades.Add((Upgrade)packageHandler.Packages[packagesList[i]][j].DeepCopy());
                 }
             }
 
             this.FillSpareParts();
+            this.FillTokens();
 
             this.GenericMinionPollSort();
+
+            return ret;
         }
 
         public void FillSpareParts()
@@ -98,9 +127,44 @@ namespace ScrapScramble.Game
             }
         }
 
+        public void FillTokens()
+        {
+            this.tokens = new List<Card>();
+            var allTokenClasses =
+                // Note the AsParallel here, this will parallelize everything after.
+                from a in AppDomain.CurrentDomain.GetAssemblies().AsParallel()
+                from t in a.GetTypes()
+                let attributes = t.GetCustomAttributes(typeof(TokenAttribute), true)
+                where attributes != null && attributes.Length > 0
+                select new { Type = t, Attributes = attributes.Cast<TokenAttribute>() };
+
+            foreach (var x in allTokenClasses)
+            {
+                this.tokens.Add((Card)Activator.CreateInstance(x.Type));
+            }
+        }
+
         public void PrintMechNames()
         {
-            foreach (var x in this.mechs) Console.WriteLine(x.name);
+            foreach (var x in this.upgrades) Console.WriteLine(x.name);
+        }
+
+        public Card FindBasicCard(string name)
+        {            
+            foreach (var x in this.tokens)
+            {
+                if (x.name == name) return x;
+            }
+            foreach (var x in this.spareparts)
+            {
+                if (x.name == name) return x;
+            }
+            foreach (var x in this.upgrades)
+            {
+                if (x.name == name) return x;
+            }
+
+            return new BlankUpgrade();
         }
 
         //public bool LoadMinion(string jsonPath)
@@ -115,7 +179,7 @@ namespace ScrapScramble.Game
 
         //    Upgrade mech = new Upgrade(mechJson);
 
-        //    this.mechs.Add(mech);
+        //    this.upgrades.Add(mech);
 
         //    return true;
         //}

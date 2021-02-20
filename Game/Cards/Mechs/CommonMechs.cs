@@ -43,10 +43,11 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(7, 5, 5);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
+            return Task.CompletedTask;
         }
     }
 
@@ -83,20 +84,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             m.creatureData.health += 2;
             gameHandler.players[curPlayer].aftermathMessages.Add($"Your Oilmental gives the {m.name} in your shop +2/+2.");
         }
-    }
-
-    [UpgradeAttribute]
-    public class RustedJunkwarden : Upgrade
-    {
-        public RustedJunkwarden()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Rusted Junkwarden";
-            this.cardText = "Taunt";
-            this.SetStats(1, 1, 3);
-            this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class SwindlersCoin : Upgrade
@@ -126,9 +114,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
+            return Task.CompletedTask;
         }
     }
 
@@ -145,9 +134,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
+            return Task.CompletedTask;
         }
     }
 
@@ -190,9 +180,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
+            return Task.CompletedTask;
         }
     }
 
@@ -209,9 +200,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
+            return Task.CompletedTask;
         }
     }
 
@@ -227,9 +219,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(5, 2, 3);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 8;
+            return Task.CompletedTask;
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
@@ -251,9 +244,10 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(5, 3, 2);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 8;
+            return Task.CompletedTask;
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
@@ -454,19 +448,6 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             chosen.creatureData.attack += 2;
             chosen.creatureData.health += 2;
-        }
-    }
-
-    [UpgradeAttribute]
-    public class TestGuy : Upgrade
-    {
-        public TestGuy()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Lmao";
-            this.cardText = "Magnetic x2";
-            this.SetStats(3, 2, 2);
-            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 2;
         }
     }
 }

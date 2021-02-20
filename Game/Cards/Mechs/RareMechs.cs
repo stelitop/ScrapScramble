@@ -13,7 +13,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Rare;
             this.name = "Carbon Carapace";
-            this.cardText = this.writtenEffect = "Start of Combat: Gain Shields equal to the last digit of the enemy Upgrade's Attack.";
+            this.cardText = this.writtenEffect = "Start of Combat: Gain Shields equal to the last digit of the enemy Mech's Attack.";
             this.SetStats(6, 5, 5);
         }
 
@@ -32,7 +32,7 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.rarity = Rarity.Rare;
             this.name = "Offbrand Shoe";
-            this.cardText = this.writtenEffect = "Aftermath: Deal 6 damage to your Upgrade.";
+            this.cardText = this.writtenEffect = "Aftermath: Deal 6 damage to your Mech.";
             this.SetStats(1, 0, 6);
         }
 
@@ -41,33 +41,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].creatureData.health -= 6;
             gameHandler.players[curPlayer].aftermathMessages.Add("Your Offbrand Shoe deals 6 damage to you.");
         }
-    }    
-
-    [UpgradeAttribute]
-    public class MkIVSuperCobra : Upgrade
-    {
-        public MkIVSuperCobra()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Mk. IV Super Cobra";
-            this.cardText = "Rush. Aftermath: Destroy a random Upgrade in your opponent's shop.";
-            this.writtenEffect = "Aftermath: Destroy a random Upgrade in your opponent's shop.";
-            this.SetStats(6, 5, 2);
-            this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
-        }
-
-        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            if (curPlayer == enemy) return;
-
-            if (gameHandler.players[enemy].shop.OptionsCount() == 0) return;
-
-            int index = gameHandler.players[enemy].shop.GetRandomUpgradeIndex();
-            gameHandler.players[enemy].shop.RemoveUpgrade(index);
-            
-            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Mk. IV Super Cobra destroyed a random upgrade in your shop.");
-        }
-    }    
+    }        
 
     [UpgradeAttribute]
     public class LightningWeasel : Upgrade
@@ -289,9 +263,9 @@ namespace ScrapScramble.Game.Cards.Mechs
         public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<string> upgradeNames = new List<string>();
-            for (int i=0; i<gameHandler.pool.mechs.Count(); i++)
+            for (int i=0; i<gameHandler.players[curPlayer].pool.upgrades.Count(); i++)
             {
-                upgradeNames.Add(gameHandler.pool.mechs[i].name.ToLower());
+                upgradeNames.Add(gameHandler.players[curPlayer].pool.upgrades[i].name.ToLower());
             }
 
             var playerInteraction = new PlayerInteraction("Name an Upgrade", string.Empty, "Capitalisation is ignored", AnswerType.StringAnswer);
@@ -300,7 +274,7 @@ namespace ScrapScramble.Game.Cards.Mechs
 
             int pos = upgradeNames.IndexOf(ret);
 
-            gameHandler.players[curPlayer].shop.AddUpgrade(gameHandler.pool.mechs[pos]);            
+            gameHandler.players[curPlayer].shop.AddUpgrade(gameHandler.players[curPlayer].pool.upgrades[pos]);            
         }
     }
 
@@ -433,7 +407,8 @@ namespace ScrapScramble.Game.Cards.Mechs
 
         public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].shop.AddUpgrade(new BeeBot());
+            Card token = new BeeBot();
+            gameHandler.players[curPlayer].shop.AddUpgrade((Upgrade)gameHandler.players[curPlayer].pool.FindBasicCard(token.name));
         }
     }
 
@@ -457,24 +432,6 @@ namespace ScrapScramble.Game.Cards.Mechs
         }
     }
 
-    [UpgradeAttribute]
-    public class DiscoverTest : Upgrade
-    {
-        public DiscoverTest()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Discover Test";
-            this.cardText = "Battlecry: Discover a 3-Cost Upgrade.";
-            this.SetStats(2, 1, 1);
-        }
-
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            List<Upgrade> pool = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.Cost == 3);
-
-            await PlayerInteraction.DiscoverACardAsync<Upgrade>(gameHandler, curPlayer, enemy, "3-Cost Upgrade", pool);
-        }
-    }
 }
 
 /*

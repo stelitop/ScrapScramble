@@ -25,7 +25,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, this.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, this.Criteria);
 
             for (int i = 0; i < 4; i++)
             {
@@ -57,7 +57,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, this.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, this.Criteria);
 
             for (int i = 0; i < 3; i++)
             {
@@ -89,7 +89,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, this.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, this.Criteria);
 
             for (int i = 0; i < 2; i++)
             {
@@ -121,7 +121,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, this.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, this.Criteria);
 
             for (int i = 0; i < 1; i++)
             {
@@ -148,12 +148,12 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            int pos = GameHandler.randomGenerator.Next(0, gameHandler.pool.spareparts.Count());
+            int pos = GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].pool.spareparts.Count());
 
-            gameHandler.players[curPlayer].hand.AddCard(gameHandler.pool.spareparts[pos]);
+            gameHandler.players[curPlayer].hand.AddCard(gameHandler.players[curPlayer].pool.spareparts[pos]);
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
-                $"Your Circus Circuit added a {gameHandler.pool.spareparts[pos].name} to your hand.");
+                $"Your Circus Circuit added a {gameHandler.players[curPlayer].pool.spareparts[pos].name} to your hand.");
         }
     }
 
@@ -212,7 +212,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Rare;
             this.name = "Scrapbarber";
-            this.cardText = this.writtenEffect = "After this attacks the enemy Upgrade, steal 2 Attack and Health from it.";
+            this.cardText = this.writtenEffect = "After this attacks the enemy Mech, steal 2 Attack and Health from it.";
             this.SetStats(5, 3, 3);
         }
 
@@ -310,11 +310,11 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Epic;
             this.name = "Competent Scrapper";
-            this.cardText = "Battlecry: Discard all Spare Parts in your hand. Give your Upgrade +3/+3 for each.";
+            this.cardText = "Battlecry: Discard all Spare Parts in your hand. Gain +3/+3 for each.";
             this.SetStats(4, 3, 4);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<int> handIndexes = gameHandler.players[curPlayer].hand.GetAllCardIndexes();
 
@@ -327,6 +327,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                     gameHandler.players[curPlayer].creatureData.health += 3;
                 }
             }
+            return Task.CompletedTask;
         }
     }
 
@@ -338,7 +339,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Epic;
             this.name = "Super Scooper";
-            this.cardText = this.writtenEffect = "Start of Combat: Steal the stats of the lowest-cost Upgrade your opponent bought last turn from their Upgrade.";
+            this.cardText = this.writtenEffect = "Start of Combat: Steal the stats of the lowest-cost Upgrade your opponent bought last turn from their Mech.";
             this.SetStats(8, 3, 7);
         }
 
@@ -396,8 +397,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             for (int i=0; i<3; i++)
             {
-                int poolSize = gameHandler.pool.mechs.Count();
-                gameHandler.players[curPlayer].shop.AddUpgrade(gameHandler.pool.mechs[GameHandler.randomGenerator.Next(0, poolSize)]);
+                int poolSize = gameHandler.players[curPlayer].pool.upgrades.Count();
+                gameHandler.players[curPlayer].shop.AddUpgrade(gameHandler.players[curPlayer].pool.upgrades[GameHandler.randomGenerator.Next(0, poolSize)]);
             }
 
             gameHandler.players[curPlayer].nextRoundEffects.Add(new GrandVaultEffect());
@@ -503,7 +504,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].hand.AddCard(new Receipt());
+            Card token = new Receipt();
+
+            gameHandler.players[curPlayer].hand.AddCard(gameHandler.players[curPlayer].pool.FindBasicCard(token.name));
             gameHandler.players[curPlayer].nextRoundEffects.Add(new Scrap4CashEffect());
 
             gameHandler.players[curPlayer].aftermathMessages.Add(

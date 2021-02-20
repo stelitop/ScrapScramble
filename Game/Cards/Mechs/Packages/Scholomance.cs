@@ -343,9 +343,11 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(4, 4, 2);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].hand.AddCard(new LightningBloom());
+            Card token = new LightningBloom();
+            gameHandler.players[curPlayer].hand.AddCard(gameHandler.players[curPlayer].pool.FindBasicCard(token.name));
+            return Task.CompletedTask;
         }
     }
 
@@ -375,7 +377,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [UpgradeAttribute]
+    //[UpgradeAttribute]
     [Package(UpgradePackage.ScholomanceAcademy)]
     public class ShiningStudent : Upgrade
     {
@@ -404,7 +406,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Legendary;
             this.name = "Lord Barox";
-            this.cardText = "Battlecry: Name ANY other Upgrade. Aftermath: If it won last round, gain 5 Mana this turn only.";
+            this.cardText = "Battlecry: Name ANY other Mech. Aftermath: If it won last round, gain 5 Mana this turn only.";
             this.SetStats(3, 3, 2);
             this.printEffectInCombat = false;
         }

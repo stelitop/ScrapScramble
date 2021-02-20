@@ -182,19 +182,19 @@ namespace ScrapScramble.Game
         public static async Task<int> ActivateMagneticAsync(GameHandler gameHandler, int curPlayer, int enemy)
         {
             PlayerInteraction magnetic = new PlayerInteraction("Write the number of a Spare Part", string.Empty, "", AnswerType.IntAnswer);
-            string defaultAns = (GameHandler.randomGenerator.Next(0, gameHandler.pool.spareparts.Count()) + 1).ToString();
+            string defaultAns = (GameHandler.randomGenerator.Next(0, gameHandler.players[curPlayer].pool.spareparts.Count()) + 1).ToString();
 
-            for (int i=0; i<gameHandler.pool.spareparts.Count(); i++)
+            for (int i=0; i<gameHandler.players[curPlayer].pool.spareparts.Count(); i++)
             {
-                magnetic.description += $"{i+1}) {gameHandler.pool.spareparts[i].GetInfo(gameHandler, curPlayer)}";
-                if (i != gameHandler.pool.spareparts.Count() - 1) magnetic.description += "\n";
+                magnetic.description += $"{i+1}) {gameHandler.players[curPlayer].pool.spareparts[i].GetInfo(gameHandler, curPlayer)}";
+                if (i != gameHandler.players[curPlayer].pool.spareparts.Count() - 1) magnetic.description += "\n";
             }
 
             string ret = await magnetic.SendInteractionAsync(curPlayer, (x, y, z) => GeneralFunctions.Within(x, 1, y.pool.spareparts.Count()), defaultAns);
             if (ret == string.Empty) return -1;
 
             int index = int.Parse(ret) - 1;
-            gameHandler.players[curPlayer].hand.AddCard(gameHandler.pool.spareparts[index]);
+            gameHandler.players[curPlayer].hand.AddCard(gameHandler.players[curPlayer].pool.spareparts[index]);
 
             return index;
         }

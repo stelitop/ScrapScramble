@@ -19,11 +19,11 @@ namespace ScrapScramble.Game.Cards
 
         public List<Upgrade> extraUpgradeEffects = new List<Upgrade>();
 
-        public virtual async Task<bool> PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy) { return false; }
+        public virtual Task<bool> PlayCard(int handPos, GameHandler gameHandler, int curPlayer, int enemy) { return Task.FromResult(false); }
         public abstract string GetInfo(GameHandler gameHandler, int player);
         public abstract Card DeepCopy();
 
-        public virtual async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy) { return Task.CompletedTask; }
 
         public virtual bool CanBePlayed(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
         {

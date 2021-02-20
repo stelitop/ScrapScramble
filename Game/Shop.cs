@@ -109,7 +109,7 @@ namespace ScrapScramble.Game.Effects
         }
 
 
-        public void Refresh(GameHandler gameHandler, int maxMana, bool decreaseFreeze = true)
+        public void Refresh(GameHandler gameHandler, MinionPool pool, int maxMana, bool decreaseFreeze = true)
         {
             int commons = gameHandler.shopRarities.common, rares = gameHandler.shopRarities.rare, epics = gameHandler.shopRarities.epic, legendaries = gameHandler.shopRarities.legendary;
 
@@ -135,28 +135,28 @@ namespace ScrapScramble.Game.Effects
 
             List<Upgrade> subList = new List<Upgrade>();
 
-            subList = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary && x.Cost <= maxMana - 5);            
+            subList = CardsFilter.FilterList<Upgrade>(pool.upgrades, x => x.rarity == Rarity.Legendary && x.Cost <= maxMana - 5);            
             for (int i = 0; i < legendaries; i++)
             {
                 Upgrade m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
                 this.AddUpgrade(m);
             }
 
-            subList = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Epic && x.Cost <= maxMana - 5);
+            subList = CardsFilter.FilterList<Upgrade>(pool.upgrades, x => x.rarity == Rarity.Epic && x.Cost <= maxMana - 5);
             for (int i = 0; i < epics; i++)
             {
                 Upgrade m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
                 this.AddUpgrade(m);
             }
 
-            subList = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Rare && x.Cost <= maxMana - 5);
+            subList = CardsFilter.FilterList<Upgrade>(pool.upgrades, x => x.rarity == Rarity.Rare && x.Cost <= maxMana - 5);
             for (int i = 0; i < rares; i++)
             {
                 Upgrade m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
                 this.AddUpgrade(m);
             }
             
-            subList = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Common && x.Cost <= maxMana - 5);
+            subList = CardsFilter.FilterList<Upgrade>(pool.upgrades, x => x.rarity == Rarity.Common && x.Cost <= maxMana - 5);
             for (int i = 0; i < commons; i++)
             {
                 Upgrade m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];

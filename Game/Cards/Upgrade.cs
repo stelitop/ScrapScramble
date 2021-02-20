@@ -127,8 +127,10 @@ namespace ScrapScramble.Game.Cards
         //{
         //    Console.WriteLine($"{this.name}: {this.creatureData.cost}/{this.creatureData.attack}/{this.creatureData.health} {} - \"{this.cardText}\"");
         //}
-
-        public virtual async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy) { }
+        
+        public virtual Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy) {
+            return Task.CompletedTask;
+        }
         public virtual void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy) { }
@@ -166,8 +168,11 @@ namespace ScrapScramble.Game.Cards
             
             return ret;            
         }
-        public virtual Upgrade BasicCopy()
+        public virtual Upgrade BasicCopy(MinionPool pool)
         {
+            Card newCopy = pool.FindBasicCard(this.name);
+
+            if (newCopy.name != BlankUpgrade.name) return (Upgrade)newCopy.DeepCopy();
             return (Upgrade)Activator.CreateInstance(this.GetType());
         }        
     }

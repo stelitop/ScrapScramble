@@ -29,9 +29,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             return ret;
         }
 
-        public override Upgrade BasicCopy()
+        public override Upgrade BasicCopy(MinionPool pool)
         {
-            Upgrade ret = new Mechathun();
+            Upgrade ret = base.BasicCopy(pool);
             ret.creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
             return ret;
         }
@@ -60,7 +60,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public static int AddMechaThun(GameHandler gameHandler, int player)
         {
-            return gameHandler.players[player].shop.AddUpgrade(new Mechathun());
+            Card token = new Mechathun();
+            return gameHandler.players[player].shop.AddUpgrade((Upgrade)gameHandler.players[player].pool.FindBasicCard(token.name));
         }
     }
 
@@ -76,7 +77,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 2);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -84,6 +85,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze]--;
             if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
                 gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
+            return Task.CompletedTask;
         }
     }
 
@@ -100,7 +102,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -108,6 +110,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze]--;
             if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
                 gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
+
+            return Task.CompletedTask;
         }
     }
 
@@ -124,7 +128,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -132,6 +136,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] -= 2;
             if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
                 gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
+
+            return Task.CompletedTask;
         }
     }
 
@@ -148,7 +154,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -156,6 +162,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] -= 3;
             if (gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] < 0)
                 gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
+
+            return Task.CompletedTask;
         }
     }
 
@@ -171,13 +179,15 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(4, 12, 12);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
 
             gameHandler.players[curPlayer].creatureData.attack -= gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze];
             gameHandler.players[curPlayer].creatureData.health -= gameHandler.players[curPlayer].shop.At(index).creatureData.staticKeywords[StaticKeyword.Freeze];
+
+            return Task.CompletedTask;
         }
     }
 
@@ -193,7 +203,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(8, 8, 8);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
@@ -202,6 +212,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             {
                 gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 16;
             }
+
+            return Task.CompletedTask;
         }
     }
 
@@ -232,7 +244,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, this.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, this.Criteria);
 
             for (int i = 0; i < 3; i++)
             {
@@ -243,6 +255,33 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
             gameHandler.players[curPlayer].aftermathMessages.Add(
                 "Your Mecha'thun's Generator adds 3 other random Mecha'thun Cultists to your shop.");
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.MonstersReanimated)]
+    public class MkIVSuperCobra : Upgrade
+    {
+        public MkIVSuperCobra()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Mk. IV Super Cobra";
+            this.cardText = "Rush. Aftermath: Destroy a random Upgrade in your opponent's shop.";
+            this.writtenEffect = "Aftermath: Destroy a random Upgrade in your opponent's shop.";
+            this.SetStats(6, 5, 2);
+            this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
+        }
+
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (curPlayer == enemy) return;
+
+            if (gameHandler.players[enemy].shop.OptionsCount() == 0) return;
+
+            int index = gameHandler.players[enemy].shop.GetRandomUpgradeIndex();
+            gameHandler.players[enemy].shop.RemoveUpgrade(index);
+
+            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Mk. IV Super Cobra destroyed a random upgrade in your shop.");
         }
     }
 
@@ -316,7 +355,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [UpgradeAttribute]
+    //[UpgradeAttribute]
     [Package(UpgradePackage.MonstersReanimated)]
     public class Hackatha : Upgrade
     {
@@ -328,11 +367,12 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(8, 5, 5);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (gameHandler.currentRound > 1 && gameHandler.pairsHandler.opponents[curPlayer] != curPlayer)
             {
-                int index = gameHandler.players[curPlayer].hand.AddCard(new HackathaAmalgam());
+                Card token = new HackathaAmalgam();
+                int index = gameHandler.players[curPlayer].hand.AddCard(gameHandler.players[curPlayer].pool.FindBasicCard(token.name));
                 HackathaAmalgam amalgam = (HackathaAmalgam)gameHandler.players[curPlayer].hand.At(index);
 
                 try
@@ -343,7 +383,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
                     for (int i = 0; i < gameHandler.players[enemy].playHistory[gameHandler.currentRound - 2].Count(); i++)
                     {
-                        Card upgrade = (Upgrade)gameHandler.players[enemy].playHistory[gameHandler.currentRound - 2][i];
+                        Card upgrade = gameHandler.players[enemy].playHistory[gameHandler.currentRound - 2][i];
 
                         if ((upgrade.GetType().IsSubclassOf(typeof(Upgrade)) || upgrade.GetType() == typeof(Upgrade)) && upgrade.name != "Hackatha" && upgrade.name != "Hackatha's Amalgam")
                         {
@@ -375,6 +415,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                     Console.WriteLine("Hackatha Fucked Up");
                 }
             }
+
+            return Task.CompletedTask;
         }
     }
 }

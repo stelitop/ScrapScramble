@@ -20,9 +20,10 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
+            return Task.CompletedTask;
         }
     }
 
@@ -52,9 +53,10 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 2, 1);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
+            return Task.CompletedTask;
         }
 
         public override string GetInfo(GameHandler gameHandler, int player)
@@ -81,9 +83,10 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 2);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
+            return Task.CompletedTask;
         }
 
         public override string GetInfo(GameHandler gameHandler, int player)
@@ -136,10 +139,12 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 1);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
+
+            return Task.CompletedTask;
         }
 
         public override string GetInfo(GameHandler gameHandler, int player)
@@ -213,7 +218,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, this.Criteria);
+            List<Upgrade> list = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, this.Criteria);
 
             for (int i = 0; i < 3; i++)
             {
@@ -234,7 +239,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Rare;
             this.name = "Homing Missile";
-            this.cardText = this.writtenEffect = "Aftermath: Reduce the Health of your opponent's Upgrade by 5 (but not below 1).";
+            this.cardText = this.writtenEffect = "Aftermath: Reduce the Health of your opponent's Mech by 5 (but not below 1).";
             this.SetStats(4, 3, 3);
         }
 
@@ -257,7 +262,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Rare;
             this.name = "Hypnodrone";
-            this.cardText = this.writtenEffect = "Aftermath: Reduce the Attack of your opponent's Upgrade by 5 (but not below 1).";
+            this.cardText = this.writtenEffect = "Aftermath: Reduce the Attack of your opponent's Mech by 5 (but not below 1).";
             this.SetStats(7, 6, 6);
         }
 
@@ -297,8 +302,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Epic;
             this.name = "Deflect-o-Shield";
-            this.cardText = this.writtenEffect = "Prevent any damage to your Upgrade that would deal 2 or less damage.";
-            this.SetStats(4, 2, 2);
+            this.cardText = this.writtenEffect = "Prevent any damage to your Mech that would deal 2 or less damage.";
+            this.SetStats(2, 2, 2);
         }
 
         public override void BeforeTakingDamage(ref int damage, GameHandler gameHandler, int curPlayer, int enemy, ref string msg)
@@ -346,7 +351,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Epic;
             this.name = "Panic Button";
-            this.cardText = this.writtenEffect = "After your Upgrade is reduced to 5 or less Health, deal 10 damage to the enemy Upgrade.";
+            this.cardText = this.writtenEffect = "After your Mech is reduced to 5 or less Health, deal 10 damage to the enemy Upgrade.";
             this.SetStats(5, 3, 3);
             this.triggered = false;
         }
@@ -370,7 +375,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Legendary;
             this.name = "Exotron the Forbidden";
-            this.cardText = this.writtenEffect = "Start of Combat: If you've bought all 5 parts of Exotron this game, destroy the enemy Upgrade.";
+            this.cardText = this.writtenEffect = "Start of Combat: If you've bought all 5 parts of Exotron this game, destroy the enemy Mech.";
             this.SetStats(15, 15, 15);
         }
 

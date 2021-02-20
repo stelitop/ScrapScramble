@@ -66,15 +66,16 @@ namespace ScrapScramble.BotRelated.Commands
 
                 await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
 
-                await ctx.Client.UpdateStatusAsync(new DiscordActivity
+                ctx.Client.UpdateStatusAsync(new DiscordActivity
                 {
                     Name = "Scrap Scramble | >help",
                     ActivityType = ActivityType.Playing
                 });
 
-                await SendShops(ctx);
                 Thread.Sleep(1000);
-                await NextPairs(ctx);
+                await NextPairs(ctx);                
+                Thread.Sleep(1000);
+                await SendShops(ctx);
                 Thread.Sleep(1000);
                 await CreateInteractivePlayerlist(ctx);
 
@@ -190,7 +191,7 @@ namespace ScrapScramble.BotRelated.Commands
                 Color = DiscordColor.Green
             }).ConfigureAwait(false);
 
-
+            Thread.Sleep(1000);
             await BotInfoHandler.RefreshPlayerList(ctx);
             Thread.Sleep(1000);
             await SendShops(ctx);
@@ -410,10 +411,10 @@ namespace ScrapScramble.BotRelated.Commands
                     {
                         case "+=":
 
-                            for (int i = 0; i < BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
-                                if (BotInfoHandler.gameHandler.pool.mechs[i].name.Equals(shopName, StringComparison.OrdinalIgnoreCase))
+                            for (int i = 0; i < BotInfoHandler.gameHandler.players[index].pool.upgrades.Count(); i++)
+                                if (BotInfoHandler.gameHandler.players[index].pool.upgrades[i].name.Equals(shopName, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    BotInfoHandler.gameHandler.players[index].shop.AddUpgrade(BotInfoHandler.gameHandler.pool.mechs[i]);
+                                    BotInfoHandler.gameHandler.players[index].shop.AddUpgrade(BotInfoHandler.gameHandler.pool.upgrades[i]);
                                     return true;
                                 }
                             return false;
@@ -431,10 +432,10 @@ namespace ScrapScramble.BotRelated.Commands
                     {
                         case "+=":
 
-                            for (int i = 0; i < BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
-                                if (BotInfoHandler.gameHandler.pool.mechs[i].name.Equals(handName, StringComparison.OrdinalIgnoreCase))
+                            for (int i = 0; i < BotInfoHandler.gameHandler.pool.upgrades.Count(); i++)
+                                if (BotInfoHandler.gameHandler.pool.upgrades[i].name.Equals(handName, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    BotInfoHandler.gameHandler.players[index].hand.AddCard(BotInfoHandler.gameHandler.pool.mechs[i]);
+                                    BotInfoHandler.gameHandler.players[index].hand.AddCard(BotInfoHandler.gameHandler.pool.upgrades[i]);
                                     return true;
                                 }
                             return false;
@@ -596,10 +597,24 @@ namespace ScrapScramble.BotRelated.Commands
             }).ConfigureAwait(false);
         }
 
-        [Command("frog")]
-        public async Task Froggg(CommandContext ctx, int packages = 4)
+        [Command("gamewithpackages")]
+        public async Task GameWithPackages(CommandContext ctx, int packages = 4)
         {
-            BotInfoHandler.gameHandler.pool.FillMinionPoolWithPackages(packages, BotInfoHandler.gameHandler.packageHandler);
-        }
+            if (packages < 1) packages = 1;
+            List<string> packagesNames = BotInfoHandler.gameHandler.pool.FillMinionPoolWithPackages(packages, BotInfoHandler.gameHandler.packageHandler);
+
+            string description = $"- {packagesNames[0]}";
+
+            for (int i=1; i<packagesNames.Count(); i++)
+            {
+                description += $"\n- {packagesNames[i]}";
+            }
+
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
+                Title = $"Number of Packages set to {packages}",
+                Description = description,
+                Color = DiscordColor.Green
+            }).ConfigureAwait(false);
+        }        
     }
 }

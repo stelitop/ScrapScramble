@@ -29,7 +29,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Common;
             this.name = "Toy Tank";
             this.cardText = "Taunt";
-            this.SetStats(2, 2, 4);
+            this.SetStats(1, 1, 3);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
     }
@@ -57,11 +57,16 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(3, 3, 2);            
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].hand.AddCard(new PlushieClawMachine());
-            gameHandler.players[curPlayer].hand.AddCard(new PlushieClawMachine());
-            gameHandler.players[curPlayer].hand.AddCard(new PlushieClawMachine());
+            Card token = new PlushieClawMachine();
+
+            for (int i=0; i<3; i++)
+            {
+                gameHandler.players[curPlayer].hand.AddCard(
+                    gameHandler.players[curPlayer].pool.FindBasicCard(token.name));
+            }
+            return Task.CompletedTask;
         }
     }
 
@@ -74,7 +79,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Common;
             this.name = "Ferris Wheel";
             this.cardText = "Aftermath: Return this to your shop. It costs (1) less than last time.";
-            this.SetStats(7, 6, 6);
+            this.SetStats(6, 5, 5);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
@@ -168,12 +173,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             return m.name.Equals("Robo-Rabbit");
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, this.Criteria);
 
             gameHandler.players[curPlayer].creatureData.attack += 2 * list.Count();
             gameHandler.players[curPlayer].creatureData.health += 2 * list.Count();
+            return Task.CompletedTask;
         }
 
         public override string GetInfo(GameHandler gameHandler, int player)
@@ -190,7 +196,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Rare;
             this.name = "Trick Roomster";
-            this.cardText = this.writtenEffect = "The Upgrade with the lower Attack Priority goes first instead.";
+            this.cardText = this.writtenEffect = "The Mech with the lower Attack Priority goes first instead.";
             this.SetStats(4, 1, 1);
         }
 
@@ -212,10 +218,11 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(4, 2, 4);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].hand.OptionsCount();
             gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].hand.OptionsCount();
+            return Task.CompletedTask;
         }
     }
 
@@ -227,7 +234,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Epic;
             this.name = "Springloaded Jester";
-            this.cardText = this.writtenEffect = "After this attacks, swap your Upgrade's Attack and Health.";
+            this.cardText = this.writtenEffect = "After this attacks, swap your Mech's Attack and Health.";
             this.SetStats(2, 1, 1);
         }
 
@@ -257,7 +264,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
             for (int i = 0; i < 3; i++)
             {
-                Spell sparePart = (Spell)gameHandler.pool.spareparts[GameHandler.randomGenerator.Next(0, gameHandler.pool.spareparts.Count())].DeepCopy();
+                Spell sparePart = (Spell)gameHandler.players[curPlayer].pool.spareparts[GameHandler.randomGenerator.Next(0, gameHandler.pool.spareparts.Count())].DeepCopy();
 
                 if (i == 0) aftermathMsg += $"{sparePart.name}";
                 else if (i == 1) aftermathMsg += $", {sparePart.name}";
@@ -359,7 +366,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             else if (ret.Equals("rare", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Rare;
             else if (ret.Equals("epic", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Epic;
             else if (ret.Equals("legendary", StringComparison.OrdinalIgnoreCase)) this.chosenRarity = Rarity.Legendary;
-            else this.chosenRarity = Rarity.NO_RARITY;            
+            else this.chosenRarity = Rarity.NO_RARITY;
+
+            this.writtenEffect = $"Aftermath: Give all players' {this.chosenRarity} Upgrades in their shops +2/+2.";
         }
 
         public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
@@ -492,8 +501,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             //        ((IronmoonTicket)card).value++;
             //    }
             //}
+            Card token = new IronmoonTicket();
 
-            gameHandler.players[curPlayer].hand.AddCard(new IronmoonTicket());
+            gameHandler.players[curPlayer].hand.AddCard(gameHandler.players[curPlayer].pool.FindBasicCard(token.name));
             gameHandler.players[curPlayer].nextRoundEffects.Add(new SilasIronmoonEffect());
             gameHandler.players[curPlayer].aftermathMessages.Add(
                 "Your Silas Ironmoon adds an Ironmoon Ticket to your hand.");
@@ -514,10 +524,11 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(7, 4, 4);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             //gameHandler.players[curPlayer].hand.AddCard(new IronmoonTicket());
             this.extraUpgradeEffects.Add(new SilasIronmoonEffect());
+            return Task.CompletedTask;
         }
     }
 }

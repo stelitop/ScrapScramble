@@ -72,10 +72,11 @@ namespace ScrapScramble.Game
             //this.pool.FillGenericMinionPool();
 
             for (int i=0; i<this.players.Count(); i++)
-            {                
-                this.players[i] = new Player(this.players[i].name);                
+            {
+                this.players[i] = new Player(this.players[i].name);
 
-                this.players[i].shop.Refresh(this, this.maxMana);
+                this.players[i].pool = new MinionPool(this.pool);
+                this.players[i].shop.Refresh(this, this.players[i].pool, this.maxMana);
                 this.players[i].curMana = this.maxMana;
                 this.players[i].lives = this.startingLives;
 
@@ -291,7 +292,7 @@ namespace ScrapScramble.Game
 
                 gameHandler.players[i].aftermathMessages.Clear();
 
-                gameHandler.players[i].shop.Refresh(gameHandler, gameHandler.maxMana);
+                gameHandler.players[i].shop.Refresh(gameHandler, gameHandler.players[i].pool, gameHandler.maxMana);
 
                 gameHandler.players[i].overloaded = gameHandler.players[i].creatureData.staticKeywords[StaticKeyword.Overload];
                 gameHandler.players[i].curMana = gameHandler.maxMana - gameHandler.players[i].overloaded;

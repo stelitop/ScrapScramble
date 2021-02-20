@@ -52,9 +52,11 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 0, 2);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Taunt] * 2;
+
+            return Task.CompletedTask;
         }
     }
 
@@ -66,7 +68,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Common;
             this.name = "Boot Polisher";
-            this.cardText = this.writtenEffect = "Start of Combat: If the enemy Upgrade has Attack Priority, gain +4 Shields.";
+            this.cardText = this.writtenEffect = "Start of Combat: If the enemy Mech has Attack Priority, gain +4 Shields.";
             this.SetStats(3, 2, 3);
         }
 
@@ -94,7 +96,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Common;
             this.name = "Cutlery Dispencer";
-            this.cardText = this.writtenEffect = "Start of Combat: If your Upgrade has Attack Priority, gain +4 Spikes.";
+            this.cardText = this.writtenEffect = "Start of Combat: If your Mech has Attack Priority, gain +4 Spikes.";
             this.SetStats(3, 3, 2);
         }
 
@@ -122,14 +124,16 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Rare;
             this.name = "Gold Bolts";
-            this.cardText = "Battlecry: Transform your Shields into Health.";
+            this.cardText = "Battlecry: Transform your Mech's Shields into Health.";
             this.SetStats(3, 3, 2);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields];
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] = 0;
+
+            return Task.CompletedTask;
         }
     }
 
@@ -141,14 +145,16 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Rare;
             this.name = "Wupall Smasher";
-            this.cardText = "Battlecry: Transform your Spikes into Attack.";
+            this.cardText = "Battlecry: Transform your Mech's Spikes into Attack.";
             this.SetStats(5, 4, 5);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes];
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] = 0;
+
+            return Task.CompletedTask;
         }
     }
 
@@ -254,7 +260,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             await PlayerInteraction.FreezeUpgradeInShopAsync(gameHandler, curPlayer, enemy);
-            gameHandler.players[curPlayer].hand.AddCard(new AbsoluteZero());
+            Card token = new AbsoluteZero();
+            gameHandler.players[curPlayer].hand.AddCard(gameHandler.players[curPlayer].pool.FindBasicCard(token.name));
         }
     }
 
@@ -270,21 +277,120 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 2, 2);
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].hand.AddCard(new AbsoluteZero());
+            Card token = new AbsoluteZero();
+            gameHandler.players[curPlayer].hand.AddCard(gameHandler.players[curPlayer].pool.FindBasicCard(token.name));
+            return Task.CompletedTask;
         }
     }
 
     [UpgradeAttribute]
     [Package(UpgradePackage.TinyInventions)]
-    public class TinyGamer : Upgrade
+    public class MetallicJar : Upgrade
     {
-        public TinyGamer()
+        public MetallicJar()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Metallic Jar";
+            this.cardText = "Battlecry: Discover a 1-Cost Upgrade.";
+            this.SetStats(1, 1, 1);
+        }
+
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Upgrade> pool = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.Cost == 1 && x.name != this.name);
+            await PlayerInteraction.DiscoverACardAsync<Upgrade>(gameHandler, curPlayer, enemy, "1-Cost Upgrade", pool);                        
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.TinyInventions)]
+    public class Rare1Drop : Upgrade
+    {
+        public Rare1Drop()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Rare 1 Drop";
+            this.cardText = "Has Spikes equal to its Attack and Shields equal to its Health.";
+            this.SetStats(1, 1, 1);
+        }
+
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += this.creatureData.attack;
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += this.creatureData.health;
+            return Task.CompletedTask;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.TinyInventions)]
+    public class NextGenerationCPU : Upgrade
+    {
+        public NextGenerationCPU()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Next Generation CPU";
+            this.cardText = "Battlecry: For the rest of the game, your 1-Cost Upgrades have +1/+1.";
+            this.SetStats(1, 1, 1);
+        }
+
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            foreach (var upgrade in gameHandler.players[curPlayer].pool.upgrades)
+            {
+                if (upgrade.Cost == 1)
+                {
+                    upgrade.creatureData.attack++;
+                    upgrade.creatureData.health++;
+                }
+            }
+            foreach (var card in gameHandler.players[curPlayer].pool.tokens)
+            {
+                if (card.GetType().IsSubclassOf(typeof(Upgrade)) || card.GetType() == typeof(Upgrade))
+                {
+                    ((Upgrade)card).creatureData.attack++;
+                    ((Upgrade)card).creatureData.health++;
+                }
+            }
+
+            var shop = gameHandler.players[curPlayer].shop.GetAllUpgrades();
+            foreach (var upgrade in shop)
+            {
+                if (upgrade.Cost == 1)
+                {
+                    upgrade.creatureData.attack++;
+                    upgrade.creatureData.health++;
+                }
+            }
+
+            var hand = gameHandler.players[curPlayer].hand.GetAllCards();
+            foreach (var card in hand)
+            {
+                if (card.Cost == 1)
+                {
+                    if (Attribute.IsDefined(card.GetType(), typeof(UpgradeAttribute)))
+                    {
+                        ((Upgrade)card).creatureData.attack++;
+                        ((Upgrade)card).creatureData.health++;
+                    }
+                }
+            }            
+
+            return base.Battlecry(gameHandler, curPlayer, enemy);
+        }
+    }
+
+    [UpgradeAttribute]
+    [Package(UpgradePackage.TinyInventions)]
+    public class NanoDuplicatorv10 : Upgrade
+    {
+        public NanoDuplicatorv10()
         {
             this.rarity = Rarity.Legendary;
-            this.name = "Tiny Gamer";
-            this.cardText = this.writtenEffect = "The 1-Cost Upgrades in your shop have Binary.";
+            this.name = "Nano-Duplicator v10";
+            this.cardText = this.writtenEffect = "1-Cost Upgrades in your shop have Binary.";
             this.SetStats(1, 1, 1);
         }
 

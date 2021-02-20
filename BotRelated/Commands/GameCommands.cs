@@ -20,7 +20,7 @@ namespace ScrapScramble.BotRelated.Commands
         [Command("signup")]
         [Description("Signs you up for the next game.")]
         [RequireGuild]
-        public async Task SignUp(CommandContext ctx, [Description("The name of your Upgrade")][RemainingText]string mechName)
+        public async Task SignUp(CommandContext ctx, [Description("The name of your Mech")][RemainingText]string mechName)
         {            
             DiscordEmbedBuilder responseMessage;                  
 
@@ -68,7 +68,7 @@ namespace ScrapScramble.BotRelated.Commands
                     responseMessage = new DiscordEmbedBuilder
                     {
                         Title = "Signed up successfully",
-                        Description = $"Your Upgrade is called \"{mechName}\"",
+                        Description = $"Your Mech is called \"{mechName}\"",
                         Color = DiscordColor.Green
                     };
 
@@ -96,7 +96,7 @@ namespace ScrapScramble.BotRelated.Commands
                 responseMessage = new DiscordEmbedBuilder
                 {
                     Title = "You have not signed up",
-                    Description = "You can signup using ?signup (Your Upgrade name here).",
+                    Description = "You can signup using ?signup (Your Mech name here).",
                     Color = DiscordColor.Red
                 };
             }
@@ -142,9 +142,9 @@ namespace ScrapScramble.BotRelated.Commands
         }
 
         [Command("rename")]
-        [Description("Renames your Upgrade.")]
+        [Description("Renames your Mech.")]
         [RequireGuild]
-        public async Task MechRename(CommandContext ctx, [Description("The new name of your Upgrade")][RemainingText]string mechName)
+        public async Task MechRename(CommandContext ctx, [Description("The new name of your Mech")][RemainingText]string mechName)
         {
             DiscordEmbedBuilder responseMessage;
 
@@ -154,7 +154,7 @@ namespace ScrapScramble.BotRelated.Commands
                 responseMessage = new DiscordEmbedBuilder
                 {
                     Title = "You have not signed up",
-                    Description = "You can signup using ?signup (Your Upgrade name here).",
+                    Description = "You can signup using ?signup (Your Mech name here).",
                     Color = DiscordColor.Red
                 };
             }
@@ -164,7 +164,7 @@ namespace ScrapScramble.BotRelated.Commands
                 responseMessage = new DiscordEmbedBuilder
                 {
                     Title = "A game has already started",
-                    Description = "You cannot change your Upgrade name while in game.",
+                    Description = "You cannot change your Mech name while in game.",
                     Color = DiscordColor.Red
                 };
             }
@@ -194,8 +194,8 @@ namespace ScrapScramble.BotRelated.Commands
 
                     responseMessage = new DiscordEmbedBuilder
                     {
-                        Title = "Upgrade renamed successfully.",
-                        Description = $"Your Upgrade is now called {mechName}",
+                        Title = "Mech renamed successfully.",
+                        Description = $"Your Mech is now called {mechName}",
                         Color = DiscordColor.Green
                     };
                 }
@@ -266,9 +266,9 @@ namespace ScrapScramble.BotRelated.Commands
 
             List<int> candidates = new List<int>();
 
-            for (int i=0; i<BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
+            for (int i=0; i<BotInfoHandler.gameHandler.pool.upgrades.Count(); i++)
             {
-                if (BotInfoHandler.gameHandler.pool.mechs[i].name.ToLower().Contains(mechName.ToLower()))
+                if (BotInfoHandler.gameHandler.pool.upgrades[i].name.ToLower().Contains(mechName.ToLower()))
                 {
                     candidates.Add(i);
                 }
@@ -276,7 +276,7 @@ namespace ScrapScramble.BotRelated.Commands
 
             if (candidates.Count() == 1)
             {
-                Upgrade mech = BotInfoHandler.gameHandler.pool.mechs[candidates[0]];
+                Upgrade mech = BotInfoHandler.gameHandler.pool.upgrades[candidates[0]];
                 responseMessage = new DiscordEmbedBuilder
                 {
                     Title = $"{mech.name}",
@@ -305,8 +305,8 @@ namespace ScrapScramble.BotRelated.Commands
 
                 for (int i=0; i<candidates.Count(); i++)
                 {
-                    if (i == 0) responseMessage.Description = BotInfoHandler.gameHandler.pool.mechs[candidates[i]].name;
-                    else responseMessage.Description += $", {BotInfoHandler.gameHandler.pool.mechs[candidates[i]].name}";
+                    if (i == 0) responseMessage.Description = BotInfoHandler.gameHandler.pool.upgrades[candidates[i]].name;
+                    else responseMessage.Description += $", {BotInfoHandler.gameHandler.pool.upgrades[candidates[i]].name}";
                 }
 
                 await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
@@ -331,24 +331,24 @@ namespace ScrapScramble.BotRelated.Commands
                 Title = "List of Upgrades",
                 Description = $"Page {page}/{totalPages}",
                 Color = DiscordColor.Azure,
-                Footer = new DiscordEmbedBuilder.EmbedFooter { Text = $"Total Upgrades: {BotInfoHandler.gameHandler.pool.mechs.Count()}"}
+                Footer = new DiscordEmbedBuilder.EmbedFooter { Text = $"Total Upgrades: {BotInfoHandler.gameHandler.pool.upgrades.Count()}"}
             };
 
             Rarity lastRarity = Rarity.NO_RARITY;
             
             string pageInfo = string.Empty;
-            for (int i = upgradesPerPage*(page-1); i < upgradesPerPage*page && i <BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
+            for (int i = upgradesPerPage*(page-1); i < upgradesPerPage*page && i <BotInfoHandler.gameHandler.pool.upgrades.Count(); i++)
             {
-                if (lastRarity != BotInfoHandler.gameHandler.pool.mechs[i].rarity)
+                if (lastRarity != BotInfoHandler.gameHandler.pool.upgrades[i].rarity)
                 {
                     if (lastRarity != Rarity.NO_RARITY)
                     {
                         newMenuPage.AddField(lastRarity.ToString(), pageInfo);                        
                     }
                     pageInfo = string.Empty;
-                    lastRarity = BotInfoHandler.gameHandler.pool.mechs[i].rarity;
+                    lastRarity = BotInfoHandler.gameHandler.pool.upgrades[i].rarity;
                 }
-                pageInfo += $"{i + 1}) {BotInfoHandler.gameHandler.pool.mechs[i].name}\n";                
+                pageInfo += $"{i + 1}) {BotInfoHandler.gameHandler.pool.upgrades[i].name}\n";                
             }
             newMenuPage.AddField(lastRarity.ToString(), pageInfo);
             
@@ -358,9 +358,9 @@ namespace ScrapScramble.BotRelated.Commands
         [Command("ulist2")]
         public async Task BrowseMenuTest(CommandContext ctx)
         {
-            int upgradesPerPage = Math.Min(BotInfoHandler.gameHandler.pool.mechs.Count(), 7);            
-            int totalPages = BotInfoHandler.gameHandler.pool.mechs.Count() / upgradesPerPage;
-            if (BotInfoHandler.gameHandler.pool.mechs.Count() % upgradesPerPage != 0) totalPages++;
+            int upgradesPerPage = Math.Min(BotInfoHandler.gameHandler.pool.upgrades.Count(), 7);            
+            int totalPages = BotInfoHandler.gameHandler.pool.upgrades.Count() / upgradesPerPage;
+            if (BotInfoHandler.gameHandler.pool.upgrades.Count() % upgradesPerPage != 0) totalPages++;
 
             //DiscordMessage menuMessage = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { Color = DiscordColor.Azure }).ConfigureAwait(false);
             //await this.UpdateBrowseMenuAsync(ctx, menuMessage, upgradesPerPage, page, totalPages);
@@ -384,9 +384,9 @@ namespace ScrapScramble.BotRelated.Commands
 
                 Rarity lastRarity = Rarity.NO_RARITY;
                 string pageInfo = string.Empty;
-                for (int i = upgradesPerPage * (page - 1); i < upgradesPerPage * page && i < BotInfoHandler.gameHandler.pool.mechs.Count(); i++)
+                for (int i = upgradesPerPage * (page - 1); i < upgradesPerPage * page && i < BotInfoHandler.gameHandler.pool.upgrades.Count(); i++)
                 {
-                    if (lastRarity != BotInfoHandler.gameHandler.pool.mechs[i].rarity)
+                    if (lastRarity != BotInfoHandler.gameHandler.pool.upgrades[i].rarity)
                     {
                         if (lastRarity != Rarity.NO_RARITY)
                         {
@@ -394,9 +394,9 @@ namespace ScrapScramble.BotRelated.Commands
                             //newMenuPage.AddField(lastRarity.ToString(), pageInfo);
                         }
                         pageInfo = string.Empty;
-                        lastRarity = BotInfoHandler.gameHandler.pool.mechs[i].rarity;
+                        lastRarity = BotInfoHandler.gameHandler.pool.upgrades[i].rarity;
                     }
-                    pageInfo += $"{i + 1}) {BotInfoHandler.gameHandler.pool.mechs[i]}\n";
+                    pageInfo += $"{i + 1}) {BotInfoHandler.gameHandler.pool.upgrades[i]}\n";
                 }
                 description += $"\n**{lastRarity}**\n{pageInfo}";
                 //newMenuPage.AddField(lastRarity.ToString(), pageInfo);
@@ -406,7 +406,7 @@ namespace ScrapScramble.BotRelated.Commands
                     Title = "List of Upgrades",
                     Description = description,
                     Color = DiscordColor.Azure,
-                    Footer = new DiscordEmbedBuilder.EmbedFooter { Text = $"Total Upgrades: {BotInfoHandler.gameHandler.pool.mechs.Count()}" }
+                    Footer = new DiscordEmbedBuilder.EmbedFooter { Text = $"Total Upgrades: {BotInfoHandler.gameHandler.pool.upgrades.Count()}" }
                 });
 
                 allMenuPages.Add(menuPage);
@@ -421,10 +421,10 @@ namespace ScrapScramble.BotRelated.Commands
         [RequireGuild]
         public async Task BrowseMenu(CommandContext ctx)
         {
-            int upgradesPerPage = Math.Min(BotInfoHandler.gameHandler.pool.mechs.Count(), 10);
+            int upgradesPerPage = Math.Min(BotInfoHandler.gameHandler.pool.upgrades.Count(), 10);
             int page = 1;
-            int totalPages = BotInfoHandler.gameHandler.pool.mechs.Count() / upgradesPerPage;
-            if (BotInfoHandler.gameHandler.pool.mechs.Count() % upgradesPerPage != 0) totalPages++;
+            int totalPages = BotInfoHandler.gameHandler.pool.upgrades.Count() / upgradesPerPage;
+            if (BotInfoHandler.gameHandler.pool.upgrades.Count() % upgradesPerPage != 0) totalPages++;
             
             DiscordMessage menuMessage = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { Color = DiscordColor.Azure}).ConfigureAwait(false);
             await this.UpdateBrowseMenuAsync(ctx, menuMessage, upgradesPerPage, page, totalPages);
@@ -513,10 +513,10 @@ namespace ScrapScramble.BotRelated.Commands
             
             msg += $"\n\nUpgrade Pool Rarity Breakdown:\n";
             msg += $"C-R-E-L: ";
-            msg += $"{CardsFilter.FilterList<Upgrade>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Common).Count()}-";
-            msg += $"{CardsFilter.FilterList<Upgrade>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Rare).Count()}-";
-            msg += $"{CardsFilter.FilterList<Upgrade>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Epic).Count()}-";
-            msg += $"{CardsFilter.FilterList<Upgrade>(BotInfoHandler.gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary).Count()}";
+            msg += $"{CardsFilter.FilterList<Upgrade>(BotInfoHandler.gameHandler.pool.upgrades, x => x.rarity == Rarity.Common).Count()}-";
+            msg += $"{CardsFilter.FilterList<Upgrade>(BotInfoHandler.gameHandler.pool.upgrades, x => x.rarity == Rarity.Rare).Count()}-";
+            msg += $"{CardsFilter.FilterList<Upgrade>(BotInfoHandler.gameHandler.pool.upgrades, x => x.rarity == Rarity.Epic).Count()}-";
+            msg += $"{CardsFilter.FilterList<Upgrade>(BotInfoHandler.gameHandler.pool.upgrades, x => x.rarity == Rarity.Legendary).Count()}";
 
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
                 Title = "Game Info",

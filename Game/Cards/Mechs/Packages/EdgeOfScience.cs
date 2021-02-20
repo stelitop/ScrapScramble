@@ -32,9 +32,10 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.maxMana, false);
+            gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.players[curPlayer].pool, gameHandler.maxMana, false);
+            return Task.CompletedTask;
         }
     }
 
@@ -46,7 +47,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Epic;
             this.name = "Mass Accelerator";
-            this.cardText = this.writtenEffect = "Start of Combat: If you're Overloaded, deal 5 damage to the enemy Upgrade.";
+            this.cardText = this.writtenEffect = "Start of Combat: If you're Overloaded, deal 5 damage to the enemy Mech.";
             this.SetStats(6, 5, 5);
         }
 
@@ -76,11 +77,11 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 1);            
         }
 
-        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Upgrade> legendaries = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Legendary && x.Cost <= gameHandler.maxMana - 5);
-            List<Upgrade> epics = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Epic && x.Cost <= gameHandler.maxMana - 5);
-            List<Upgrade> rares = CardsFilter.FilterList<Upgrade>(gameHandler.pool.mechs, x => x.rarity == Rarity.Rare && x.Cost <= gameHandler.maxMana - 5);
+            List<Upgrade> legendaries = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Legendary && x.Cost <= gameHandler.maxMana - 5);
+            List<Upgrade> epics = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Epic && x.Cost <= gameHandler.maxMana - 5);
+            List<Upgrade> rares = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Rare && x.Cost <= gameHandler.maxMana - 5);
 
             List<int> shopIndexes = gameHandler.players[curPlayer].shop.GetAllUpgradeIndexes();
 
@@ -101,6 +102,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                         break;
                 }
             }
+
+            return Task.CompletedTask;
         }
     }
 
@@ -148,7 +151,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.maxMana, false);
+            gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.players[curPlayer].pool, gameHandler.maxMana, false);
         }
     }
 }

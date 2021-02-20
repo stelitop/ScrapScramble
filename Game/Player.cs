@@ -32,6 +32,8 @@ namespace ScrapScramble.Game
         public List<string> aftermathMessages;
         public List<Upgrade> nextRoundEffects;
 
+        public MinionPool pool;
+
         public bool ready;
 
         public int lives;
@@ -40,7 +42,7 @@ namespace ScrapScramble.Game
 
         public Player()
         {
-            this.creatureData = new CreatureData();
+            this.creatureData = new CreatureData();           
             this.shop = new Shop();
             this.hand = new Hand();
             this.name = "No name";
@@ -57,6 +59,7 @@ namespace ScrapScramble.Game
             this.specificEffects = new SpecificEffects();
             this.extraUpgradeEffects = new List<Upgrade>();
             this.nextRoundEffects = new List<Upgrade>();
+            this.pool = new MinionPool();
         }
         public Player(string name) : this()
         {
@@ -181,14 +184,14 @@ namespace ScrapScramble.Game
 
             if (mech.creatureData.staticKeywords[StaticKeyword.Echo] > 0)
             {
-                gameHandler.players[curPlayer].shop.AddUpgrade(mech.BasicCopy());
+                gameHandler.players[curPlayer].shop.AddUpgrade(mech.BasicCopy(gameHandler.players[curPlayer].pool));
             }
 
             if (mech.creatureData.staticKeywords[StaticKeyword.Binary] > 0)
             {
                 mech.creatureData.staticKeywords[StaticKeyword.Binary]--;
 
-                Upgrade binaryLessCopy = mech.BasicCopy();                
+                Upgrade binaryLessCopy = mech.BasicCopy(gameHandler.players[curPlayer].pool);                
                 binaryLessCopy.cardText += " (No Binary)";
                 binaryLessCopy.creatureData.staticKeywords[StaticKeyword.Binary]--;
 
