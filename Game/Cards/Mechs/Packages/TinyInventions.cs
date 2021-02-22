@@ -223,8 +223,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             if (!activated)
             {
                 activated = true;
-                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 8;
-                gameHandler.players[enemy].TakeDamage(4, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Brawler's Plating triggers and deals 4 damage, ");
+                gameHandler.players[enemy].TakeDamage(4, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Power Glove triggers and deals 4 damage, ");
             }
         }
 

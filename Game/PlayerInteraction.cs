@@ -175,6 +175,7 @@ namespace ScrapScramble.Game
             Upgrade chosen = gameHandler.players[curPlayer].shop.At(pos);
 
             chosen.creatureData.staticKeywords[StaticKeyword.Freeze] = Math.Max(freezeAmount, chosen.creatureData.staticKeywords[StaticKeyword.Freeze]);
+            chosen.OnBeingFrozen(gameHandler, curPlayer, enemy);
 
             return chosen;
         }

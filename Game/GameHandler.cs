@@ -243,12 +243,12 @@ namespace ScrapScramble.Game
 
                 for (int i = 0; i < gameHandler.players[defender].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
-                    gameHandler.players[defender].attachedMechs[i].AfterTheEnemyAttacks(dmg, gameHandler, attacker, defender);                    
+                    gameHandler.players[defender].attachedMechs[i].AfterTheEnemyAttacks(dmg, gameHandler, defender, attacker);
                 }
                 foreach (var extraEffect in gameHandler.players[defender].extraUpgradeEffects)
                 {
                     if (!(gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive())) break;
-                    extraEffect.AfterTheEnemyAttacks(dmg, gameHandler, attacker, defender);
+                    extraEffect.AfterTheEnemyAttacks(dmg, gameHandler, defender, attacker);
                 }
             }
 
@@ -282,16 +282,20 @@ namespace ScrapScramble.Game
 
         public static void NextRound(GameHandler gameHandler)
         {
+            Console.WriteLine("StartNewRound");
             gameHandler.maxMana += 5;
             if (gameHandler.maxManaCap > 0) gameHandler.maxMana = Math.Min(gameHandler.maxMana, gameHandler.maxManaCap);
             //delete aftermath msgs which haven't been implemented yet Lol!
 
+            Console.WriteLine("StartPlayerLoop1");
             for (int i = 0; i < gameHandler.players.Count(); i++)
-            { 
+            {
                 //add to history
 
+                Console.WriteLine("ClearAftermath");
                 gameHandler.players[i].aftermathMessages.Clear();
 
+                Console.WriteLine("Refresh Shop");
                 gameHandler.players[i].shop.Refresh(gameHandler, gameHandler.players[i].pool, gameHandler.maxMana);
 
                 gameHandler.players[i].overloaded = gameHandler.players[i].creatureData.staticKeywords[StaticKeyword.Overload];
@@ -299,12 +303,15 @@ namespace ScrapScramble.Game
 
                 gameHandler.players[i].ready = false;
 
+                Console.WriteLine("Clean History");
                 gameHandler.players[i].playHistory.Add(new List<Cards.Card>());
                 gameHandler.players[i].boughtThisTurn.Clear();
 
+                Console.WriteLine("Reset Keywords");
                 gameHandler.players[i].creatureData.InitStaticKeywordsDictionary();
                 
             }
+            Console.WriteLine("EndPlayerLoop1");
 
             for (int i = 0; i < gameHandler.players.Count(); i++)
             {
