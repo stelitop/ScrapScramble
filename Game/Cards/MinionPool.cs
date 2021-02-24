@@ -20,7 +20,9 @@ namespace ScrapScramble.Game
         
         public MinionPool()
         {
-            this.FillGenericMinionPool();
+            this.upgrades = new List<Upgrade>();
+            this.spareparts = new List<Spell>();
+            this.tokens = new List<Card>();
         }        
 
         public MinionPool(MinionPool x)
@@ -78,26 +80,26 @@ namespace ScrapScramble.Game
             this.GenericMinionPollSort();
         }
 
-        public List<string> FillMinionPoolWithPackages(int packageAmount, PackageHandler packageHandler)
+        public List<string> FillMinionPoolWithSets(int setsAmount, SetHandler setHandler)
         {
             List<string> ret = new List<string>();
 
             this.upgrades = new List<Upgrade>();
 
             List<string> packagesList = new List<string>();
-            foreach (var package in packageHandler.Packages)
+            foreach (var package in setHandler.Sets)
             {
                 packagesList.Add(package.Key);
             }
 
             packagesList = packagesList.OrderBy(x => GameHandler.randomGenerator.Next()).ToList();
 
-            for (int i=0; i<packageAmount && i <packagesList.Count(); i++)
+            for (int i=0; i<setsAmount && i <packagesList.Count(); i++)
             {
                 ret.Add(packagesList[i]);
-                for (int j=0; j < packageHandler.Packages[packagesList[i]].Count(); j++)
+                for (int j=0; j < setHandler.Sets[packagesList[i]].Count(); j++)
                 {
-                    this.upgrades.Add((Upgrade)packageHandler.Packages[packagesList[i]][j].DeepCopy());
+                    this.upgrades.Add((Upgrade)setHandler.Sets[packagesList[i]][j].DeepCopy());
                 }
             }
 

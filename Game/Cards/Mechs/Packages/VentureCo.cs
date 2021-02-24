@@ -21,7 +21,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class VentureCoSticker : Upgrade
     {
@@ -34,7 +34,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class VentureCoSawblade : VentureCoMechNaming
     {
@@ -55,7 +55,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class VentureCoPauldrons : VentureCoMechNaming
     {
@@ -78,7 +78,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class VentureCoThrusters : VentureCoMechNaming
     {
@@ -101,7 +101,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class VentureCoFlamethrower : VentureCoMechNaming
     {
@@ -121,13 +121,13 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class VentureCoVault : Upgrade
     {
         public VentureCoVault()
         {
-            this.rarity = Rarity.Common;
+            this.rarity = Rarity.Rare;
             this.name = "Venture Co. Vault";
             this.cardText = "Taunt. Aftermath: Add 3 other random Venture Co. Upgrades to your shop.";
             this.writtenEffect = "Aftermath: Add 3 other random Venture Co. Upgrades to your shop.";
@@ -157,7 +157,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class VentureCoCoolant : Upgrade
     {
@@ -181,7 +181,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class SponsorshipScrubber : Upgrade
     {
@@ -214,7 +214,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class VentureCoPowerGenerator : VentureCoMechNaming
     {
@@ -238,7 +238,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class Shieldmobile : Upgrade
     {
@@ -259,7 +259,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class Spikecycle : Upgrade
     {
@@ -280,7 +280,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }    
     
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class CopyShredder : Upgrade
     {
@@ -314,7 +314,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class IllegalThermodynamo : Upgrade
     {
@@ -333,7 +333,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class SiliconGrenadeBelt : Upgrade
     {
@@ -352,7 +352,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class Investrotron : Upgrade
     {
@@ -413,7 +413,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class EncodedSwitchboard : Upgrade
     {
@@ -437,7 +437,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }      
 
-    [PackageAttribute(UpgradePackage.VentureCo)]
+    [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class NeatoMagnetMagneto : Upgrade
     {

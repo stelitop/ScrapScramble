@@ -66,7 +66,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.MonstersReanimated)]
+    [Set(UpgradeSet.MonstersReanimated)]
     public class MechaThunsSeeker : Upgrade
     {
         public MechaThunsSeeker()
@@ -90,7 +90,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.MonstersReanimated)]
+    [Set(UpgradeSet.MonstersReanimated)]
     public class MechaThunsSlayer : Upgrade
     {
         public MechaThunsSlayer()
@@ -116,7 +116,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.MonstersReanimated)]
+    [Set(UpgradeSet.MonstersReanimated)]
     public class MechaThunsHarbinger : Upgrade
     {
         public MechaThunsHarbinger()
@@ -142,7 +142,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.MonstersReanimated)]
+    [Set(UpgradeSet.MonstersReanimated)]
     public class MechaThunsLiege : Upgrade
     {
         public MechaThunsLiege()
@@ -168,7 +168,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.MonstersReanimated)]
+    [Set(UpgradeSet.MonstersReanimated)]
     public class MechaThunsElder : Upgrade
     {
         public MechaThunsElder()
@@ -192,7 +192,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.MonstersReanimated)]
+    [Set(UpgradeSet.MonstersReanimated)]
     public class MechaThunsLynchpin : Upgrade
     {
         public MechaThunsLynchpin()
@@ -218,7 +218,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.MonstersReanimated)]
+    [Set(UpgradeSet.MonstersReanimated)]
     public class MechaThunsGenerator : Upgrade
     {
         public MechaThunsGenerator()
@@ -259,7 +259,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.MonstersReanimated)]
+    [Set(UpgradeSet.MonstersReanimated)]
     public class MkIVSuperCobra : Upgrade
     {
         public MkIVSuperCobra()
@@ -286,7 +286,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.MonstersReanimated)]
+    [Set(UpgradeSet.MonstersReanimated)]
     public class MechaThunsLord : Upgrade
     {
         private bool spellburst = true;
@@ -295,14 +295,15 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Epic;
             this.name = "Mecha'thun's Lord";
-            this.cardText = this.writtenEffect = "Spellburst: Give your Mecha'thun +10/+10.";
+            this.cardText = this.writtenEffect = "Spellburst: Give your Mecha'thun +20/+20.";
             this.SetStats(10, 10, 10);
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
+            return Task.CompletedTask;
         }
 
         public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
@@ -315,14 +316,14 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                 int index = Mechathun.FindInShop(gameHandler, curPlayer);
                 if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
 
-                gameHandler.players[curPlayer].shop.At(index).creatureData.attack += 10;
-                gameHandler.players[curPlayer].shop.At(index).creatureData.health += 10;
+                gameHandler.players[curPlayer].shop.At(index).creatureData.attack += 20;
+                gameHandler.players[curPlayer].shop.At(index).creatureData.health += 20;
             }
         }
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.MonstersReanimated)]
+    [Set(UpgradeSet.MonstersReanimated)]
     public class DungeonDragonling : Upgrade
     {
         public DungeonDragonling()
@@ -356,7 +357,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     //[UpgradeAttribute]
-    [Package(UpgradePackage.MonstersReanimated)]
+    [Set(UpgradeSet.MonstersReanimated)]
     public class Hackatha : Upgrade
     {
         public Hackatha()

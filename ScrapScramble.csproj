@@ -159,7 +159,7 @@
     <Compile Include="Game\Cards\Upgrade.cs" />
     <Compile Include="Game\Cards\MechJsonTemplate.cs" />
     <Compile Include="Game\Cards\Mechs\CommonMechs.cs" />
-    <Compile Include="Game\Cards\PackageHandler.cs" />
+    <Compile Include="Game\Cards\SetHandler.cs" />
     <Compile Include="Game\Cards\Mechs\Packages\IronmoonFaire.cs" />
     <Compile Include="Game\Cards\Mechs\Packages\EdgeOfScience.cs" />
     <Compile Include="Game\Cards\Mechs\EpicMechs.cs" />

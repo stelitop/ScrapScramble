@@ -58,13 +58,42 @@ namespace ScrapScramble.BotRelated.Commands
                     Description = "More commands are now available.",
                     Color = DiscordColor.Green
                 };
-                BotInfoHandler.inGame = true;
-                BotInfoHandler.shopsSent = false;
-                BotInfoHandler.gameHandler.StartNewGame();
-                BotInfoHandler.gameHandler.currentRound = 1;
-                BotInfoHandler.pairsReady = false;
 
                 await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+
+                MinionPool pool = new MinionPool();                
+
+                if (BotInfoHandler.gameHandler.setsAmount <= 0)
+                {
+                    pool.FillGenericMinionPool();
+                    responseMessage = new DiscordEmbedBuilder
+                    {
+                        Title = "Sets Included This Game",
+                        Description = "All sets are included.",
+                        Color = DiscordColor.Azure
+                    };
+                }
+                else
+                {
+                    var setNames = pool.FillMinionPoolWithSets(BotInfoHandler.gameHandler.setsAmount, BotInfoHandler.gameHandler.setHandler);
+                    string desc = setNames[0];
+                    for (int i = 1; i < BotInfoHandler.gameHandler.setsAmount; i++) desc += $"\n{setNames[i]}";
+                    responseMessage = new DiscordEmbedBuilder
+                    {
+                        Title = "Sets Included This Game",
+                        Description = desc,
+                        Color = DiscordColor.Azure
+                    };
+                }
+
+                await Task.Delay(1000);
+                await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);                
+
+                BotInfoHandler.inGame = true;
+                BotInfoHandler.shopsSent = false;
+                BotInfoHandler.gameHandler.StartNewGame(pool);
+                BotInfoHandler.gameHandler.currentRound = 1;
+                BotInfoHandler.pairsReady = false;                
 
                 ctx.Client.UpdateStatusAsync(new DiscordActivity
                 {
@@ -72,11 +101,11 @@ namespace ScrapScramble.BotRelated.Commands
                     ActivityType = ActivityType.Playing
                 });
 
-                Thread.Sleep(1000);
-                await NextPairs(ctx);                
-                Thread.Sleep(1000);
+                await Task.Delay(1000);
+                await NextPairs(ctx);
+                await Task.Delay(1000);
                 await SendShops(ctx);
-                Thread.Sleep(1000);
+                await Task.Delay(1000);
                 await CreateInteractivePlayerlist(ctx);
 
                 BotInfoHandler.pairsReady = false;
@@ -113,7 +142,16 @@ namespace ScrapScramble.BotRelated.Commands
                     Color = DiscordColor.Gray
                 };
 
-                var msg = await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+                var msg = await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);                
+
+                for (int i = 0; i < BotInfoHandler.participantsDiscordIds.Count(); i++)
+                {
+                    if (BotInfoHandler.gameHandler.players[i].lives <= 0) continue;
+                    await BotInfoHandler.SendNewUI(ctx, i);
+                    await Task.Delay(1000);
+                }
+
+                await msg.DeleteAsync().ConfigureAwait(false);
 
                 responseMessage = new DiscordEmbedBuilder
                 {
@@ -121,14 +159,6 @@ namespace ScrapScramble.BotRelated.Commands
                     Description = "All players have received their shops",
                     Color = DiscordColor.Green
                 };
-
-                for (int i = 0; i < BotInfoHandler.participantsDiscordIds.Count(); i++)
-                {
-                    if (BotInfoHandler.gameHandler.players[i].lives <= 0) continue;
-                    await BotInfoHandler.SendNewUI(ctx, i);
-                }
-
-                await msg.DeleteAsync().ConfigureAwait(false);
                 await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
             }
         }
@@ -144,7 +174,10 @@ namespace ScrapScramble.BotRelated.Commands
             BotInfoHandler.gameHandler.currentRound = 1;
             BotInfoHandler.participantsDiscordIds.Clear();
             BotInfoHandler.shopsSent = false;
+            BotInfoHandler.pairsReady = false;
             BotInfoHandler.UIMessages.Clear();
+            BotInfoHandler.interactivePlayerList = null;
+            BotInfoHandler.interactivePlayerListCaller = null;
 
             await ctx.Client.UpdateStatusAsync(new DiscordActivity
             {
@@ -185,17 +218,19 @@ namespace ScrapScramble.BotRelated.Commands
             }
             GameHandlerMethods.NextRound(BotInfoHandler.gameHandler);
 
+            await Task.Delay(3000);
+
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
                 Title = "New Round Started",
                 Color = DiscordColor.Green
             }).ConfigureAwait(false);
 
-            Thread.Sleep(1000);
-            await BotInfoHandler.RefreshPlayerList(ctx);
-            Thread.Sleep(1000);
+            //await Task.Delay(1000);
+            //await BotInfoHandler.RefreshPlayerList(ctx);
+            await Task.Delay(1000);
             await SendShops(ctx);
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
             await CreateInteractivePlayerlist(ctx);
         }
 
@@ -223,7 +258,7 @@ namespace ScrapScramble.BotRelated.Commands
             
             var responseMessage = new DiscordEmbedBuilder
             {
-                Title = "List of Upgrade Pairs for Combat",
+                Title = "List of Mech Pairs for Combat",
                 Description = msg,
                 Color = DiscordColor.Azure
             };
@@ -597,24 +632,51 @@ namespace ScrapScramble.BotRelated.Commands
             }).ConfigureAwait(false);
         }
 
-        [Command("gamewithpackages")]
-        public async Task GameWithPackages(CommandContext ctx, int packages = 4)
+        [Command("setsetsamount")]
+        [Description("Sets the amount of sets that will be present in the next game")]
+        public async Task SetSetAmount(CommandContext ctx, int amount)
         {
-            if (packages < 1) packages = 1;
-            List<string> packagesNames = BotInfoHandler.gameHandler.pool.FillMinionPoolWithPackages(packages, BotInfoHandler.gameHandler.packageHandler);
+            if (amount < 0) amount = 0;
+            else if (amount >= BotInfoHandler.gameHandler.setHandler.Sets.Count) amount = 0;
+            BotInfoHandler.gameHandler.setsAmount = amount;
 
-            string description = $"- {packagesNames[0]}";
-
-            for (int i=1; i<packagesNames.Count(); i++)
+            if (amount == 0)
             {
-                description += $"\n- {packagesNames[i]}";
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                    Title = "Number of Sets Changed",
+                    Description = "All sets will be included in the next game.",
+                    Color = DiscordColor.Green
+                }).ConfigureAwait(false);
             }
+            else
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Number of Sets Changed",
+                    Description = $"Only {amount} sets will be included in the next game.",
+                    Color = DiscordColor.Green
+                }).ConfigureAwait(false);
+            }
+        }
 
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
-                Title = $"Number of Packages set to {packages}",
-                Description = description,
-                Color = DiscordColor.Green
-            }).ConfigureAwait(false);
-        }        
+        //[Command("gamewithpackages")]
+        //public async Task GameWithPackages(CommandContext ctx, int packages = 4)
+        //{
+        //    if (packages < 1) packages = 1;
+        //    List<string> packagesNames = BotInfoHandler.gameHandler.pool.FillMinionPoolWithSets(packages, BotInfoHandler.gameHandler.setHandler);
+
+        //    string description = $"- {packagesNames[0]}";
+
+        //    for (int i=1; i<packagesNames.Count(); i++)
+        //    {
+        //        description += $"\n- {packagesNames[i]}";
+        //    }
+
+        //    await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
+        //        Title = $"Number of Sets set to {packages}",
+        //        Description = description,
+        //        Color = DiscordColor.Green
+        //    }).ConfigureAwait(false);
+        //}        
     }
 }

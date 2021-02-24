@@ -24,7 +24,7 @@ namespace ScrapScramble.Game
     public class GameHandler
     {
         public static Random randomGenerator = new Random();
-        public PackageHandler packageHandler;
+        public SetHandler setHandler;
         public MinionPool pool;
 
         public List<Player> players;
@@ -34,8 +34,9 @@ namespace ScrapScramble.Game
         public CombatOutputCollector combatOutputCollector;
 
         public int currentRound = 1;
-        public int startingLives = 3;
-        public int maxManaCap = 40;
+        public int startingLives = 4;
+        public int maxManaCap = 30;
+        public int setsAmount = -1;
 
         public RarityBreakdown shopRarities;
 
@@ -43,7 +44,8 @@ namespace ScrapScramble.Game
         {
             this.players = new List<Player>();
             this.pool = new MinionPool();
-            this.packageHandler = new PackageHandler();
+            this.pool.FillGenericMinionPool();
+            this.setHandler = new SetHandler();
             this.pairsHandler = new PairsHandler();
             this.combatOutputCollector = new CombatOutputCollector();
             this.shopRarities = new RarityBreakdown(4, 3, 2, 1);
@@ -65,7 +67,7 @@ namespace ScrapScramble.Game
             //do some other stuff later
             //including fixing relative values
         }
-        public void StartNewGame()
+        public void StartNewGame(MinionPool pool)
         {
             this.maxMana = 10;
             //this.pool = new MinionPool();
@@ -75,7 +77,7 @@ namespace ScrapScramble.Game
             {
                 this.players[i] = new Player(this.players[i].name);
 
-                this.players[i].pool = new MinionPool(this.pool);
+                this.players[i].pool = new MinionPool(pool);
                 this.players[i].shop.Refresh(this, this.players[i].pool, this.maxMana);
                 this.players[i].curMana = this.maxMana;
                 this.players[i].lives = this.startingLives;

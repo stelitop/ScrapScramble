@@ -85,10 +85,15 @@ namespace ScrapScramble.Game
         {
             string ret = string.Empty;
 
+            this.creatureData.staticKeywords[StaticKeyword.Echo] = 0;
+            this.creatureData.staticKeywords[StaticKeyword.Binary] = 0;
+            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 0;
+
             foreach (var kw in this.creatureData.staticKeywords)
             {
                 if (kw.Key == StaticKeyword.Echo) continue;
                 if (kw.Key == StaticKeyword.Binary) continue;
+                if (kw.Key == StaticKeyword.Magnetic) continue;
 
                 if (kw.Value != 0)
                 {

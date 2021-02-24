@@ -82,35 +82,6 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[enemy].aftermathMessages.Add(
                 $"{gameHandler.players[curPlayer].name}'s Lightning Weasel replaced your highest-cost Upgrade ({oldName}) with a Lightning Weasel.");
         }
-    }
-
-    [UpgradeAttribute]
-    public class SocietyProgressor : Upgrade
-    {
-        public SocietyProgressor()
-        {
-            this.rarity = Rarity.Rare;
-            this.name = "Society Progressor";
-            this.cardText = this.writtenEffect = "Aftermath: Remove Binary from all Upgrades in your opponent's shop.";
-            this.SetStats(4, 1, 6);
-        }
-
-        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            if (curPlayer == enemy) return;
-
-            for (int i = 0; i < gameHandler.players[enemy].shop.LastIndex; i++)
-            {
-                if (gameHandler.players[enemy].shop.At(i).creatureData.staticKeywords[StaticKeyword.Binary] > 0)
-                {
-                    gameHandler.players[enemy].shop.At(i).creatureData.staticKeywords[StaticKeyword.Binary] = 0;
-                    gameHandler.players[enemy].shop.At(i).cardText += "(No Binary)";
-                }
-            }
-
-            gameHandler.players[enemy].aftermathMessages.Add(
-                $"{gameHandler.players[curPlayer].name}'s Society Progressor removed Binary from all Upgrades in your shop.");
-        }
     }    
 
     [UpgradeAttribute]

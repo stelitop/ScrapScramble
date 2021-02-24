@@ -21,7 +21,9 @@ namespace ScrapScramble.BotRelated.Commands
         [Description("Signs you up for the next game.")]
         [RequireGuild]
         public async Task SignUp(CommandContext ctx, [Description("The name of your Mech")][RemainingText]string mechName)
-        {            
+        {
+            if (mechName.Count() < 3) return;
+
             DiscordEmbedBuilder responseMessage;                  
 
             if (BotInfoHandler.participantsDiscordIds.Contains(ctx.User.Id))
@@ -146,6 +148,8 @@ namespace ScrapScramble.BotRelated.Commands
         [RequireGuild]
         public async Task MechRename(CommandContext ctx, [Description("The new name of your Mech")][RemainingText]string mechName)
         {
+            if (mechName.Count() < 3) return;
+
             DiscordEmbedBuilder responseMessage;
 
             if (!BotInfoHandler.participantsDiscordIds.Contains(ctx.User.Id))
@@ -284,10 +288,10 @@ namespace ScrapScramble.BotRelated.Commands
                     Color = DiscordColor.Green
                 };
 
-                if (Attribute.IsDefined(mech.GetType(), typeof(PackageAttribute)))
+                if (Attribute.IsDefined(mech.GetType(), typeof(SetAttribute)))
                 {
-                    var package = ((PackageAttribute)Attribute.GetCustomAttribute(mech.GetType(), typeof(PackageAttribute))).Package;
-                    responseMessage.Description += $" | {PackageHandler.PackageAttributeToString[package]}";
+                    var set = ((SetAttribute)Attribute.GetCustomAttribute(mech.GetType(), typeof(SetAttribute))).Set;
+                    responseMessage.Description += $" | {SetHandler.SetAttributeToString[set]}";                    
                 }
 
                 if (!mech.cardText.Equals(string.Empty)) responseMessage.Description += $"\n{mech.cardText}";
@@ -504,6 +508,10 @@ namespace ScrapScramble.BotRelated.Commands
             msg += $"\nStarting Lives: {BotInfoHandler.gameHandler.startingLives}";
             if (BotInfoHandler.gameHandler.maxManaCap >= 0) msg += $"\nMana Cap: {BotInfoHandler.gameHandler.maxManaCap}";
             else msg += "\nMana Cap: None";
+
+            if (BotInfoHandler.gameHandler.setsAmount <= 0) msg += "Sets Included: All";
+            else msg += $"Sets Included: {BotInfoHandler.gameHandler.setsAmount}";
+                 
             msg += $"\n\nShop Rarity Breakdown:\n";
             msg += $"C-R-E-L: ";
             msg += $"{BotInfoHandler.gameHandler.shopRarities.common}-";
@@ -525,38 +533,38 @@ namespace ScrapScramble.BotRelated.Commands
             }).ConfigureAwait(false);
         }
 
-        [Command("packages")]
-        public async Task ShowPackages(CommandContext ctx)
+        [Command("sets")]
+        public async Task ShowSets(CommandContext ctx)
         {
             string msg = string.Empty;
 
             int i = 1;
-            foreach (var key in BotInfoHandler.gameHandler.packageHandler.Packages.Keys)
+            foreach (var key in BotInfoHandler.gameHandler.setHandler.Sets.Keys)
             {
                 msg += $"{i}) {key}\n";
                 i++;
             }
 
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
-                Title = "List of Packages",
+                Title = "List of Sets",
                 Description = msg,
                 Color = DiscordColor.Azure
             }).ConfigureAwait(false);
         }
 
-        [Aliases("package")]
-        [Command("packages")]        
-        public async Task ShowPackages(CommandContext ctx, [RemainingText]string packageName)
+        [Aliases("set")]
+        [Command("sets")]        
+        public async Task ShowSets(CommandContext ctx, [RemainingText]string setName)
         {
-            packageName = packageName.ToLower();
-            packageName = PackageHandler.PackageAttributeToString[PackageHandler.LowercaseToPackageAttribute[packageName]];
+            setName = setName.ToLower();
+            setName = SetHandler.SetAttributeToString[SetHandler.LowercaseToSetAttribute[setName]];
 
-            if (!BotInfoHandler.gameHandler.packageHandler.Packages.ContainsKey(packageName))
+            if (!BotInfoHandler.gameHandler.setHandler.Sets.ContainsKey(setName))
             {
                 //package not found
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = "No Such Package Found",
+                    Title = "No Such Set Found",
                     Description = "Make sure you've typed the name correctly.",
                     Color = DiscordColor.Red
                 }).ConfigureAwait(false);
@@ -564,7 +572,7 @@ namespace ScrapScramble.BotRelated.Commands
             else
             {
                 var embed = new DiscordEmbedBuilder(){
-                    Title = $"{packageName}",
+                    Title = $"{setName}",
                     Color = DiscordColor.Azure
                 };
 
@@ -573,9 +581,9 @@ namespace ScrapScramble.BotRelated.Commands
                 Rarity lastRarity = Rarity.NO_RARITY;
                 int rarityCount = 0;
 
-                for (int i = 0; i < BotInfoHandler.gameHandler.packageHandler.Packages[packageName].Count(); i++)
+                for (int i = 0; i < BotInfoHandler.gameHandler.setHandler.Sets[setName].Count(); i++)
                 {
-                    if (lastRarity != BotInfoHandler.gameHandler.packageHandler.Packages[packageName][i].rarity)
+                    if (lastRarity != BotInfoHandler.gameHandler.setHandler.Sets[setName][i].rarity)
                     {
                         if (lastRarity != Rarity.NO_RARITY)
                         {
@@ -583,10 +591,10 @@ namespace ScrapScramble.BotRelated.Commands
                         }
                         description = string.Empty;
                         rarityCount = 0;
-                        lastRarity = BotInfoHandler.gameHandler.packageHandler.Packages[packageName][i].rarity;
+                        lastRarity = BotInfoHandler.gameHandler.setHandler.Sets[setName][i].rarity;
                     }
                     rarityCount++;
-                    description += $"- {BotInfoHandler.gameHandler.packageHandler.Packages[packageName][i]}\n";
+                    description += $"- {BotInfoHandler.gameHandler.setHandler.Sets[setName][i]}\n";
                 }
                 embed.AddField($"{lastRarity} ({rarityCount})", description);
 

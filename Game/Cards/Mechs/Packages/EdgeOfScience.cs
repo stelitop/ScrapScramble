@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ScrapScramble.Game.Cards.Mechs.Packages
 {
     [UpgradeAttribute]
-    [Package(UpgradePackage.EdgeOfScience)]
+    [Set(UpgradeSet.EdgeOfScience)]
     public class OrbitalMechanosphere : Upgrade
     {
         public OrbitalMechanosphere()
@@ -20,7 +20,69 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.EdgeOfScience)]
+    [Set(UpgradeSet.EdgeOfScience)]
+    public class PoolOfBronze : Upgrade
+    {
+        public PoolOfBronze()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Pool of Bronze";
+            this.cardText = this.writtenEffect = "Aftermath: Replace your shop with 6 Common Upgrades.";
+            this.SetStats(2, 6, 2);
+        }
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].shop.Clear();
+
+            List<Upgrade> subList = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Common && x.Cost <= gameHandler.maxMana - 5);
+            for (int i=0; i<6; i++)
+            {                                
+                Upgrade m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
+                gameHandler.players[curPlayer].shop.AddUpgrade(m);
+            }
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.EdgeOfScience)]
+    public class GiantPhoton : Upgrade
+    {
+        public GiantPhoton()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Giant Photon";
+            this.cardText = "Rush. Overload: (3)";
+            this.SetStats(4, 5, 4);
+            this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
+            this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.EdgeOfScience)]
+    public class VoltageTracker : Upgrade
+    {
+        public VoltageTracker()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Voltage Tracker";
+            this.cardText = "Battlecry: Gain +1/+1 for each Overloaded Mana Crystal you have.";
+            this.SetStats(3, 2, 3);
+        }
+
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.attack +=
+                gameHandler.players[curPlayer].overloaded + gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload];
+            gameHandler.players[curPlayer].creatureData.health +=
+                gameHandler.players[curPlayer].overloaded + gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload];
+
+            return base.Battlecry(gameHandler, curPlayer, enemy);
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.EdgeOfScience)]
     public class IndecisiveAutoshopper : Upgrade
     {
         public IndecisiveAutoshopper()
@@ -40,14 +102,94 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.EdgeOfScience)]
+    [Set(UpgradeSet.EdgeOfScience)]
+    public class SocietyProgressor : Upgrade
+    {
+        public SocietyProgressor()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Society Progressor";
+            this.cardText = this.writtenEffect = "Aftermath: Remove Binary from all Upgrades in your opponent's shop.";
+            this.SetStats(4, 1, 7);
+        }
+
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (curPlayer == enemy) return;
+
+            for (int i = 0; i < gameHandler.players[enemy].shop.LastIndex; i++)
+            {
+                if (gameHandler.players[enemy].shop.At(i).creatureData.staticKeywords[StaticKeyword.Binary] > 0)
+                {
+                    gameHandler.players[enemy].shop.At(i).creatureData.staticKeywords[StaticKeyword.Binary] = 0;
+                    gameHandler.players[enemy].shop.At(i).cardText += "(No Binary)";
+                }
+            }
+
+            gameHandler.players[enemy].aftermathMessages.Add(
+                $"{gameHandler.players[curPlayer].name}'s Society Progressor removed Binary from all Upgrades in your shop.");
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.EdgeOfScience)]
+    public class EnergeticField : Upgrade
+    {
+        public EnergeticField()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Energetic Field";
+            this.cardText = "Battlecry: If you're Overloaded, add 3 random Upgrades that Overload to your hand.";
+            this.SetStats(3, 3, 3);
+        }
+
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].overloaded > 0 || gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload] > 0)
+            {
+                List<Upgrade> pool = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.creatureData.staticKeywords[StaticKeyword.Overload] > 0);
+                for (int i=0; i<3; i++)
+                {
+                    int x = GameHandler.randomGenerator.Next(0, pool.Count);
+                    gameHandler.players[curPlayer].hand.AddCard(pool[x]);
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.EdgeOfScience)]
+    public class LightChaser : Upgrade
+    {
+        public LightChaser()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Light Chaser";
+            this.cardText = "Battlecry: Gain Rush x1 for each Overloaded Mana Crystal you have.";
+            this.SetStats(12, 9, 7);
+        }
+
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush] +=
+                gameHandler.players[curPlayer].overloaded + gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload];
+
+            return base.Battlecry(gameHandler, curPlayer, enemy);
+        }
+    }
+
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.EdgeOfScience)]
     public class MassAccelerator : Upgrade
     {
         public MassAccelerator()
         {
             this.rarity = Rarity.Epic;
             this.name = "Mass Accelerator";
-            this.cardText = this.writtenEffect = "Start of Combat: If you're Overloaded, deal 5 damage to the enemy Mech.";
+            this.cardText = this.writtenEffect = "Start of Combat: If you're Overloaded, deal 10 damage to the enemy Mech.";
             this.SetStats(6, 5, 5);
         }
 
@@ -55,7 +197,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             if (gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload] > 0 || gameHandler.players[curPlayer].overloaded > 0)
             {
-                gameHandler.players[enemy].TakeDamage(5, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Mass Accelerator triggers and deals 5 damage, ");
+                gameHandler.players[enemy].TakeDamage(10, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Mass Accelerator triggers and deals 10 damage, ");
             }
             else
             {
@@ -66,7 +208,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.EdgeOfScience)]
+    [Set(UpgradeSet.EdgeOfScience)]
     public class PhilosophersStone : Upgrade
     {
         public PhilosophersStone()
@@ -108,7 +250,115 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.EdgeOfScience)]
+    [Set(UpgradeSet.EdgeOfScience)]
+    public class DatabaseCore : Upgrade
+    {
+        private CreatureData _keywords;
+        private string _aftermathMsg;
+
+        public DatabaseCore()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Database Core";
+            this.cardText = "Battlecry: Remember your Mech's keywords. Aftermath: Add them to your Mech.";            
+            this.writtenEffect = string.Empty;            
+            this.SetStats(6, 4, 5);
+
+            this._keywords = new CreatureData();
+            this._aftermathMsg = string.Empty;
+        }
+
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            this._keywords = gameHandler.players[curPlayer].creatureData.DeepCopy();
+
+            this.writtenEffect = "Aftermath: Gain ";
+            this._aftermathMsg = $"Your {this.name} gives you ";
+
+            bool checkedFirst = false;
+            foreach (var kw in _keywords.staticKeywords)
+            {
+                if (kw.Value != 0)
+                {
+                    if (!checkedFirst)
+                    {
+                        writtenEffect += $"{kw.Key} x{kw.Value}";
+                        _aftermathMsg += $"{kw.Key} x{kw.Value}";
+                    }
+                    else
+                    {
+                        writtenEffect += $", {kw.Key} x{kw.Value}";
+                        _aftermathMsg += $", {kw.Key} x{kw.Value}";
+                    }
+                    checkedFirst = true;
+                }
+            }
+            writtenEffect += ".";
+            _aftermathMsg += ".";
+
+            if (!checkedFirst)
+            {
+                writtenEffect = string.Empty;
+                _aftermathMsg = string.Empty;
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            foreach (var kw in _keywords.staticKeywords)
+            {
+                gameHandler.players[curPlayer].creatureData.staticKeywords[kw.Key] += kw.Value;
+            }
+            gameHandler.players[curPlayer].aftermathMessages.Add(_aftermathMsg);
+        }
+
+        public override Card DeepCopy()
+        {
+            DatabaseCore ret = (DatabaseCore)base.DeepCopy();
+            ret._keywords = this._keywords.DeepCopy();
+            ret._aftermathMsg = this._aftermathMsg;
+            return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.EdgeOfScience)]
+    public class HyperMagneticCloud : Upgrade
+    {
+        public HyperMagneticCloud()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Hyper-Magnetic Cloud";
+            this.cardText = this.writtenEffect = "Aftermath: If you're Overloaded for at least 7 Mana, add all 7 Spare Parts to your hand.";
+            this.SetStats(7, 7, 5);
+        }
+
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].overloaded >= 7)
+            {
+                gameHandler.players[curPlayer].aftermathMessages.Add(
+                    $"Your {this.name} triggers, adding all 7 Spare Parts to your hand.");
+
+                foreach (var sp in gameHandler.players[curPlayer].pool.spareparts)
+                {
+                    gameHandler.players[curPlayer].hand.AddCard(sp);    
+                }
+            }
+            else
+            {
+                gameHandler.players[curPlayer].aftermathMessages.Add(
+                    $"Your {this.name} fails to trigger.");
+            }
+
+            base.AftermathMe(gameHandler, curPlayer, enemy);
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.EdgeOfScience)]
     public class ChaosPrism : Upgrade
     {
         private int spellbursts = 3;
@@ -137,7 +387,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.EdgeOfScience)]
+    [Set(UpgradeSet.EdgeOfScience)]
     public class ParadoxEngine : Upgrade
     {
         public ParadoxEngine()

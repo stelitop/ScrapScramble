@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ScrapScramble.Game.Cards.Mechs.Packages
 {
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class Tinkerpet : Upgrade
     {
         private bool spellburst = true;
@@ -33,7 +33,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class OneHitWonder : Upgrade
     {
         public OneHitWonder()
@@ -53,7 +53,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class SurveillanceBird : Upgrade
     {
         public SurveillanceBird()
@@ -72,7 +72,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class OnyxCrowbot : Upgrade
     {
         public OnyxCrowbot()
@@ -91,7 +91,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class SulfurNanoPhoenix : Upgrade
     {
         public SulfurNanoPhoenix()
@@ -110,7 +110,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class LivewireBramble : Upgrade
     {
         public LivewireBramble()
@@ -149,7 +149,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class ArcaneAutomatron : Upgrade
     {
         public ArcaneAutomatron()
@@ -175,7 +175,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class TightropeChampion : Upgrade
     {
         public TightropeChampion()
@@ -204,7 +204,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class CobaltConqueror : Upgrade
     {
         private bool comboTrig = false;
@@ -246,7 +246,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class Naptron : Upgrade
     {
         public Naptron()
@@ -268,7 +268,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class Bibliobot : Upgrade
     {
         private string letter = "  ";
@@ -332,7 +332,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class TitaniumBloomer : Upgrade
     {
         public TitaniumBloomer()
@@ -352,7 +352,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class SpellPrinter : Upgrade
     {
         private bool spellburst = true;
@@ -378,7 +378,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     //[UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class ShiningStudent : Upgrade
     {
         public ShiningStudent()
@@ -397,7 +397,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.ScholomanceAcademy)]
+    [Set(UpgradeSet.ScholomanceAcademy)]
     public class LordBarox : Upgrade
     {
         int bet = -1;

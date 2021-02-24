@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ScrapScramble.Game.Cards.Mechs.Packages
 {
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class HelicopterBlades : Upgrade
     {
         public HelicopterBlades()
@@ -28,7 +28,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class SixpistolConstable : Upgrade
     {
         public SixpistolConstable()
@@ -42,7 +42,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class ArmOfExotron : Upgrade
     {
         public ArmOfExotron()
@@ -72,7 +72,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class LegOfExotron : Upgrade
     {
         public LegOfExotron()
@@ -102,7 +102,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class MotherboardOfExotron : Upgrade
     {
         public MotherboardOfExotron()
@@ -128,7 +128,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class WheelOfExotron : Upgrade
     {
         public WheelOfExotron()
@@ -160,7 +160,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class CopperplatedPrince : Upgrade
     {
         public CopperplatedPrince()
@@ -180,7 +180,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class CopperplatedPrincess : Upgrade
     {
         public CopperplatedPrincess()
@@ -200,7 +200,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    //[Set(UpgradeSet.WarMachines)]
     public class PacifisticRecruitomatic : Upgrade
     {
         public PacifisticRecruitomatic()
@@ -213,6 +213,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         private bool Criteria(Upgrade m)
         {
+            if (m.name == "Pacifistic Recruitomatic") return false;
             if (m.creatureData.attack == 0) return true;
             return false;
         }
@@ -232,7 +233,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class HomingMissile : Upgrade
     {
         public HomingMissile()
@@ -255,7 +256,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class Hypnodrone : Upgrade
     {
         public Hypnodrone()
@@ -277,7 +278,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class CopperCommander : Upgrade
     {
         public CopperCommander()
@@ -295,7 +296,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class DeflectOShield : Upgrade
     {
         public DeflectOShield()
@@ -317,7 +318,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class PlatedBeetleDrone : Upgrade
     {
         private int attacks;
@@ -343,7 +344,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class PanicButton : Upgrade
     {
         private bool triggered;
@@ -368,7 +369,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.WarMachines)]
+    [Set(UpgradeSet.WarMachines)]
     public class ExotronTheForbidden : Upgrade
     {
         public ExotronTheForbidden()

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ScrapScramble.Game.Cards.Mechs.Packages
 {
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class BronzeBruiser : Upgrade
     {
         public BronzeBruiser()
@@ -39,7 +39,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class SilverShogun : Upgrade
     {
         public SilverShogun()
@@ -71,7 +71,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class GoldenGunner : Upgrade
     {
         public GoldenGunner()
@@ -103,7 +103,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class PlatinumParagon : Upgrade
     {
         public PlatinumParagon()
@@ -135,7 +135,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class CircusCircuit : Upgrade
     {
         public CircusCircuit()
@@ -158,7 +158,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class MagnetBall : Upgrade
     {
         public MagnetBall()
@@ -174,7 +174,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class BoomerangMagnet : Upgrade
     {
         public BoomerangMagnet()
@@ -190,7 +190,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class TrashCube : Upgrade
     {
         public TrashCube()
@@ -205,7 +205,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }    
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class Scrapbarber : Upgrade
     {
         public Scrapbarber()
@@ -234,7 +234,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class ScrapStacker : Upgrade
     {
         public ScrapStacker()
@@ -254,7 +254,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     //[UpgradeAttribute]
-    //[Package(UpgradePackage.JunkAndTreasures)]
+    //[Set(UpgradeSet.JunkAndTreasures)]
     public class GemRefiner : Upgrade
     {
         public GemRefiner()
@@ -276,7 +276,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class FallenReaver : Upgrade
     {
         public FallenReaver()
@@ -303,7 +303,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class CompetentScrapper : Upgrade
     {
         public CompetentScrapper()
@@ -332,7 +332,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class SuperScooper : Upgrade
     {
         public SuperScooper()
@@ -408,7 +408,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class GrandVault : Upgrade
     {
         public GrandVault()
@@ -422,7 +422,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class Solartron3000 : Upgrade
     {
         private bool triggered;
@@ -515,7 +515,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.JunkAndTreasures)]
+    [Set(UpgradeSet.JunkAndTreasures)]
     public class MrScrap4Cash : Upgrade
     {
         public MrScrap4Cash()

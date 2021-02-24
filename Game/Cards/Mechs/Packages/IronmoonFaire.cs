@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ScrapScramble.Game.Cards.Mechs.Packages
 {
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class ToyRocket : Upgrade
     {
         public ToyRocket()
@@ -21,7 +21,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class ToyTank : Upgrade
     {
         public ToyTank()
@@ -46,7 +46,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class ClawMachine : Upgrade
     {
         public ClawMachine()
@@ -71,7 +71,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class FerrisWheel : Upgrade
     {
         public FerrisWheel()
@@ -93,7 +93,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class MalfunctioningGuard : Upgrade
     {
         public MalfunctioningGuard()
@@ -116,7 +116,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class PeekABot : Upgrade
     {
         public PeekABot()
@@ -157,7 +157,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class RoboRabbit : Upgrade
     {
         public RoboRabbit()
@@ -189,7 +189,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class TrickRoomster : Upgrade
     {
         public TrickRoomster()
@@ -207,7 +207,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class PrizeStacker : Upgrade
     {
         public PrizeStacker()
@@ -227,7 +227,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class SpringloadedJester : Upgrade
     {
         public SpringloadedJester()
@@ -247,7 +247,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class FortuneWheel : Upgrade
     {
         public FortuneWheel()
@@ -290,7 +290,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class HighRoller : Upgrade
     {
         public HighRoller()
@@ -314,7 +314,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class Mirrordome : Upgrade
     {
         public Mirrordome()
@@ -342,7 +342,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class HatChucker8000 : Upgrade
     {
         private Rarity chosenRarity = Rarity.NO_RARITY;
@@ -469,9 +469,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             int amountOfTickets = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].hand.GetAllCards(), x => x.name == this.name).Count();
 
-            gameHandler.players[curPlayer].creatureData.attack += amountOfTickets;
-            gameHandler.players[curPlayer].creatureData.health += amountOfTickets;
-            gameHandler.players[curPlayer].curMana += amountOfTickets;
+            gameHandler.players[curPlayer].creatureData.attack += amountOfTickets+1;
+            gameHandler.players[curPlayer].creatureData.health += amountOfTickets+1;
+            gameHandler.players[curPlayer].curMana += amountOfTickets+1;
         }
 
         public override string GetInfo(GameHandler gameHandler, int player)
@@ -512,7 +512,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
-    [Package(UpgradePackage.IronmoonFaire)]
+    [Set(UpgradeSet.IronmoonFaire)]
     public class SilasIronmoon : Upgrade
     {
         public SilasIronmoon()

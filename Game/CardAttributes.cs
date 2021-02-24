@@ -42,7 +42,7 @@ namespace ScrapScramble.Game
         }
     }
 
-    public enum UpgradePackage
+    public enum UpgradeSet
     {
         Classic = 0,
         VentureCo = 1,
@@ -57,13 +57,13 @@ namespace ScrapScramble.Game
 
 
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class PackageAttribute : Attribute
+    public class SetAttribute : Attribute
     {
-        public UpgradePackage Package { get; }
+        public UpgradeSet Set { get; }
 
-        public PackageAttribute(UpgradePackage package = UpgradePackage.Classic)
+        public SetAttribute(UpgradeSet set = UpgradeSet.Classic)
         {
-            Package = package;
+            Set = set;
         }
     }
 }
