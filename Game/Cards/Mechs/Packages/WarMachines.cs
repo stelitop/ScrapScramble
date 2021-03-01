@@ -251,7 +251,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             gameHandler.players[enemy].creatureData.health -= 5;
             if (gameHandler.players[enemy].creatureData.health < 1) gameHandler.players[enemy].creatureData.health = 1;
             gameHandler.players[enemy].aftermathMessages.Add(
-                $"{gameHandler.players[curPlayer].name}'s Homing Missile reduced your Upgrade's Health to {gameHandler.players[enemy].creatureData.health}.");
+                $"{gameHandler.players[curPlayer].name}'s Homing Missile reduced your Mech's Health to {gameHandler.players[enemy].creatureData.health}.");
         }
     }
 
@@ -273,7 +273,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
             gameHandler.players[enemy].creatureData.attack -= 5;
             if (gameHandler.players[enemy].creatureData.attack < 1) gameHandler.players[enemy].creatureData.attack = 1;
-            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Hypnodrone reduced your Upgrade's Attack by 5, leaving it with {gameHandler.players[enemy].creatureData.attack} Attack.");
+            gameHandler.players[enemy].aftermathMessages.Add($"{gameHandler.players[curPlayer].name}'s Hypnodrone reduced your Mech's Attack by 5, leaving it with {gameHandler.players[enemy].creatureData.attack} Attack.");
         }
     }
 

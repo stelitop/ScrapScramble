@@ -14,7 +14,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Common;
             this.name = "Healthbox";
-            this.cardText = this.writtenEffect = "Start of Combat: Give the enemy Upgrade +6 Health.";
+            this.cardText = this.writtenEffect = "Start of Combat: Give the enemy Mech +6 Health.";
             this.SetStats(1, 0, 6);
         }
 
@@ -382,6 +382,31 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     [UpgradeAttribute]
+    public class CrumblingPillar : Upgrade
+    {
+        public CrumblingPillar()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Crumbling Pillar";
+            this.cardText = this.writtenEffect = "After your Mech attacks, add a random 1-Cost Upgrade to your hand.";
+            this.SetStats(4, 5, 2);
+        }
+
+        public override void AfterThisAttacks(int damage, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            var onedrops = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.Cost == 1);
+            Upgrade choice = onedrops[GameHandler.randomGenerator.Next(onedrops.Count)];
+
+            gameHandler.players[curPlayer].hand.AddCard(choice);
+
+            gameHandler.combatOutputCollector.combatHeader.Add(
+                $"{gameHandler.players[curPlayer].name}'s {this.name} adds a random 1-Cost Upgrade to its hand.");
+        }
+
+    }
+
+
+    [UpgradeAttribute]
     [Set(UpgradeSet.TinyInventions)]
     public class NanoDuplicatorv10 : Upgrade
     {
@@ -391,6 +416,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.name = "Nano-Duplicator v10";
             this.cardText = this.writtenEffect = "1-Cost Upgrades in your shop have Binary.";
             this.SetStats(1, 1, 1);
+            this.showEffectInCombat = false;
         }
 
         public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)

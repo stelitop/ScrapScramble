@@ -372,7 +372,7 @@ namespace ScrapScramble.Game.Cards.Mechs
     {
         public HiveMindEffect()
         {
-            this.printEffectInCombat = false;
+            this.showEffectInCombat = false;
             this.writtenEffect = "After you buy an Upgrade this turn, add a 1/1 Bee Bot to your shop.";
         }
 

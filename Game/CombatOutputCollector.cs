@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game
 {
+    [Serializable]
     public class CombatOutputCollector
     {
         public List<string> introductionHeader1, introductionHeader2;

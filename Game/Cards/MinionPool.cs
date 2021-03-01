@@ -11,7 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ScrapScramble.Game
-{    
+{
+    [Serializable]
     public class MinionPool
     {
         public List<Upgrade> upgrades;

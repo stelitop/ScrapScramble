@@ -220,8 +220,8 @@ namespace ScrapScramble.Game
                 cardIndexes.Add(GameHandler.randomGenerator.Next(0, cardPool.Count()-2));
 
                 if (cardIndexes[1] >= cardIndexes[0]) cardIndexes[1]++;
-                if (cardIndexes[2] >= cardIndexes[0]) cardIndexes[2]++;
-                if (cardIndexes[2] >= cardIndexes[1]) cardIndexes[2]++;
+                if (cardIndexes[2] >= Math.Min(cardIndexes[0], cardIndexes[1])) cardIndexes[2]++;
+                if (cardIndexes[2] >= Math.Max(cardIndexes[0], cardIndexes[1])) cardIndexes[2]++;
             }
 
             string desc = string.Empty;       

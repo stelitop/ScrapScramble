@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game
 {
+    [Serializable]
     public enum FightResult
     {
         WIN,
@@ -14,6 +15,7 @@ namespace ScrapScramble.Game
         BYE
     }
 
+    [Serializable]
     public class PairsHandler
     {
         public List<int> opponents { get; }

@@ -34,7 +34,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             gameHandler.players[curPlayer].shop.Clear();
 
-            List<Upgrade> subList = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Common && x.Cost <= gameHandler.maxMana - 5);
+            List<Upgrade> subList = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Common && x.Cost <= gameHandler.players[curPlayer].maxMana - 5);
             for (int i=0; i<6; i++)
             {                                
                 Upgrade m = subList[GameHandler.randomGenerator.Next(0, subList.Count())];
@@ -96,7 +96,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.players[curPlayer].pool, gameHandler.maxMana, false);
+            gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.players[curPlayer].pool, gameHandler.players[curPlayer].maxMana, false);
             return Task.CompletedTask;
         }
     }
@@ -221,9 +221,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            List<Upgrade> legendaries = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Legendary && x.Cost <= gameHandler.maxMana - 5);
-            List<Upgrade> epics = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Epic && x.Cost <= gameHandler.maxMana - 5);
-            List<Upgrade> rares = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Rare && x.Cost <= gameHandler.maxMana - 5);
+            List<Upgrade> legendaries = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Legendary && x.Cost <= gameHandler.players[curPlayer].maxMana - 5);
+            List<Upgrade> epics = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Epic && x.Cost <= gameHandler.players[curPlayer].maxMana - 5);
+            List<Upgrade> rares = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Rare && x.Cost <= gameHandler.players[curPlayer].maxMana - 5);
 
             List<int> shopIndexes = gameHandler.players[curPlayer].shop.GetAllUpgradeIndexes();
 
@@ -355,36 +355,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
             base.AftermathMe(gameHandler, curPlayer, enemy);
         }
-    }
-
-    [UpgradeAttribute]
-    [Set(UpgradeSet.EdgeOfScience)]
-    public class ChaosPrism : Upgrade
-    {
-        private int spellbursts = 3;
-
-        public ChaosPrism()
-        {
-            this.rarity = Rarity.Legendary;
-            this.name = "Chaos Prism";
-            this.cardText = "Taunt x3. Spellburst: Gain \"Spellburst: Gain 'Spellburst: Gain Poisonous.'\"";
-            this.writtenEffect = "Spellburst: Gain \"Spellburst: Gain 'Spellburst: Gain Poisonous.'\"";
-            this.SetStats(6, 2, 2);
-            this.creatureData.staticKeywords[StaticKeyword.Taunt] = 3;
-        }
-
-        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
-        {
-            spellbursts--;
-            if (spellbursts == 2) this.writtenEffect = "Spellburst: Gain 'Spellburst: Gain Poisonous'";
-            else if (spellbursts == 1) this.writtenEffect = "Spellburst: Gain Poisonous.";
-            else if (spellbursts == 0)
-            {
-                this.writtenEffect = string.Empty;
-                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Poisonous] = 1;
-            }
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     [Set(UpgradeSet.EdgeOfScience)]
@@ -394,14 +365,54 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Legendary;
             this.name = "Paradox Engine";
-            this.cardText = "Battlecry: This turn, after you buy an upgrade, refresh your shop.";
-            this.writtenEffect = "After you buy an upgrade, refresh your shop.";
+            this.cardText = "Battlecry: This turn, after you buy an Upgrade, refresh your shop.";
+            this.writtenEffect = "After you buy an Upgrade, refresh your shop.";
             this.SetStats(12, 10, 10);
+            this.showEffectInCombat = false;
         }
 
         public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.players[curPlayer].pool, gameHandler.maxMana, false);
+            gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.players[curPlayer].pool, gameHandler.players[curPlayer].maxMana, false);
         }
     }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.EdgeOfScience)]
+    public class EarthsPrototypeCore : Upgrade
+    {
+        public EarthsPrototypeCore()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Earth's Prototype Core";
+            this.cardText = "Battlecry: For each Overload Upgrade applied to your Mech this game, increase your Maximum Mana by 1.";
+            this.SetStats(7, 0, 12);
+        }
+
+        private bool criteria(Card c)
+        {
+            if (c is Upgrade u)
+            {
+                return (u.creatureData.staticKeywords[StaticKeyword.Overload] > 0);
+            }
+
+            return false;
+        }
+
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            int bonus = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, this.criteria).Count;
+
+            gameHandler.players[curPlayer].maxMana += bonus;
+
+            return Task.CompletedTask;
+        }
+
+        public override string GetInfo(GameHandler gameHandler, int player)
+        {
+            return base.GetInfo(gameHandler, player) + $" *({CardsFilter.FilterList<Card>(gameHandler.players[player].playHistory, this.criteria).Count})*";
+        }
+
+    }
+
 }

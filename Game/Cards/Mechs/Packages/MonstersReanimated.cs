@@ -175,7 +175,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Rare;
             this.name = "Mecha'thun's Elder";
-            this.cardText = "Battlecry: Give your Upgrade -1/-1 for each turn your Mecha'thun has left to thaw.";
+            this.cardText = "Battlecry: Give your Mech -1/-1 for each turn your Mecha'thun has left to thaw.";
             this.SetStats(4, 12, 12);
         }
 
@@ -356,7 +356,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    //[UpgradeAttribute]
+    [UpgradeAttribute]
     [Set(UpgradeSet.MonstersReanimated)]
     public class Hackatha : Upgrade
     {
@@ -364,7 +364,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Legendary;
             this.name = "Hackatha";
-            this.cardText = "Battlecry: Add a 5-cost 5/5 Amalgam to your hand with the effects of all Upgrades your previous opponent applied last round.";
+            this.cardText = "Battlecry: Add a 5-cost 5/5 Amalgam to your hand with the effects of all Upgrades your current opponent applied last round.";
             this.SetStats(8, 5, 5);
         }
 
@@ -374,50 +374,66 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             {
                 Card token = new HackathaAmalgam();
                 int index = gameHandler.players[curPlayer].hand.AddCard(gameHandler.players[curPlayer].pool.FindBasicCard(token.name));
+
                 HackathaAmalgam amalgam = (HackathaAmalgam)gameHandler.players[curPlayer].hand.At(index);
+                
+                amalgam.cardText = "Has the effects of";
+                int extraTextLength = 0;
+                int extraCards = 0;
 
-                try
+                for (int i = 0; i < gameHandler.players[enemy].playHistory[gameHandler.players[enemy].playHistory.Count - 2].Count(); i++)
                 {
-                    amalgam.cardText = "Has the effects of";
-                    int extraTextLength = 0;
-                    int extraCards = 0;
+                    Card upgrade = gameHandler.players[enemy].playHistory[gameHandler.currentRound - 2][i];
 
-                    for (int i = 0; i < gameHandler.players[enemy].playHistory[gameHandler.currentRound - 2].Count(); i++)
+                    if (upgrade is Upgrade u && upgrade.name != "Hackatha" && upgrade.name != "Hackatha's Amalgam")
                     {
-                        Card upgrade = gameHandler.players[enemy].playHistory[gameHandler.currentRound - 2][i];
+                        amalgam.extraUpgradeEffects.Add((Upgrade)u.DeepCopy());
 
-                        if ((upgrade.GetType().IsSubclassOf(typeof(Upgrade)) || upgrade.GetType() == typeof(Upgrade)) && upgrade.name != "Hackatha" && upgrade.name != "Hackatha's Amalgam")
+                        if (extraTextLength < 50)
                         {
-                            amalgam.extraUpgradeEffects.Add((Upgrade)upgrade.DeepCopy());
-
-                            if (extraTextLength < 50)
-                            {
-                                amalgam.cardText += $" {upgrade.name},";
-                                extraTextLength += upgrade.name.Length;
-                            }
-                            else
-                            {
-                                extraCards++;
-                            }
+                            amalgam.cardText += $" {upgrade.name},";
+                            extraTextLength += u.name.Length + 2;
+                        }
+                        else
+                        {
+                            extraCards++;
                         }
                     }
-                    amalgam.cardText.TrimEnd(',');
-                    if (extraCards == 0)
-                    {
-                        amalgam.cardText += ".";
-                    }
-                    else
-                    {
-                        amalgam.cardText += $" and {extraCards} more Upgrades.";
-                    }
                 }
-                catch
+                amalgam.cardText = amalgam.cardText.TrimEnd(',');
+                if (extraCards == 0)
                 {
-                    Console.WriteLine("Hackatha Fucked Up");
+                    amalgam.cardText += ".";
                 }
+                else
+                {
+                    amalgam.cardText += $" and {extraCards} more Upgrades.";
+                }                
             }
 
             return Task.CompletedTask;
+        }
+    }
+
+
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.MonstersReanimated)]
+    public class LadyInByte : Upgrade
+    {
+        public LadyInByte()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Lady in Byte";
+            this.cardText = this.writtenEffect = "Aftermath: Set your Mech's Attack equal to its Health.";
+            this.SetStats(6, 5, 5);
+        }
+
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.attack = gameHandler.players[curPlayer].creatureData.health;
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Lady in Byte sets your Attack equal to Health, leaving you as a {gameHandler.players[curPlayer].creatureData.Stats()}");
         }
     }
 }

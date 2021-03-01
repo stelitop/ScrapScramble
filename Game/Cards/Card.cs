@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game.Cards
 {
+    [Serializable]
     public abstract class Card
     {
         public string name;

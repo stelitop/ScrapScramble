@@ -242,7 +242,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Rare;
             this.name = "Scrap Stacker";
             this.cardText = this.writtenEffect = "After you buy another Upgrade, gain +2/+2.";
-            this.printEffectInCombat = false;
+            this.showEffectInCombat = false;
             this.SetStats(8, 4, 4);
         }
 
@@ -250,6 +250,36 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             gameHandler.players[curPlayer].creatureData.attack += 2;
             gameHandler.players[curPlayer].creatureData.health += 2;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.JunkAndTreasures)]
+    public class PileOfJunk : Upgrade
+    {
+        public PileOfJunk()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Pile of Junk";
+            this.cardText = "Choose One: Gain +1 Attack for each other Upgrade in your shop; or +1 Health.";
+            this.SetStats(6, 3, 3);
+        }
+
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            PlayerInteraction chooseOne = new PlayerInteraction("Choose One", "1) Gain +1 Attack for each other Upgrade in your shop\n2) Gain +1 Health for each other Upgrade in your shop", "Write the corresponding number", AnswerType.IntAnswer);
+            string defaultAns = GameHandler.randomGenerator.Next(1, 3).ToString();
+
+            string ret = await chooseOne.SendInteractionAsync(curPlayer, (x, y, z) => GeneralFunctions.Within(x, 1, 2), defaultAns);
+
+            if (int.Parse(ret) == 1)
+            {
+                gameHandler.players[curPlayer].creatureData.attack += gameHandler.players[curPlayer].shop.GetAllUpgradeIndexes().Count();
+            }
+            else if (int.Parse(ret) == 2)
+            {
+                gameHandler.players[curPlayer].creatureData.health += gameHandler.players[curPlayer].shop.GetAllUpgradeIndexes().Count();
+            }   
         }
     }
 
@@ -433,7 +463,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.name = "Solartron 3000";
             this.cardText = "Battlecry: The next Upgrade you buy this turn has Binary.";
             this.writtenEffect = "The next Upgrade you buy this turn has Binary.";
-            this.printEffectInCombat = false;
+            this.showEffectInCombat = false;
             this.SetStats(4, 2, 2);
             this.triggered = false;
         }

@@ -230,7 +230,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             List<Card> list = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].playHistory, VentureCo.Criteria);
 
-            int refreshed = Math.Max(0, Math.Min(list.Count(), gameHandler.maxMana - gameHandler.players[curPlayer].curMana));
+            int refreshed = Math.Max(0, Math.Min(list.Count(), gameHandler.players[curPlayer].maxMana - gameHandler.players[curPlayer].curMana));
 
             gameHandler.players[curPlayer].curMana += refreshed;
 

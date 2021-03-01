@@ -15,20 +15,6 @@ namespace ScrapScramble.BotRelated.Commands
     [RequireDirectMessage]
     class PlayerOnlyCommands : BaseCommandModule
     {
-        //[Command("mechinfo")]
-        //public async Task MechInfo(CommandContext ctx)
-        //{
-        //    int index = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
-
-        //    DiscordEmbedBuilder responseMessage = new DiscordEmbedBuilder
-        //    {
-        //        Title = "Your Upgrade's Data",
-        //        Description = BotInfoHandler.gameHandler.players[index].PrintInfo(BotInfoHandler.gameHandler),
-        //        Color = DiscordColor.Brown
-        //    };
-
-        //    await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
-        //}
 
         [Command("shop")]
         public async Task ResentShop(CommandContext ctx)

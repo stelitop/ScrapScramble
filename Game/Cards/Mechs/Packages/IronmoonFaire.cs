@@ -100,9 +100,10 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Common;
             this.name = "Malfunctioning Guard";
-            this.cardText = "Start of Combat: Your Upgrade loses -4 Attack. Overload: (1)";
-            this.writtenEffect = "Start of Combat: Your Upgrade loses -4 Attack.";
+            this.cardText = "Start of Combat: Your Mech loses -4 Attack. Overload: (1)";
+            this.writtenEffect = "Start of Combat: Your Mech loses -4 Attack.";
             this.SetStats(4, 4, 8);
+            this.creatureData.staticKeywords[StaticKeyword.Overload] = 1;
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
@@ -214,7 +215,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Rare;
             this.name = "Prize Stacker";
-            this.cardText = "Battlecry: Give your Upgrade +1/+1 for each card in your hand.";
+            this.cardText = "Battlecry: Give your Mech +1/+1 for each card in your hand.";
             this.SetStats(4, 2, 4);
         }
 
@@ -519,7 +520,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Legendary;
             this.name = "Silas Ironmoon";
-            //this.cardText = "Battlecry: Add a Ticket to your hand that gives your Upgrade +1/+1 and 1 Mana. Permanent Aftermath: Increase your Tickets's bonuses by 1.";
+            //this.cardText = "Battlecry: Add a Ticket to your hand that gives your Mech +1/+1 and 1 Mana. Permanent Aftermath: Increase your Tickets's bonuses by 1.";
             this.cardText = "Permanent Aftermath: Add a Ticket to your hand. It gives you +1/+1 and 1 Mana for each Ticket you're holding.";
             this.SetStats(7, 4, 4);
         }

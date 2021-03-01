@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game.Cards.Mechs
 {
+    [Serializable]
     public class SetHandler
     {
         public static Dictionary<UpgradeSet, string> SetAttributeToString = new Dictionary<UpgradeSet, string>()

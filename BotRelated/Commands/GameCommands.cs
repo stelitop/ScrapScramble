@@ -17,72 +17,108 @@ namespace ScrapScramble.BotRelated.Commands
 {    
     public class GameCommands : BaseCommandModule
     {
+        public static bool IsMechNameValid(string name, out string message)
+        {
+            if (name.Count() < 3)
+            {
+                message = "The name needs to be at least 3 characters long.";
+                return false;
+            }
+
+            string allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890+-/!#$%^&()? ";
+
+            for (int i=0; i<name.Count(); i++)
+            {
+                if (!allowed.Contains(name[i]))
+                {
+                    message = $"The name cannot use the character '{name[i]}'"; 
+                    return false;
+                }
+            }
+
+            message = "Name is correct.";
+            return true;
+        }
+
         [Command("signup")]
         [Description("Signs you up for the next game.")]
         [RequireGuild]
         public async Task SignUp(CommandContext ctx, [Description("The name of your Mech")][RemainingText]string mechName)
         {
-            if (mechName.Count() < 3) return;
+            string retMsg;
+            bool validName = IsMechNameValid(mechName, out retMsg);
 
-            DiscordEmbedBuilder responseMessage;                  
-
-            if (BotInfoHandler.participantsDiscordIds.Contains(ctx.User.Id))
+            if (!validName)
             {
-                //already signed up user
-                responseMessage = new DiscordEmbedBuilder
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = "You have already signed up",
-                    Description = "You don't have to do anything else to sign up.",
+                    Title = "Invalid Name",
+                    Description = retMsg,
                     Color = DiscordColor.Red
-                };
-            }
-            else if (BotInfoHandler.inGame)
-            {
-                //a game has already started
-                responseMessage = new DiscordEmbedBuilder
-                {
-                    Title = "A game has already started",
-                    Description = "You would have to wait for the next game to sign up.",
-                    Color = DiscordColor.Red
-                };
+                }).ConfigureAwait(false);
             }
             else
             {
-                bool appeared = false;
-                for (int i = 0; i < BotInfoHandler.gameHandler.players.Count(); i++) if (BotInfoHandler.gameHandler.players[i].name.Equals(mechName)) { appeared = true; break; }
-                //new user                
+                DiscordEmbedBuilder responseMessage;
 
-                if (appeared)
+                if (BotInfoHandler.participantsDiscordIds.Contains(ctx.User.Id))
                 {
-                    //someone's already taken this name
+                    //already signed up user
                     responseMessage = new DiscordEmbedBuilder
                     {
-                        Title = "Someone already has this name",
-                        Description = "Choose a different name.",
+                        Title = "You Have Already Signed Up",
+                        Description = "You don't have to do anything else to sign up.",
+                        Color = DiscordColor.Red
+                    };
+                }
+                else if (BotInfoHandler.inGame)
+                {
+                    //a game has already started
+                    responseMessage = new DiscordEmbedBuilder
+                    {
+                        Title = "A Game Has Already Started",
+                        Description = "You would have to wait for the next game to sign up.",
                         Color = DiscordColor.Red
                     };
                 }
                 else
                 {
-                    //everything's correct
-                    BotInfoHandler.AddPlayer(ctx, mechName);                    
+                    bool appeared = false;
+                    for (int i = 0; i < BotInfoHandler.gameHandler.players.Count(); i++) if (BotInfoHandler.gameHandler.players[i].name.Equals(mechName, StringComparison.OrdinalIgnoreCase)) { appeared = true; break; }
+                    //new user                
 
-                    responseMessage = new DiscordEmbedBuilder
+                    if (appeared)
                     {
-                        Title = "Signed up successfully",
-                        Description = $"Your Mech is called \"{mechName}\"",
-                        Color = DiscordColor.Green
-                    };
+                        //someone's already taken this name
+                        responseMessage = new DiscordEmbedBuilder
+                        {
+                            Title = "Someone Has Already Chosen This Name",
+                            Description = "Choose a different name.",
+                            Color = DiscordColor.Red
+                        };
+                    }
+                    else
+                    {
+                        //everything's correct
+                        BotInfoHandler.AddPlayer(ctx, mechName);
 
-                    await ctx.Client.UpdateStatusAsync(new DiscordActivity
-                    {
-                        Name = $"({BotInfoHandler.participantsDiscordIds.Count()}) Waiting to >signup",
-                        ActivityType = ActivityType.Playing
-                    });
+                        responseMessage = new DiscordEmbedBuilder
+                        {
+                            Title = "Signed up successfully",
+                            Description = $"Your Mech is called \"{mechName}\"",
+                            Color = DiscordColor.Green
+                        };
+
+                        await ctx.Client.UpdateStatusAsync(new DiscordActivity
+                        {
+                            Name = $"({BotInfoHandler.participantsDiscordIds.Count()}) Waiting to >signup",
+                            ActivityType = ActivityType.Playing
+                        });
+                    }
                 }
-            }
 
-            await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+                await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+            }
         }
 
         [Command("signoff")]
@@ -148,64 +184,78 @@ namespace ScrapScramble.BotRelated.Commands
         [RequireGuild]
         public async Task MechRename(CommandContext ctx, [Description("The new name of your Mech")][RemainingText]string mechName)
         {
-            if (mechName.Count() < 3) return;
+            string retMsg;
+            bool validName = IsMechNameValid(mechName, out retMsg);
 
-            DiscordEmbedBuilder responseMessage;
-
-            if (!BotInfoHandler.participantsDiscordIds.Contains(ctx.User.Id))
+            if (!validName)
             {
-                //user has not signed up
-                responseMessage = new DiscordEmbedBuilder
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = "You have not signed up",
-                    Description = "You can signup using ?signup (Your Mech name here).",
+                    Title = "Invalid Name",
+                    Description = retMsg,
                     Color = DiscordColor.Red
-                };
-            }
-            else if (BotInfoHandler.inGame)
-            {
-                //a game has already started
-                responseMessage = new DiscordEmbedBuilder
-                {
-                    Title = "A game has already started",
-                    Description = "You cannot change your Mech name while in game.",
-                    Color = DiscordColor.Red
-                };
+                }).ConfigureAwait(false);
             }
             else
             {
-                //signed up user
 
-                bool appeared = false;
-                for (int i = 0; i < BotInfoHandler.gameHandler.players.Count(); i++) if (BotInfoHandler.gameHandler.players[i].name.Equals(mechName)) { appeared = true; break; }
-                //new user                
+                DiscordEmbedBuilder responseMessage;
 
-                if (appeared)
+                if (!BotInfoHandler.participantsDiscordIds.Contains(ctx.User.Id))
                 {
-                    //someone's already taken this name
+                    //user has not signed up
                     responseMessage = new DiscordEmbedBuilder
                     {
-                        Title = "Someone already has this name",
-                        Description = "Choose a different name.",
+                        Title = "You have not signed up",
+                        Description = "You can signup using ?signup (Your Mech name here).",
+                        Color = DiscordColor.Red
+                    };
+                }
+                else if (BotInfoHandler.inGame)
+                {
+                    //a game has already started
+                    responseMessage = new DiscordEmbedBuilder
+                    {
+                        Title = "A game has already started",
+                        Description = "You cannot change your Mech name while in game.",
                         Color = DiscordColor.Red
                     };
                 }
                 else
                 {
-                    int mechIndex = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
+                    //signed up user
 
-                    BotInfoHandler.gameHandler.players[mechIndex].name = mechName;
+                    bool appeared = false;
+                    for (int i = 0; i < BotInfoHandler.gameHandler.players.Count(); i++) if (BotInfoHandler.gameHandler.players[i].name.Equals(mechName)) { appeared = true; break; }
+                    //new user                
 
-                    responseMessage = new DiscordEmbedBuilder
+                    if (appeared)
                     {
-                        Title = "Mech renamed successfully.",
-                        Description = $"Your Mech is now called {mechName}",
-                        Color = DiscordColor.Green
-                    };
-                }
-            }
+                        //someone's already taken this name
+                        responseMessage = new DiscordEmbedBuilder
+                        {
+                            Title = "Someone already has this name",
+                            Description = "Choose a different name.",
+                            Color = DiscordColor.Red
+                        };
+                    }
+                    else
+                    {
+                        int mechIndex = BotInfoHandler.participantsDiscordIds.IndexOf(ctx.User.Id);
 
-            await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+                        BotInfoHandler.gameHandler.players[mechIndex].name = mechName;
+
+                        responseMessage = new DiscordEmbedBuilder
+                        {
+                            Title = "Mech renamed successfully.",
+                            Description = $"Your Mech is now called {mechName}",
+                            Color = DiscordColor.Green
+                        };
+                    }
+                }
+
+                await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+            }
         }
 
         [Aliases("playerslist")]
@@ -359,7 +409,9 @@ namespace ScrapScramble.BotRelated.Commands
             await msg.ModifyAsync(embed: newMenuPage.Build()).ConfigureAwait(false);
         }
 
-        [Command("ulist2")]
+        [Aliases("upgradelist")]
+        [Command("upgradeslist")]
+        [Description("Displays an interactable menu, which lists the names of all available Upgrades.")]
         public async Task BrowseMenuTest(CommandContext ctx)
         {
             int upgradesPerPage = Math.Min(BotInfoHandler.gameHandler.pool.upgrades.Count(), 7);            
@@ -419,65 +471,65 @@ namespace ScrapScramble.BotRelated.Commands
             await interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, allMenuPages, paginationEmojis, DSharpPlus.Interactivity.Enums.PaginationBehaviour.WrapAround, timeoutoverride: TimeSpan.FromMinutes(7));
         }
 
-        [Aliases("upgradelist")]
-        [Command("upgradeslist")]
-        [Description("Displays an interactable menu, which lists the names of all available Upgrades.")]
-        [RequireGuild]
-        public async Task BrowseMenu(CommandContext ctx)
-        {
-            int upgradesPerPage = Math.Min(BotInfoHandler.gameHandler.pool.upgrades.Count(), 10);
-            int page = 1;
-            int totalPages = BotInfoHandler.gameHandler.pool.upgrades.Count() / upgradesPerPage;
-            if (BotInfoHandler.gameHandler.pool.upgrades.Count() % upgradesPerPage != 0) totalPages++;
+        //[Aliases("upgradelist")]
+        //[Command("upgradeslist")]
+        //[Description("Displays an interactable menu, which lists the names of all available Upgrades.")]
+        //[RequireGuild]
+        //public async Task BrowseMenu(CommandContext ctx)
+        //{
+        //    int upgradesPerPage = Math.Min(BotInfoHandler.gameHandler.pool.upgrades.Count(), 10);
+        //    int page = 1;
+        //    int totalPages = BotInfoHandler.gameHandler.pool.upgrades.Count() / upgradesPerPage;
+        //    if (BotInfoHandler.gameHandler.pool.upgrades.Count() % upgradesPerPage != 0) totalPages++;
             
-            DiscordMessage menuMessage = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { Color = DiscordColor.Azure}).ConfigureAwait(false);
-            await this.UpdateBrowseMenuAsync(ctx, menuMessage, upgradesPerPage, page, totalPages);
+        //    DiscordMessage menuMessage = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { Color = DiscordColor.Azure}).ConfigureAwait(false);
+        //    await this.UpdateBrowseMenuAsync(ctx, menuMessage, upgradesPerPage, page, totalPages);
 
 
 
-            List<DiscordEmoji> buttons = new List<DiscordEmoji>
-            {
-                DiscordEmoji.FromName(ctx.Client, ":rewind:"),
-                DiscordEmoji.FromName(ctx.Client, ":arrow_left:"),
-                DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:"),
-                DiscordEmoji.FromName(ctx.Client, ":arrow_right:"),
-                DiscordEmoji.FromName(ctx.Client, ":fast_forward:")
-            };
+        //    List<DiscordEmoji> buttons = new List<DiscordEmoji>
+        //    {
+        //        DiscordEmoji.FromName(ctx.Client, ":rewind:"),
+        //        DiscordEmoji.FromName(ctx.Client, ":arrow_left:"),
+        //        DiscordEmoji.FromName(ctx.Client, ":no_entry_sign:"),
+        //        DiscordEmoji.FromName(ctx.Client, ":arrow_right:"),
+        //        DiscordEmoji.FromName(ctx.Client, ":fast_forward:")
+        //    };
 
-            for (int i=0; i<buttons.Count(); i++)
-            {
-                await menuMessage.CreateReactionAsync(buttons[i]).ConfigureAwait(false);                
-            }                        
+        //    for (int i=0; i<buttons.Count(); i++)
+        //    {
+        //        await menuMessage.CreateReactionAsync(buttons[i]).ConfigureAwait(false);                
+        //    }                        
 
-            while (true)
-            {
-                var interactivity = ctx.Client.GetInteractivity();
+        //    while (true)
+        //    {
+        //        var interactivity = ctx.Client.GetInteractivity();
 
-                var reactionResult = await interactivity.WaitForReactionAsync(
-                    x => x.Message == menuMessage &&
-                    x.User == ctx.User &&
-                    buttons.Contains(x.Emoji)).ConfigureAwait(false);
+        //        var reactionResult = await interactivity.WaitForReactionAsync(
+        //            x => x.Message == menuMessage &&
+        //            x.User == ctx.User &&
+        //            buttons.Contains(x.Emoji)).ConfigureAwait(false);
 
-                if (reactionResult.TimedOut) break;
+        //        if (reactionResult.TimedOut) break;
 
-                if (reactionResult.Result.Emoji.Equals(buttons[2]))
-                {
-                    await menuMessage.DeleteAsync().ConfigureAwait(false);
-                    break;
-                }
+        //        if (reactionResult.Result.Emoji.Equals(buttons[2]))
+        //        {
+        //            await menuMessage.DeleteAsync().ConfigureAwait(false);
+        //            break;
+        //        }
 
-                DiscordEmoji foundEmoji;
+        //        DiscordEmoji foundEmoji;
 
-                if (reactionResult.Result.Emoji.Equals(buttons[0])) { foundEmoji = buttons[0]; page = 1; }
-                else if (reactionResult.Result.Emoji.Equals(buttons[1])) { foundEmoji = buttons[1]; page = Math.Max(page - 1, 1); }
-                else if (reactionResult.Result.Emoji.Equals(buttons[3])) { foundEmoji = buttons[3]; page = Math.Min(page + 1, totalPages); }
-                else if (reactionResult.Result.Emoji.Equals(buttons[4])) { foundEmoji = buttons[4]; page = totalPages; }
-                else break;
+        //        if (reactionResult.Result.Emoji.Equals(buttons[0])) { foundEmoji = buttons[0]; page = 1; }
+        //        else if (reactionResult.Result.Emoji.Equals(buttons[1])) { foundEmoji = buttons[1]; page = Math.Max(page - 1, 1); }
+        //        else if (reactionResult.Result.Emoji.Equals(buttons[3])) { foundEmoji = buttons[3]; page = Math.Min(page + 1, totalPages); }
+        //        else if (reactionResult.Result.Emoji.Equals(buttons[4])) { foundEmoji = buttons[4]; page = totalPages; }
+        //        else break;
 
-                await this.UpdateBrowseMenuAsync(ctx, menuMessage, upgradesPerPage, page, totalPages);
-                await menuMessage.DeleteReactionAsync(foundEmoji, ctx.User).ConfigureAwait(false);                
-            }
-        }
+        //        await this.UpdateBrowseMenuAsync(ctx, menuMessage, upgradesPerPage, page, totalPages);
+        //        await menuMessage.DeleteReactionAsync(foundEmoji, ctx.User).ConfigureAwait(false);                
+        //    }
+        //}
     
         [Command("spareparts")]
         [Description("Displays all spare parts.")]
@@ -573,7 +625,8 @@ namespace ScrapScramble.BotRelated.Commands
             {
                 var embed = new DiscordEmbedBuilder(){
                     Title = $"{setName}",
-                    Color = DiscordColor.Azure
+                    Color = DiscordColor.Azure,
+                    Footer = new DiscordEmbedBuilder.EmbedFooter { Text = $"Total Upgrades: {BotInfoHandler.gameHandler.setHandler.Sets[setName].Count}" }
                 };
 
                 string description = string.Empty;
@@ -600,6 +653,16 @@ namespace ScrapScramble.BotRelated.Commands
 
                 await ctx.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
             }            
+        }
+
+        [Command("keywords")]
+        public async Task GetKeywordInfo (CommandContext ctx)
+        {
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                Title = "All Keywords",
+                Description = BotInfoHandler.CommandInformation.KeywordDescription,
+                Color = DiscordColor.Azure
+            }).ConfigureAwait(false);
         }
     }
 }

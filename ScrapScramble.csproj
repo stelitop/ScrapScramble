@@ -48,6 +48,9 @@
     <Reference Include="Emzi0767.Common, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Emzi0767.Common.2.2.2\lib\net45\Emzi0767.Common.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.11.30.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>packages\HtmlAgilityPack.1.11.30\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -152,10 +155,12 @@
     <Compile Include="BotRelated\Commands\FunCommands.cs" />
     <Compile Include="BotRelated\Commands\GameCommands.cs" />
     <Compile Include="BotRelated\Commands\GameOperatorCommands.cs" />
+    <Compile Include="BotRelated\Commands\GameSettingsCommands.cs" />
     <Compile Include="BotRelated\Commands\PlayerOnlyCommands.cs" />
     <Compile Include="ConfigJson.cs" />
     <Compile Include="Game\Cards\Card.cs" />
     <Compile Include="Game\Cards\CardsFilter.cs" />
+    <Compile Include="Game\Cards\Mechs\Packages\MonstersReanimated.cs" />
     <Compile Include="Game\Cards\Upgrade.cs" />
     <Compile Include="Game\Cards\MechJsonTemplate.cs" />
     <Compile Include="Game\Cards\Mechs\CommonMechs.cs" />
@@ -164,8 +169,6 @@
     <Compile Include="Game\Cards\Mechs\Packages\EdgeOfScience.cs" />
     <Compile Include="Game\Cards\Mechs\EpicMechs.cs" />
     <Compile Include="Game\Cards\Mechs\Packages\JunkAndTreasures.cs" />
-    <Compile Include="Game\Cards\Mechs\LegendaryMechs.cs" />
-    <Compile Include="Game\Cards\Mechs\Packages\MonstersReanimated.cs" />
     <Compile Include="Game\Cards\Mechs\Packages\TinyInventions.cs" />
     <Compile Include="Game\Cards\Mechs\RareMechs.cs" />
     <Compile Include="Game\Cards\Mechs\Packages\Scholomance.cs" />

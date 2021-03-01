@@ -215,7 +215,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Rare;
             this.name = "Cobalt Conqueror";
             this.cardText = "Rush. Combo: Give the next Upgrade you buy this turn Rush.";
-            this.printEffectInCombat = false;
+            this.showEffectInCombat = false;
             this.SetStats(10, 9, 7);
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
             this.effectTrig = false;
@@ -291,7 +291,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             letter = ret;
 
             this.writtenEffect = $"After you buy an Upgrade that starts with the letter '{letter}', gain +2 Attack.";
-            this.printEffectInCombat = false;
+            this.showEffectInCombat = false;
         }
 
         public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
@@ -387,7 +387,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.name = "Shining Student";
             this.cardText = this.writtenEffect = "After you cast a spell, cast another copy of it. You can choose new targets.";
             this.SetStats(4, 3, 2);
-            this.printEffectInCombat = false;
+            this.showEffectInCombat = false;
         }
 
         public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
@@ -408,7 +408,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.name = "Lord Barox";
             this.cardText = "Battlecry: Name ANY other Mech. Aftermath: If it won last round, gain 5 Mana this turn only.";
             this.SetStats(3, 3, 2);
-            this.printEffectInCombat = false;
+            this.showEffectInCombat = false;
         }
 
         public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -435,7 +435,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.bet = playerNames.IndexOf(ret);
 
             this.writtenEffect = $"You have bet on {gameHandler.players[this.bet].name}! If they win their next fight, you'll gain 5 Mana next turn.";
-            this.printEffectInCombat = false;            
+            this.showEffectInCombat = false;            
         }
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
         {
@@ -460,6 +460,35 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             LordBarox ret = (LordBarox)base.DeepCopy();
             ret.bet = this.bet;
             return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.ScholomanceAcademy)]
+    public class ChaosPrism : Upgrade
+    {
+        private int spellbursts = 3;
+
+        public ChaosPrism()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Chaos Prism";
+            this.cardText = "Taunt x3. Spellburst: Gain \"Spellburst: Gain 'Spellburst: Gain Poisonous.'\"";
+            this.writtenEffect = "Spellburst: Gain \"Spellburst: Gain 'Spellburst: Gain Poisonous.'\"";
+            this.SetStats(6, 2, 2);
+            this.creatureData.staticKeywords[StaticKeyword.Taunt] = 3;
+        }
+
+        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            spellbursts--;
+            if (spellbursts == 2) this.writtenEffect = "Spellburst: Gain 'Spellburst: Gain Poisonous'";
+            else if (spellbursts == 1) this.writtenEffect = "Spellburst: Gain Poisonous.";
+            else if (spellbursts == 0)
+            {
+                this.writtenEffect = string.Empty;
+                gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Poisonous] = 1;
+            }
         }
     }
 }

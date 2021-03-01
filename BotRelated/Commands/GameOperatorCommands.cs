@@ -7,7 +7,10 @@ using ScrapScramble.Game;
 using ScrapScramble.Game.Cards;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -358,20 +361,6 @@ namespace ScrapScramble.BotRelated.Commands
             await BotInfoHandler.SendNewPlayerList(ctx);
         }
 
-        [Command("setstartinglives")]
-        public async Task SetStartingLives(CommandContext ctx, int num)
-        {
-            if (num < 1) num = 1;
-            BotInfoHandler.gameHandler.startingLives = num;
-
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-            {
-                Title = "Startings Lives Changed Successfully",
-                Description = $"Players will now start games with {num} lives.",
-                Color = DiscordColor.Green
-            }).ConfigureAwait(false);
-        }
-
         //[Command("removedead")]
         [RequireIngame]
         public async Task RemoveDeadPlayers(CommandContext ctx)
@@ -578,86 +567,24 @@ namespace ScrapScramble.BotRelated.Commands
             }
             else
             {
+                int dummyInt;
+                string desc = string.Empty;
+
+
+                desc += $"**{BotInfoHandler.gameHandler.players[index].name} upgraded with:**\n";
+                desc += BotInfoHandler.gameHandler.players[index].GetUpgradesList(out dummyInt);
+                desc += "\n\n";
+                desc += BotInfoHandler.gameHandler.players[index].GetInfoForCombat(BotInfoHandler.gameHandler);
+                
+
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = $"{BotInfoHandler.gameHandler.players[index].name}'s Info",
-                    Description = BotInfoHandler.gameHandler.players[index].GetInfoForCombat(BotInfoHandler.gameHandler),
-                    Color = DiscordColor.Azure
+                    Description = desc,
+                    Color = DiscordColor.Gold
                 }).ConfigureAwait(false);
             }
-        }
-
-        [Command("setmanacap")]
-        [Description("Sets the maximum mana reachable in a game.")]
-        public async Task SetManaCap(CommandContext ctx, int mana)
-        {
-            if (mana < 0) mana = -1;
-
-            BotInfoHandler.gameHandler.maxManaCap = mana;
-
-            if (mana != -1)
-            {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Maximum Mana Cap Changed",
-                    Description = $"The maximum mana cap has been changed to {mana}.",
-                    Color = DiscordColor.Green
-                }).ConfigureAwait(false);
-            }
-            else
-            {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Maximum Mana Cap Removed",
-                    Description = $"The maximum mana cap has been removed.",
-                    Color = DiscordColor.Green
-                }).ConfigureAwait(false);
-            }
-        }
-
-        [Command("setshoprarity")]
-        [Description("Sets the breakdown by rarities of what upgrades you get in shop each turn.")]
-        public async Task SetShopRarity(CommandContext ctx, int c, int r, int e, int l)
-        {
-            BotInfoHandler.gameHandler.shopRarities.common = c;
-            BotInfoHandler.gameHandler.shopRarities.rare = r;
-            BotInfoHandler.gameHandler.shopRarities.epic = e;
-            BotInfoHandler.gameHandler.shopRarities.legendary = l;
-
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-            {
-                Title = "Shop Rarity Breakdown Changed",
-                Description = $"The new breakdown is {c}-{r}-{e}-{l}.",
-                Color = DiscordColor.Azure
-            }).ConfigureAwait(false);
-        }
-
-        [Command("setsetsamount")]
-        [Description("Sets the amount of sets that will be present in the next game")]
-        public async Task SetSetAmount(CommandContext ctx, int amount)
-        {
-            if (amount < 0) amount = 0;
-            else if (amount >= BotInfoHandler.gameHandler.setHandler.Sets.Count) amount = 0;
-            BotInfoHandler.gameHandler.setsAmount = amount;
-
-            if (amount == 0)
-            {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
-                    Title = "Number of Sets Changed",
-                    Description = "All sets will be included in the next game.",
-                    Color = DiscordColor.Green
-                }).ConfigureAwait(false);
-            }
-            else
-            {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Number of Sets Changed",
-                    Description = $"Only {amount} sets will be included in the next game.",
-                    Color = DiscordColor.Green
-                }).ConfigureAwait(false);
-            }
-        }
+        }                        
 
         //[Command("gamewithpackages")]
         //public async Task GameWithPackages(CommandContext ctx, int packages = 4)
@@ -678,5 +605,48 @@ namespace ScrapScramble.BotRelated.Commands
         //        Color = DiscordColor.Green
         //    }).ConfigureAwait(false);
         //}        
-    }
+
+        [Command("savegame")]
+        public async Task ExportGame(CommandContext ctx)
+        {
+            if (BotInfoHandler.inGame)
+            {
+                IFormatter formatter = new BinaryFormatter();
+                Stream stream = new FileStream("game.bin", FileMode.Create, FileAccess.Write);
+                formatter.Serialize(stream, new ExportInfo(BotInfoHandler.gameHandler, BotInfoHandler.participantsDiscordIds, BotInfoHandler.shopsSent, BotInfoHandler.pairsReady));
+
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                    Title = "Game Successfully Saved",
+                    Color = DiscordColor.Green
+                }).ConfigureAwait(false);
+            }
+            else
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                    Title = "Your Are Not in a Game",
+                    Description = "You must first start a game to able to save it.",
+                    Color = DiscordColor.Red
+                }).ConfigureAwait(false);
+            }
+        }
+
+        [Command("loadgame")]
+        public async Task ImportGame(CommandContext ctx)
+        { 
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream("game.bin", FileMode.Open, FileAccess.Read);
+            ExportInfo gameInfo = (ExportInfo)formatter.Deserialize(stream);
+
+            BotInfoHandler.inGame = true;
+            BotInfoHandler.gameHandler = gameInfo.gameHandler;
+            BotInfoHandler.pairsReady = gameInfo.pairsReady;
+            BotInfoHandler.participantsDiscordIds = gameInfo.participantsDiscordIds;
+
+            BotInfoHandler.UIMessages = new List<DiscordMessage>();
+            BotInfoHandler.interactivePlayerList = null;
+            BotInfoHandler.interactivePlayerListCaller = null;
+
+            await SendShops(ctx);
+        }
+    }    
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace ScrapScramble.Game
 {
+    [Serializable]
     public struct RarityBreakdown
     {
         public int common, rare, epic, legendary;
@@ -21,6 +22,7 @@ namespace ScrapScramble.Game
         }
     };
 
+    [Serializable]
     public class GameHandler
     {
         public static Random randomGenerator = new Random();
@@ -78,7 +80,8 @@ namespace ScrapScramble.Game
                 this.players[i] = new Player(this.players[i].name);
 
                 this.players[i].pool = new MinionPool(pool);
-                this.players[i].shop.Refresh(this, this.players[i].pool, this.maxMana);
+                this.players[i].maxMana = this.maxMana;
+                this.players[i].shop.Refresh(this, this.players[i].pool, this.players[i].maxMana);
                 this.players[i].curMana = this.maxMana;
                 this.players[i].lives = this.startingLives;
 
@@ -285,9 +288,10 @@ namespace ScrapScramble.Game
         public static void NextRound(GameHandler gameHandler)
         {
             Console.WriteLine("StartNewRound");
-            gameHandler.maxMana += 5;
-            if (gameHandler.maxManaCap > 0) gameHandler.maxMana = Math.Min(gameHandler.maxMana, gameHandler.maxManaCap);
-            //delete aftermath msgs which haven't been implemented yet Lol!
+
+            int newMana = Math.Max(0, Math.Min(5, gameHandler.maxManaCap - gameHandler.maxMana));
+
+            gameHandler.maxMana += newMana;            
 
             Console.WriteLine("StartPlayerLoop1");
             for (int i = 0; i < gameHandler.players.Count(); i++)
@@ -300,8 +304,10 @@ namespace ScrapScramble.Game
                 Console.WriteLine("Refresh Shop");
                 gameHandler.players[i].shop.Refresh(gameHandler, gameHandler.players[i].pool, gameHandler.maxMana);
 
+                gameHandler.players[i].maxMana += newMana;
+
                 gameHandler.players[i].overloaded = gameHandler.players[i].creatureData.staticKeywords[StaticKeyword.Overload];
-                gameHandler.players[i].curMana = gameHandler.maxMana - gameHandler.players[i].overloaded;
+                gameHandler.players[i].curMana = gameHandler.players[i].maxMana - gameHandler.players[i].overloaded;
 
                 gameHandler.players[i].ready = false;
 

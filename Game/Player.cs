@@ -17,6 +17,7 @@ namespace ScrapScramble.Game
         public Hand hand;
         public int curMana;
         public int overloaded;
+        public int maxMana;
 
         public string name;
 
@@ -60,6 +61,7 @@ namespace ScrapScramble.Game
             this.extraUpgradeEffects = new List<Upgrade>();
             this.nextRoundEffects = new List<Upgrade>();
             this.pool = new MinionPool();
+            this.maxMana = 10;
         }
         public Player(string name) : this()
         {
@@ -71,7 +73,7 @@ namespace ScrapScramble.Game
             string ret = string.Empty;
 
             ret += $"**{this.creatureData.attack}/{this.creatureData.health}**";
-            ret += $"\nMana: {this.curMana}/{gameHandler.maxMana}";
+            ret += $"\nMana: {this.curMana}/{this.maxMana}";
             if (this.overloaded > 0) ret += $"\n ({this.overloaded} Overloaded)";
             if (this.lives > 1) ret += $"\nLives: {this.lives}";
             else ret += "\nLives: **1** (!)";
@@ -385,7 +387,7 @@ namespace ScrapScramble.Game
             for (int i=0; i<this.attachedMechs.Count(); i++)
             {                
                 if (this.attachedMechs[i].writtenEffect.Equals(string.Empty)) continue;
-                if (!this.attachedMechs[i].printEffectInCombat) continue;
+                if (!this.attachedMechs[i].showEffectInCombat) continue;
                 if (this.attachedMechs[i].writtenEffect.StartsWith("Aftermath:")) continue;
                 if (this.attachedMechs[i].writtenEffect.StartsWith("Spellburst:")) continue;
 
@@ -432,17 +434,24 @@ namespace ScrapScramble.Game
             }
 
             string ret = string.Empty;
-            rows = 0;
+            rows = 0;            
 
-            for (int i = 0; i < this.attachedMechs.Count(); i++)
+            for (int i = 0; i < this.playHistory[this.playHistory.Count - 1].Count(); i++)
             {
-                if (this.attachedMechs[i].name == BlankUpgrade.name) continue;
+                if (rows >= 20)
+                {
+                    ret += $"and {this.playHistory[this.playHistory.Count - 1].Count()-i} more...";
+                    rows++;
+                    break;
+                }
+
+                if (this.playHistory[this.playHistory.Count - 1][i].name == BlankUpgrade.name) continue;
                 int mult = 1;
-                ret += $"- {this.attachedMechs[i].name}";
+                ret += $"- {this.playHistory[this.playHistory.Count - 1][i].name}";
 
                 for (int j=i+1; j<this.attachedMechs.Count(); j++)
                 {
-                    if (this.attachedMechs[j].name == this.attachedMechs[i].name) mult++;
+                    if (this.playHistory[this.playHistory.Count - 1][j].name == this.playHistory[this.playHistory.Count - 1][i].name) mult++;
                     else break;
                 }
 
@@ -451,7 +460,7 @@ namespace ScrapScramble.Game
                 rows++;
 
                 if (mult > 1) ret += $" x{mult}";
-                if (i != this.attachedMechs.Count() - 1) ret += "\n";
+                if (i != this.playHistory[this.playHistory.Count - 1].Count() - 1) ret += "\n";
             }
 
             return ret;

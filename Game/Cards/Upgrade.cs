@@ -13,7 +13,7 @@ namespace ScrapScramble.Game.Cards
         public CreatureData creatureData = new CreatureData();
         public Rarity rarity;
 
-        public bool printEffectInCombat = true;
+        public bool showEffectInCombat = true;
         public string writtenEffect;
 
         public Upgrade()

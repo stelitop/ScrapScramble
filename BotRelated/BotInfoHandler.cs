@@ -8,8 +8,25 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ScrapScramble.BotRelated
-{
-    class BotInfoHandler
+{    
+    [Serializable]
+    public struct ExportInfo
+    {
+        public GameHandler gameHandler;
+        public List<ulong> participantsDiscordIds;
+        public bool shopsSent;
+        public bool pairsReady;
+
+        public ExportInfo(GameHandler gameHandler, List<ulong> participantsDiscordIds, bool shopsSent, bool pairsReady)
+        {
+            this.gameHandler = gameHandler;
+            this.participantsDiscordIds = participantsDiscordIds;
+            this.shopsSent = shopsSent;
+            this.pairsReady = pairsReady;
+        }
+    }
+
+    public class BotInfoHandler
     {
         public static GameHandler gameHandler = new GameHandler();
         public static List<ulong> participantsDiscordIds = new List<ulong>();
@@ -21,6 +38,11 @@ namespace ScrapScramble.BotRelated
 
         public static DiscordMessage interactivePlayerList = null;
         public static DiscordUser interactivePlayerListCaller = null;
+
+        public static class CommandInformation
+        {
+            public static string KeywordDescription = string.Empty;
+        }
 
         public BotInfoHandler()
         {
@@ -79,7 +101,7 @@ namespace ScrapScramble.BotRelated
             string aftermathMsg = gameHandler.players[index].GetAftermathMessages();            
             if (!aftermathMsg.Equals(string.Empty)) msg.AddField("[Aftermath]", aftermathMsg);
 
-            msg.AddField("[Upgrade Info]", gameHandler.players[index].PrintInfoGeneral(BotInfoHandler.gameHandler, index) + "\n", true);                       
+            msg.AddField("[Mech Info]", gameHandler.players[index].PrintInfoGeneral(BotInfoHandler.gameHandler, index) + "\n", true);                       
             msg.AddField("[Keywords]", gameHandler.players[index].PrintInfoKeywords(BotInfoHandler.gameHandler) + "\n", true);
             msg.AddField("[Upgrades]", gameHandler.players[index].PrintInfoUpgrades(BotInfoHandler.gameHandler) + "\n", true);
             msg.AddField("[Effects]", gameHandler.players[index].PrintInfoEffects(BotInfoHandler.gameHandler) + "\n");

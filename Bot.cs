@@ -4,6 +4,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
+using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ScrapScramble.BotRelated;
@@ -12,8 +13,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace ScrapScramble
 {
@@ -38,7 +41,7 @@ namespace ScrapScramble
                 Token = configJson.Token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
-                MinimumLogLevel = LogLevel.Trace                
+                MinimumLogLevel = LogLevel.Debug                
                 //UseInternalLoggingHandler = true
             };
 
@@ -64,7 +67,8 @@ namespace ScrapScramble
             Commands.RegisterCommands<FunCommands>();
             Commands.RegisterCommands<GameCommands>();
             Commands.RegisterCommands<GameOperatorCommands>();
-            Commands.RegisterCommands<PlayerOnlyCommands>();            
+            Commands.RegisterCommands<PlayerOnlyCommands>();
+            Commands.RegisterCommands<GameSettingsCommands>();
 
             await Client.ConnectAsync();            
 
@@ -73,6 +77,11 @@ namespace ScrapScramble
 
         private async Task OnClientReady(DiscordClient client, ReadyEventArgs e)
         {
+            VoidNoParamsCaller caller = new VoidNoParamsCaller(this.LoadKeywordsFromWebsite);
+            caller.BeginInvoke(null, null);
+
+            //this.LoadKeywordsFromWebsite();
+                
             await Client.UpdateStatusAsync(new DiscordActivity
             {
                 Name = $"({BotInfoHandler.participantsDiscordIds.Count()}) Waiting to >signup",
@@ -81,5 +90,54 @@ namespace ScrapScramble
 
             return;
         }
+
+        private void LoadKeywordsFromWebsite()
+        {         
+            //// Create a request for the URL.
+            //WebRequest request = WebRequest.Create(
+            //  "https://github.com/stelitop/ScrapScramble/wiki/Keywords");
+            //// If required by the server, set the credentials.
+            //request.Credentials = CredentialCache.DefaultCredentials;
+
+            //// Get the response.
+            //WebResponse response = request.GetResponse();
+            //// Display the status.
+            //Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+
+            //string responseFromServer;
+
+            //// Get the stream containing content returned by the server.
+            //// The using block ensures the stream is automatically closed.
+            //using (Stream dataStream = response.GetResponseStream())
+            //{
+            //    // Open the stream using a StreamReader for easy access.
+            //    StreamReader reader = new StreamReader(dataStream);
+            //    // Read the content.
+            //    responseFromServer = reader.ReadToEnd();
+            //    // Display the content.                
+            //}
+
+            ////Console.WriteLine(responseFromServer);
+
+            //// Close the response.
+            //response.Close();
+
+            var htmlWeb = new HtmlWeb();
+            var documentNode = htmlWeb.Load("https://github.com/stelitop/ScrapScramble/wiki/Keywords").DocumentNode;
+
+            //var keywords = documentNode.Descendants("li");
+            var keywords = documentNode.Descendants("li").Where(x => x.Descendants("p").Count() == 1);
+
+            string KWDescriptionFull = string.Empty;
+
+            foreach (var kw in keywords)
+            {
+                KWDescriptionFull += $"- {kw.InnerText.Trim()}\n";                                                
+            }
+
+            BotInfoHandler.CommandInformation.KeywordDescription = KWDescriptionFull;        
+        }
     }
+
+    public delegate void VoidNoParamsCaller();
 }
