@@ -43,7 +43,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Common;
             this.name = "Venture Co. Sawblade";
             this.cardText = "Battlecry: Gain +1 Attack for each Venture Co. Upgrade you've bought this game.";
-            this.SetStats(2, 1, 1);
+            this.SetStats(3, 1, 2);
         }
 
         public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
@@ -64,7 +64,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Common;
             this.name = "Venture Co. Pauldrons";
             this.cardText = "Taunt. Battlecry: Gain +1/+1 for each Venture Co. Upgrade you've bought this game.";
-            this.SetStats(3, 2, 2);
+            this.SetStats(4, 2, 2);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
 
@@ -87,7 +87,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Common;
             this.name = "Venture Co. Thrusters";
             this.cardText = "Rush. Battlecry: Gain +1/+1 for each Venture Co. Upgrade you've bought this game.";
-            this.SetStats(5, 1, 1);
+            this.SetStats(6, 1, 1);
             this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
         }
 
@@ -131,7 +131,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.name = "Venture Co. Vault";
             this.cardText = "Taunt. Aftermath: Add 3 other random Venture Co. Upgrades to your shop.";
             this.writtenEffect = "Aftermath: Add 3 other random Venture Co. Upgrades to your shop.";
-            this.SetStats(3, 0, 5);
+            this.SetStats(3, 0, 6);
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
         }
 
@@ -214,8 +214,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [SetAttribute(UpgradeSet.VentureCo)]
-    [UpgradeAttribute]
+    //[SetAttribute(UpgradeSet.VentureCo)]
+    //[UpgradeAttribute]
     public class VentureCoPowerGenerator : VentureCoMechNaming
     {
         public VentureCoPowerGenerator()
@@ -278,8 +278,28 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 6;
             return Task.CompletedTask;
         }
-    }    
-    
+    }
+
+    [SetAttribute(UpgradeSet.VentureCo)]
+    [UpgradeAttribute]
+    public class AnonymousSupplier : Upgrade
+    {
+        public AnonymousSupplier()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Anonymous Supplier";
+            this.cardText = this.writtenEffect = "Your Upgrades are not shared in the combat log.";
+            this.SetStats(3, 3, 3);
+        }
+
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].specificEffects.hideUpgradesInLog = true;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
+        }
+    }
+
     [SetAttribute(UpgradeSet.VentureCo)]
     [UpgradeAttribute]
     public class CopyShredder : Upgrade
@@ -339,7 +359,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     {
         public SiliconGrenadeBelt()
         {
-            this.rarity = Rarity.Rare;
+            this.rarity = Rarity.Common;
             this.name = "Silicon Grenade Belt";
             this.cardText = this.writtenEffect = "Start of Combat: Deal 1 damage to the enemy Upgrade, twice.";
             this.SetStats(4, 4, 2);
@@ -349,6 +369,49 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             gameHandler.players[enemy].TakeDamage(1, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Silicon Grenade Belt deals 1 damage, ");
             gameHandler.players[enemy].TakeDamage(1, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Silicon Grenade Belt deals 1 damage, ");
+        }
+    }
+
+    [SetAttribute(UpgradeSet.VentureCo)]
+    [UpgradeAttribute]
+    public class VentureCoExcavator : Upgrade
+    {
+        public VentureCoExcavator()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Venture Co. Excavator";
+            this.cardText = "Magnetic. If your hand is empty, Magnetic x3 instead.";
+            this.SetStats(7, 5, 6);
+            this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 1;
+        }
+
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].hand.OptionsCount() == 0)
+            {
+                this.creatureData.staticKeywords[StaticKeyword.Magnetic] = 3;
+            }
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
+        }
+    }
+
+    [SetAttribute(UpgradeSet.VentureCo)]
+    [UpgradeAttribute]
+    public class TreasureMiner : Upgrade
+    {
+        public TreasureMiner()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Treasure Miner";
+            this.cardText = "Battlecry: Discover a Legendary Upgrade.";
+            this.SetStats(5, 4, 3);
+        }
+
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Upgrade> pool = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.rarity == Rarity.Legendary);
+            await PlayerInteraction.DiscoverACardAsync<Upgrade>(gameHandler, curPlayer, enemy, "Discover a Legendary Upgrade", pool);
         }
     }
 
@@ -395,7 +458,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.writtenEffect = "Spellburst: Gain Rush x4.";
         }
 
-        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (comboTrig && spellburst)
             {
@@ -403,6 +466,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                 this.writtenEffect = string.Empty;
                 gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush] += 4;
             }
+
+            return base.OnSpellCast(spell, gameHandler, curPlayer, enemy);
         }
 
         public override Card DeepCopy()
@@ -451,9 +516,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(9, 8, 6);
         }
 
-        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (!spellburst) return;
+            if (!spellburst) return Task.CompletedTask;
 
             spellburst = false;
             this.writtenEffect = string.Empty;
@@ -462,7 +527,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             {
                 Spell sparePart = (Spell)spell;
 
-                if (sparePart.name.Equals("Mana Capsule")) return;
+                if (sparePart.name.Equals("Mana Capsule")) return Task.CompletedTask;
 
                 List<int> upgrades = gameHandler.players[curPlayer].shop.GetAllUpgradeIndexes();
 
@@ -471,9 +536,34 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                     sparePart.CastOnUpgradeInShop(upgrades[i], gameHandler, curPlayer, enemy);
                 }
             }
+
+            return base.OnSpellCast(spell, gameHandler, curPlayer, enemy);
         }
     }
 
+    [SetAttribute(UpgradeSet.VentureCo)]
+    [UpgradeAttribute]
+    public class GoldPrinceGallyWX  : Upgrade
+    {
+        public GoldPrinceGallyWX()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Gold Prince Gally-WX";
+            this.cardText = this.writtenEffect = "After you play a Spare Part, Discover an Upgrade. It costs (2) less.";
+            this.showEffectInCombat = false;
+            this.SetStats(7, 5, 8);
+        }
+        public override async Task OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (Attribute.IsDefined(spell.GetType(), typeof(SparePartAttribute)))
+            {
+                var choice = await PlayerInteraction.DiscoverACardAsync<Upgrade>(gameHandler, curPlayer, enemy, "Discover an Upgrade", gameHandler.players[curPlayer].pool.upgrades).ConfigureAwait(false);
+                choice.Cost -= 2;
+            }
+
+            base.OnSpellCast(spell, gameHandler, curPlayer, enemy);
+        }
+    }
 }
 
 /*

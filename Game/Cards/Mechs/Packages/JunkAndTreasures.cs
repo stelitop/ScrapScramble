@@ -367,7 +367,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     {
         public SuperScooper()
         {
-            this.rarity = Rarity.Epic;
+            this.rarity = Rarity.Rare;
             this.name = "Super Scooper";
             this.cardText = this.writtenEffect = "Start of Combat: Steal the stats of the lowest-cost Upgrade your opponent bought last turn from their Mech.";
             this.SetStats(8, 3, 7);
@@ -470,8 +470,9 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
         {
+            //&& !Attribute.IsDefined(m.GetType(), typeof(TokenAttribute))
             if (triggered == false)
-            {
+            {                
                 triggered = true;
                 this.writtenEffect = string.Empty;
                 if (m.creatureData.staticKeywords[StaticKeyword.Binary] < 1) m.creatureData.staticKeywords[StaticKeyword.Binary] = 1;

@@ -231,7 +231,7 @@ namespace ScrapScramble.Game
                 desc += $"{i+1}) {cardPool.ElementAt(cardIndexes[i]).GetInfo(gameHandler, curPlayer)}\n";
             }
 
-            PlayerInteraction interaction = new PlayerInteraction($"Discover a {promptTitle}", desc, $"Write the corresponding index between 1 and {cardIndexes.Count()}", AnswerType.IntAnswer);
+            PlayerInteraction interaction = new PlayerInteraction($"{promptTitle}", desc, $"Write the corresponding index between 1 and {cardIndexes.Count()}", AnswerType.IntAnswer);
 
             string defaultAns = GameHandler.randomGenerator.Next(1, cardIndexes.Count() + 1).ToString();
             string ret = await interaction.SendInteractionAsync(curPlayer, (x, y, z) => GeneralFunctions.Within(x, 1, cardIndexes.Count()), defaultAns);

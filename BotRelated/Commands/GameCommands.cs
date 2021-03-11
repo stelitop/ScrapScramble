@@ -24,6 +24,11 @@ namespace ScrapScramble.BotRelated.Commands
                 message = "The name needs to be at least 3 characters long.";
                 return false;
             }
+            if (name.Count() > 20)
+            {
+                message = "The name needs to be maximum 20 characters long.";
+                return false;
+            }
 
             string allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890+-/!#$%^&()? ";
 
@@ -561,8 +566,8 @@ namespace ScrapScramble.BotRelated.Commands
             if (BotInfoHandler.gameHandler.maxManaCap >= 0) msg += $"\nMana Cap: {BotInfoHandler.gameHandler.maxManaCap}";
             else msg += "\nMana Cap: None";
 
-            if (BotInfoHandler.gameHandler.setsAmount <= 0) msg += "Sets Included: All";
-            else msg += $"Sets Included: {BotInfoHandler.gameHandler.setsAmount}";
+            if (BotInfoHandler.gameHandler.setsAmount <= 0) msg += "\nSets Included: All";
+            else msg += $"\nSets Included: {BotInfoHandler.gameHandler.setsAmount}";
                  
             msg += $"\n\nShop Rarity Breakdown:\n";
             msg += $"C-R-E-L: ";

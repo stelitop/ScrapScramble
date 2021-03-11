@@ -20,7 +20,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 1);
         }
 
-        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (this.spellburst)
             {
@@ -29,6 +29,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                 gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
                 gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
             }
+
+            return base.OnSpellCast(spell, gameHandler, curPlayer, enemy);
         }
     }
 
@@ -365,7 +367,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(5, 4, 5);
         }
 
-        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (spellburst)
             {
@@ -374,6 +376,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
                 gameHandler.players[curPlayer].hand.AddCard(spell);
             }
+
+            return base.OnSpellCast(spell, gameHandler, curPlayer, enemy);
         }
     }
 
@@ -390,9 +394,11 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.showEffectInCombat = false;
         }
 
-        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
         {
             spell.OnPlay(gameHandler, curPlayer, enemy);
+
+            return base.OnSpellCast(spell, gameHandler, curPlayer, enemy);
         }
     }
 
@@ -479,7 +485,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.creatureData.staticKeywords[StaticKeyword.Taunt] = 3;
         }
 
-        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
         {
             spellbursts--;
             if (spellbursts == 2) this.writtenEffect = "Spellburst: Gain 'Spellburst: Gain Poisonous'";
@@ -489,6 +495,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                 this.writtenEffect = string.Empty;
                 gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Poisonous] = 1;
             }
+
+            return base.OnSpellCast(spell, gameHandler, curPlayer, enemy);
         }
     }
 }

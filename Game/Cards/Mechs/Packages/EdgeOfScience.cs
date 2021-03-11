@@ -15,7 +15,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Common;
             this.name = "Orbital Mechanosphere";
             this.cardText = string.Empty;
-            this.SetStats(30, 50, 50);
+            this.SetStats(22, 33, 33);
         }
     }
 
@@ -67,7 +67,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Common;
             this.name = "Voltage Tracker";
             this.cardText = "Battlecry: Gain +1/+1 for each Overloaded Mana Crystal you have.";
-            this.SetStats(3, 2, 3);
+            this.SetStats(4, 2, 3);
         }
 
         public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)

@@ -306,7 +306,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             return Task.CompletedTask;
         }
 
-        public override void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
         {
             if (spellburst)
             {
@@ -319,7 +319,10 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                 gameHandler.players[curPlayer].shop.At(index).creatureData.attack += 20;
                 gameHandler.players[curPlayer].shop.At(index).creatureData.health += 20;
             }
+
+            return base.OnSpellCast(spell, gameHandler, curPlayer, enemy);
         }
+        
     }
 
     [UpgradeAttribute]

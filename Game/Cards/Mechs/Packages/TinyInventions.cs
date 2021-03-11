@@ -14,15 +14,15 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         {
             this.rarity = Rarity.Common;
             this.name = "Healthbox";
-            this.cardText = this.writtenEffect = "Start of Combat: Give the enemy Mech +6 Health.";
-            this.SetStats(1, 0, 6);
+            this.cardText = this.writtenEffect = "Start of Combat: Give the enemy Mech +8 Health.";
+            this.SetStats(2, 0, 8);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[enemy].creatureData.health += 6;
             gameHandler.combatOutputCollector.preCombatHeader.Add(
-                $"{gameHandler.players[curPlayer].name}'s Healthbox gives {gameHandler.players[enemy].name} +6 Health, leaving it with {gameHandler.players[enemy].creatureData.health} Health.");
+                $"{gameHandler.players[curPlayer].name}'s Healthbox gives {gameHandler.players[enemy].name} +8 Health, leaving it with {gameHandler.players[enemy].creatureData.health} Health.");
         }
     }
 
@@ -299,7 +299,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
             List<Upgrade> pool = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.Cost == 1 && x.name != this.name);
-            await PlayerInteraction.DiscoverACardAsync<Upgrade>(gameHandler, curPlayer, enemy, "1-Cost Upgrade", pool);                        
+            await PlayerInteraction.DiscoverACardAsync<Upgrade>(gameHandler, curPlayer, enemy, "Discover a 1-Cost Upgrade", pool);                        
         }
     }
 
@@ -347,7 +347,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             }
             foreach (var card in gameHandler.players[curPlayer].pool.tokens)
             {
-                if (card.GetType().IsSubclassOf(typeof(Upgrade)) || card.GetType() == typeof(Upgrade))
+                if (card.GetType().IsSubclassOf(typeof(Upgrade)) || card.GetType() == typeof(Upgrade) || card.Cost == 1)
                 {
                     ((Upgrade)card).creatureData.attack++;
                     ((Upgrade)card).creatureData.health++;
@@ -367,13 +367,10 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             var hand = gameHandler.players[curPlayer].hand.GetAllCards();
             foreach (var card in hand)
             {
-                if (card.Cost == 1)
+                if (card is Upgrade u && card.Cost == 1)
                 {
-                    if (Attribute.IsDefined(card.GetType(), typeof(UpgradeAttribute)))
-                    {
-                        ((Upgrade)card).creatureData.attack++;
-                        ((Upgrade)card).creatureData.health++;
-                    }
+                    u.creatureData.attack++;
+                    u.creatureData.health++;                
                 }
             }            
 

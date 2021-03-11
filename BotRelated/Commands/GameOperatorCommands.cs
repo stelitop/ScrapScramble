@@ -648,5 +648,118 @@ namespace ScrapScramble.BotRelated.Commands
 
             await SendShops(ctx);
         }
+
+        [Command(
+            )]
+        public async Task StartAutomaticGame(CommandContext ctx)
+        {
+            await StartGame(ctx);
+            await Task.Delay(1000);
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
+                Title = "This Is An Automated Game",
+                Description = "There are no tasks the game operator need to do. All players have 12 minutes to make their turns",
+                Color = DiscordColor.Azure
+            }).ConfigureAwait(false);
+
+            BotInfoHandler.interactivePlayerListCaller = null;
+
+
+            TimeSpan roundTime1 = new TimeSpan(0, 6, 0);
+            TimeSpan roundTime2 = new TimeSpan(0, 3, 0);
+            TimeSpan roundTime3 = new TimeSpan(0, 3, 0);
+
+            do
+            {
+                BotInfoHandler.autoGameToken = new CancellationTokenSource();
+
+                try 
+                { 
+                    await Task.Delay(roundTime1, BotInfoHandler.autoGameToken.Token); 
+                    for (int i=0; i<BotInfoHandler.gameHandler.players.Count(); i++)
+                    {
+                        if (BotInfoHandler.gameHandler.players[i].lives <= 0 || BotInfoHandler.gameHandler.players[i].ready) continue;
+                        var member = await ctx.Guild.GetMemberAsync(BotInfoHandler.participantsDiscordIds[i]).ConfigureAwait(false);
+                        var userdm = await member.CreateDmChannelAsync().ConfigureAwait(false);
+                        await userdm.SendMessageAsync(embed: new DiscordEmbedBuilder {
+                            Title = "6 Minutes Remaining",
+                            Description = "You need to complete your turn in the next 6 minutes and type >ready.",
+                            Color = DiscordColor.Azure
+                        }).ConfigureAwait(false);
+                    }
+
+                } catch { }
+                try 
+                { 
+                    await Task.Delay(roundTime2, BotInfoHandler.autoGameToken.Token);
+                    for (int i = 0; i < BotInfoHandler.gameHandler.players.Count(); i++)
+                    {
+                        if (BotInfoHandler.gameHandler.players[i].lives <= 0 || BotInfoHandler.gameHandler.players[i].ready) continue;
+                        var member = await ctx.Guild.GetMemberAsync(BotInfoHandler.participantsDiscordIds[i]).ConfigureAwait(false);
+                        var userdm = await member.CreateDmChannelAsync().ConfigureAwait(false);
+                        await userdm.SendMessageAsync(embed: new DiscordEmbedBuilder
+                        {
+                            Title = "3 Minutes Remaining",
+                            Description = "You need to complete your turn in the next 3 minutes and type >ready.",
+                            Color = DiscordColor.Azure
+                        }).ConfigureAwait(false);
+                    }
+
+                } catch { }
+                try 
+                { 
+                    await Task.Delay(roundTime3, BotInfoHandler.autoGameToken.Token); 
+                } catch { }                
+
+                await GetPairsList(ctx);
+                await Task.Delay(1000);
+
+                for (int i=0; i<BotInfoHandler.gameHandler.pairsHandler.opponents.Count(); i++)
+                {
+                    if (BotInfoHandler.gameHandler.players[i].lives <= 0) continue;
+                    if (i > BotInfoHandler.gameHandler.pairsHandler.opponents[i]) continue;
+
+                    if (i < BotInfoHandler.gameHandler.pairsHandler.opponents[i])
+                        await Fight(ctx, i + 1, BotInfoHandler.gameHandler.pairsHandler.opponents[i] + 1);
+                    else
+                        await PlayerInfo(ctx, i + 1);
+
+                    await Task.Delay(25000);                    
+                }                                 
+
+                if (BotInfoHandler.gameHandler.AlivePlayers() <= 1) break;
+
+                await NextRound(ctx);
+
+                BotInfoHandler.interactivePlayerListCaller = null;
+            }
+            while (BotInfoHandler.gameHandler.AlivePlayers() > 1);
+
+            int winner = -1;
+            for (int i=0; i<BotInfoHandler.gameHandler.players.Count(); i++)
+            {
+                if (BotInfoHandler.gameHandler.players[i].lives > 0)
+                {
+                    winner = i;
+                    break;
+                }
+            }
+            
+
+            if (winner == -1)
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                    Title = "The Game Has Finished",
+                    Color = DiscordColor.Gold
+                }).ConfigureAwait(false);
+
+            else
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = $"{BotInfoHandler.gameHandler.players[winner].name} Is The Winner!",
+                    Description = "The game has now finished",
+                    Color = DiscordColor.Gold
+                }).ConfigureAwait(false);
+
+            await CancelGame(ctx);
+        }
     }    
 }

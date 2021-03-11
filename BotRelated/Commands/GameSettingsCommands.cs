@@ -73,6 +73,7 @@ namespace ScrapScramble.BotRelated.Commands
             }).ConfigureAwait(false);
         }
 
+        [Aliases("setamount")]
         [Command("setsamount")]
         [Description("Sets the amount of sets that will be present in the next game")]
         public async Task SetSetAmount(CommandContext ctx, int amount)

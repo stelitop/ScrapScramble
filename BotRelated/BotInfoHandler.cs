@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ScrapScramble.BotRelated
@@ -38,6 +39,8 @@ namespace ScrapScramble.BotRelated
 
         public static DiscordMessage interactivePlayerList = null;
         public static DiscordUser interactivePlayerListCaller = null;
+
+        public static CancellationTokenSource autoGameToken;
 
         public static class CommandInformation
         {
@@ -190,7 +193,10 @@ namespace ScrapScramble.BotRelated
 
             if (readyNum >= BotInfoHandler.gameHandler.players.Count())
             {
-                await interactivePlayerList.Channel.SendMessageAsync($"Hey {interactivePlayerListCaller.Mention}, all players are ready!").ConfigureAwait(false);
+                if (interactivePlayerListCaller != null)
+                    await interactivePlayerList.Channel.SendMessageAsync($"Hey {interactivePlayerListCaller.Mention}, all players are ready!").ConfigureAwait(false);
+
+                BotInfoHandler.autoGameToken.Cancel();
             }
         }
     }

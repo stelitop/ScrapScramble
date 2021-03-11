@@ -135,7 +135,9 @@ namespace ScrapScramble.Game.Cards
         public virtual void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy) { }
-        public virtual void OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual Task OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy) {
+            return Task.CompletedTask;
+        }
         public virtual void Combo(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void OnBeingFrozen(GameHandler gameHandler, int curPlayer, int enemy) { }
 
