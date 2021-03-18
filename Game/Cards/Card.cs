@@ -25,6 +25,7 @@ namespace ScrapScramble.Game.Cards
         public abstract Card DeepCopy();
 
         public virtual Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy) { return Task.CompletedTask; }
+        public virtual void AtEndOfTurnInHand(GameHandler gameHandler, int curPlayer, int enemy, int handPos, out string feedback) { feedback = string.Empty; }
 
         public virtual bool CanBePlayed(int handPos, GameHandler gameHandler, int curPlayer, int enemy)
         {

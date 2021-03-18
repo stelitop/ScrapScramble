@@ -362,7 +362,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Common;
             this.name = "Silicon Grenade Belt";
             this.cardText = this.writtenEffect = "Start of Combat: Deal 1 damage to the enemy Upgrade, twice.";
-            this.SetStats(4, 4, 2);
+            this.SetStats(3, 4, 2);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)

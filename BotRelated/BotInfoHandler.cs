@@ -40,7 +40,7 @@ namespace ScrapScramble.BotRelated
         public static DiscordMessage interactivePlayerList = null;
         public static DiscordUser interactivePlayerListCaller = null;
 
-        public static CancellationTokenSource autoGameToken;
+        public static CancellationTokenSource autoGameToken = new CancellationTokenSource();
 
         public static class CommandInformation
         {
@@ -99,8 +99,8 @@ namespace ScrapScramble.BotRelated
                 Title = $"{gameHandler.players[index].name}'s Information",
                 Color = DiscordColor.Brown,
                 Footer = new DiscordEmbedBuilder.EmbedFooter { Text = "Type >help to see what commands are available. Commands related to your mech can only be used in DMs. When you're done with your turn, type >ready." }
-            };
-            
+            };                       
+
             string aftermathMsg = gameHandler.players[index].GetAftermathMessages();            
             if (!aftermathMsg.Equals(string.Empty)) msg.AddField("[Aftermath]", aftermathMsg);
 

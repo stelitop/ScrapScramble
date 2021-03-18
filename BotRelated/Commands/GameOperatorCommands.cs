@@ -24,7 +24,7 @@ namespace ScrapScramble.BotRelated.Commands
         [Command("startgame")]
         [Description("Starts a new game.")]
         [RequireGuild]
-        public async Task StartGame(CommandContext ctx)
+        public async Task<bool> StartGame(CommandContext ctx)
         {
             const int minPlayers = 1;
             DiscordEmbedBuilder responseMessage;
@@ -39,6 +39,8 @@ namespace ScrapScramble.BotRelated.Commands
                     Color = DiscordColor.Red
                 };
                 await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+
+                return false;
             }
             else if (BotInfoHandler.inGame)
             {
@@ -51,6 +53,8 @@ namespace ScrapScramble.BotRelated.Commands
                 };
 
                 await ctx.RespondAsync(embed: responseMessage).ConfigureAwait(false);
+
+                return false;
             }
             else
             {
@@ -112,6 +116,8 @@ namespace ScrapScramble.BotRelated.Commands
                 await CreateInteractivePlayerlist(ctx);
 
                 BotInfoHandler.pairsReady = false;
+
+                return true;
             }
 
         }
@@ -237,6 +243,27 @@ namespace ScrapScramble.BotRelated.Commands
             await CreateInteractivePlayerlist(ctx);
         }
 
+        [Command("endofturn")]
+        [Description("Triggers the end of turn effects of all Mechs. Should be called before the fights start for a round.")]
+        [RequireIngame]
+        public async Task TriggerEndOfTurn(CommandContext ctx)
+        {
+            for (int i=0; i<BotInfoHandler.gameHandler.players.Count(); i++)
+            {
+                if (!BotInfoHandler.gameHandler.players[i].IsAlive()) continue;
+
+                string output;
+
+                List<int> cardIndexes = BotInfoHandler.gameHandler.players[i].hand.GetAllCardIndexes();
+
+                for (int j=0; j<cardIndexes.Count(); j++)
+                {
+                    BotInfoHandler.gameHandler.players[i].hand.At(cardIndexes[j]).AtEndOfTurnInHand(BotInfoHandler.gameHandler, i, BotInfoHandler.gameHandler.pairsHandler.opponents[i], cardIndexes[j], out _);
+                    
+                }
+            }
+        }
+
         [Aliases("pairlist")]
         [Command("pairslist")]
         [Description("Displays all pairs of players that will fight in the next round.")]
@@ -246,7 +273,7 @@ namespace ScrapScramble.BotRelated.Commands
             string msg = string.Empty;            
             for (int i=0; i<BotInfoHandler.gameHandler.pairsHandler.opponents.Count(); i++)
             {
-                if (BotInfoHandler.gameHandler.players[i].lives <= 0) continue;
+                if (!BotInfoHandler.gameHandler.players[i].IsAlive()) continue;
                 Console.WriteLine($"{BotInfoHandler.gameHandler.pairsHandler.opponents.Count()}: {i}, {BotInfoHandler.gameHandler.pairsHandler.opponents[i]}");
                 if (i < BotInfoHandler.gameHandler.pairsHandler.opponents[i]) msg += $"{i+1}) {BotInfoHandler.gameHandler.players[i].name} vs {BotInfoHandler.gameHandler.pairsHandler.opponents[i]+1}) {BotInfoHandler.gameHandler.players[BotInfoHandler.gameHandler.pairsHandler.opponents[i]].name}\n";                
             }            
@@ -438,7 +465,7 @@ namespace ScrapScramble.BotRelated.Commands
                             for (int i = 0; i < BotInfoHandler.gameHandler.players[index].pool.upgrades.Count(); i++)
                                 if (BotInfoHandler.gameHandler.players[index].pool.upgrades[i].name.Equals(shopName, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    BotInfoHandler.gameHandler.players[index].shop.AddUpgrade(BotInfoHandler.gameHandler.pool.upgrades[i]);
+                                    BotInfoHandler.gameHandler.players[index].shop.AddUpgrade(BotInfoHandler.gameHandler.players[index].pool.upgrades[i]);
                                     return true;
                                 }
                             return false;
@@ -653,7 +680,7 @@ namespace ScrapScramble.BotRelated.Commands
             )]
         public async Task StartAutomaticGame(CommandContext ctx)
         {
-            await StartGame(ctx);
+            if (!(await StartGame(ctx))) return;
             await Task.Delay(1000);
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
                 Title = "This Is An Automated Game",
@@ -708,8 +735,10 @@ namespace ScrapScramble.BotRelated.Commands
                 try 
                 { 
                     await Task.Delay(roundTime3, BotInfoHandler.autoGameToken.Token); 
-                } catch { }                
+                } catch { }
 
+                await TriggerEndOfTurn(ctx);
+                await Task.Delay(1000);
                 await GetPairsList(ctx);
                 await Task.Delay(1000);
 

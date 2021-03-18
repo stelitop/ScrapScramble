@@ -49,20 +49,7 @@ namespace ScrapScramble.Game.Cards.Mechs
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
             return Task.CompletedTask;
         }
-    }
-
-    [UpgradeAttribute]
-    public class HeavyDutyPlating : Upgrade
-    {
-        public HeavyDutyPlating()
-        {
-            this.rarity = Rarity.Common;
-            this.name = "Heavy-Duty Plating";
-            this.cardText = "Taunt x2";
-            this.SetStats(3, 5, 5);
-            this.creatureData.staticKeywords[StaticKeyword.Taunt] += 2;
-        }
-    }
+    }    
 
     [UpgradeAttribute]
     public class Oilmental : Upgrade

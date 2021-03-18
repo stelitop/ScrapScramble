@@ -161,6 +161,42 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Set(UpgradeSet.WarMachines)]
+    public class TankThreads : Upgrade
+    {
+        public TankThreads()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Tank Threads";
+            this.cardText = "Taunt. Battlecry: Gain +4 Shields. Overload: (3).";
+            this.SetStats(2, 3, 4);
+            this.creatureData.staticKeywords[StaticKeyword.Taunt] = 1;
+            this.creatureData.staticKeywords[StaticKeyword.Overload] = 3;
+        }
+
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
+
+            return base.Battlecry(gameHandler, curPlayer, enemy);
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.WarMachines)]
+    public class HeavyDutyPlating : Upgrade
+    {
+        public HeavyDutyPlating()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Heavy-Duty Plating";
+            this.cardText = "Taunt x2";
+            this.SetStats(3, 5, 5);
+            this.creatureData.staticKeywords[StaticKeyword.Taunt] += 2;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.WarMachines)]
     public class CopperplatedPrince : Upgrade
     {
         public CopperplatedPrince()
@@ -232,6 +268,28 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
+    [UpgradeAttribute]
+    [Set(UpgradeSet.WarMachines)]
+    public class TestMissile : Upgrade
+    {
+        public TestMissile()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Test Missile";
+            this.cardText = "Binary. At the end of your turn in your hand, give this +1/+1.";
+            this.SetStats(4, 3, 4);
+            this.creatureData.staticKeywords[StaticKeyword.Binary] = 1;
+        }
+
+        public override void AtEndOfTurnInHand(GameHandler gameHandler, int curPlayer, int enemy, int handPos, out string feedback)
+        {
+            this.creatureData.attack++;
+            this.creatureData.health++;
+
+            feedback = string.Empty;
+        }
+    }
+    
     [UpgradeAttribute]
     [Set(UpgradeSet.WarMachines)]
     public class HomingMissile : Upgrade
@@ -327,7 +385,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Rare;
             this.name = "Plated Beetle Drone";
             this.cardText = this.writtenEffect = "The first time your Upgrade takes damage, gain +3 Shields. The second time, gain +2. The third, +1.";
-            this.SetStats(4, 2, 3);
+            this.SetStats(3, 2, 3);
             this.attacks = 0;
         }
 
@@ -367,6 +425,53 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             }
         }
     }
+
+    [TokenAttribute]
+    [SpellAttribute]
+    public class JuggernautMine : Spell
+    { 
+        public JuggernautMine()
+        {
+            this.rarity = SpellRarity.Spell;
+            this.name = "Mine";
+            this.cardText = "If this is unplayed at the end of your turn, it explodes and deals 10 damage to your Mech.";
+            this.Cost = 6;
+        }
+
+        public override void AtEndOfTurnInHand(GameHandler gameHandler, int curPlayer, int enemy, int handPos, out string feedback)
+        {
+            gameHandler.players[curPlayer].creatureData.health = Math.Max(1, gameHandler.players[curPlayer].creatureData.health - 10);
+            gameHandler.players[curPlayer].hand.RemoveCard(handPos);
+
+            feedback = $"A Mine explodes in {gameHandler.players[curPlayer].name}'s hand, dealing 10 damage to it.";
+        }
+    }
+
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.WarMachines)]
+    public class OgrimmarJuggernaut : Upgrade
+    {
+        public OgrimmarJuggernaut()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Ogrimmar Juggernaut";
+            this.cardText = "Aftermath: Give your opponent a Mine. Unless they play it, it explodes for 10 damage next turn.";
+            this.SetStats(7, 6, 5);
+        }
+
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (curPlayer != enemy)
+            {
+                gameHandler.players[enemy].hand.AddCard(new JuggernautMine());
+
+                gameHandler.players[enemy].aftermathMessages.Add(
+                    $"{gameHandler.players[curPlayer].name}'s {this.name} added a Mine to your hand.");
+            }
+        }
+    }
+
 
     [UpgradeAttribute]
     [Set(UpgradeSet.WarMachines)]
@@ -446,6 +551,60 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             }
 
             return ret;
+        }
+    }
+
+    public class WarMachineLegendaryEffect : Upgrade
+    {
+        private int damage = 1;
+        public WarMachineLegendaryEffect()
+        {
+            this.writtenEffect = "Permanent Start of Combat: Deal 1 damage to the enemy Mech. Improved after you buy an Upgrade.";
+        }
+        public WarMachineLegendaryEffect(int dmg)
+        {
+            this.writtenEffect = $"Permanent Start of Combat: Deal {dmg} damage to the enemy Mech. Improved after you buy an Upgrade.";
+            this.damage = dmg;                 
+        }
+
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].nextRoundEffects.Add(new WarMachineLegendaryEffect(this.damage));
+        }
+
+        public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[enemy].TakeDamage(damage, gameHandler, curPlayer, enemy, $"{gameHandler.players[curPlayer].name}'s Pulsefire Ultracannon deals {damage} damage, ");
+        }
+
+        public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            this.damage++;
+            this.writtenEffect = $"Permanent Start of Combat: Deal {this.damage} damage to the enemy Mech. Improved after you buy an Upgrade.";
+        }
+
+        public override Card DeepCopy()
+        {
+            WarMachineLegendaryEffect ret = (WarMachineLegendaryEffect)base.DeepCopy();
+
+            ret.damage = this.damage;
+
+            return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.WarMachines)]
+    public class PulsefireUltracannon : Upgrade
+    {
+        public PulsefireUltracannon()
+        {
+            this.rarity = Rarity.Legendary;
+            this.name = "Pulsefire Ultracannon";
+            this.cardText = "Permanent Start of Combat: Deal 1 damage to the enemy Mech. Improved after you buy an Upgrade.";
+            this.SetStats(10, 10, 7);
+
+            this.extraUpgradeEffects.Add(new WarMachineLegendaryEffect());
         }
     }
 }

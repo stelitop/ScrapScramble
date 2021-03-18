@@ -669,5 +669,29 @@ namespace ScrapScramble.BotRelated.Commands
                 Color = DiscordColor.Azure
             }).ConfigureAwait(false);
         }
+
+        [Command("embed")]
+        public async Task EmbedTest(CommandContext ctx)
+        {
+            DiscordEmbedBuilder embed = new DiscordEmbedBuilder {
+                Title = "The Embed's Title",
+                Description = "The Embed's Description",
+                Color = DiscordColor.Chartreuse,
+                Author = new DiscordEmbedBuilder.EmbedAuthor(),
+                Url = "https://cdn.discordapp.com/emojis/808012999021035530.png?v=1",
+                ImageUrl = "https://cdn.discordapp.com/emojis/808012999021035530.png?v=1",
+                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail(),
+                Timestamp = new DateTimeOffset(2002, 12, 20, 4, 36, 24, new TimeSpan()),
+                Footer = new DiscordEmbedBuilder.EmbedFooter()               
+            };
+
+            embed.Author.Name = "The Embed's Author";
+            embed.Author.IconUrl = "https://cdn.discordapp.com/emojis/808012999021035530.png?v=1";
+            embed.Thumbnail.Url = "https://cdn.discordapp.com/emojis/808012999021035530.png?v=1";
+            embed.Footer.Text = "The Embed's Footer";
+            embed.Footer.IconUrl = "https://cdn.discordapp.com/emojis/808012999021035530.png?v=1";
+
+            await ctx.RespondAsync(embed: embed).ConfigureAwait(false);
+        }
     }
 }
