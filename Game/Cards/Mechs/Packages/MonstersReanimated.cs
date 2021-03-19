@@ -289,6 +289,28 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
+    [UpgradeAttribute]
+    [Set(UpgradeSet.MonstersReanimated)]
+    public class GoldWingedGryphin : Upgrade
+    {
+        public GoldWingedGryphin()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Gold-Winged Gryphin";
+            this.cardText = "Rush. Battlecry: Discover a Rush Upgrade.";
+            this.SetStats(5, 4, 1);
+            this.creatureData.staticKeywords[StaticKeyword.Rush] = 1;
+        }
+
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            List<Upgrade> rushUpgrades = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades,
+                x => x.creatureData.staticKeywords[StaticKeyword.Rush] > 0 && x.name != this.name);
+
+            await PlayerInteraction.DiscoverACardAsync<Upgrade>(gameHandler, curPlayer, enemy, "Discover a Rush Upgrade", rushUpgrades);
+        }
+    }
+
 
     [UpgradeAttribute]
     [Set(UpgradeSet.MonstersReanimated)]

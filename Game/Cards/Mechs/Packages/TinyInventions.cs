@@ -303,8 +303,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [UpgradeAttribute]
-    [Set(UpgradeSet.TinyInventions)]
+    //[UpgradeAttribute]
+    //[Set(UpgradeSet.TinyInventions)]
     public class TwoLayeredSpikeball : Upgrade
     {
         public TwoLayeredSpikeball()
@@ -323,8 +323,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
-    [UpgradeAttribute]
-    [Set(UpgradeSet.TinyInventions)]
+    //[UpgradeAttribute]
+    //[Set(UpgradeSet.TinyInventions)]
     public class NextGenerationCPU : Upgrade
     {
         public NextGenerationCPU()

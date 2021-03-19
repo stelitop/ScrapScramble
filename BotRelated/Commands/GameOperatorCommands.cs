@@ -748,12 +748,22 @@ namespace ScrapScramble.BotRelated.Commands
                     if (i > BotInfoHandler.gameHandler.pairsHandler.opponents[i]) continue;
 
                     if (i < BotInfoHandler.gameHandler.pairsHandler.opponents[i])
-                        await Fight(ctx, i + 1, BotInfoHandler.gameHandler.pairsHandler.opponents[i] + 1);
-                    else
-                        await PlayerInfo(ctx, i + 1);
+                        await Fight(ctx, i + 1, BotInfoHandler.gameHandler.pairsHandler.opponents[i] + 1);                    
 
-                    await Task.Delay(25000);                    
+                    await Task.Delay(40000);                    
                 }                                 
+
+                for (int i=0; i<BotInfoHandler.gameHandler.pairsHandler.opponents.Count(); i++)
+                {
+                    if (BotInfoHandler.gameHandler.players[i].lives <= 0) continue;
+
+                    if (i == BotInfoHandler.gameHandler.pairsHandler.opponents[i])
+                    {
+                        await PlayerInfo(ctx, i + 1);
+                    }
+
+                    await Task.Delay(40000);
+                }
 
                 if (BotInfoHandler.gameHandler.AlivePlayers() <= 1) break;
 
@@ -771,8 +781,7 @@ namespace ScrapScramble.BotRelated.Commands
                     winner = i;
                     break;
                 }
-            }
-            
+            }            
 
             if (winner == -1)
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
