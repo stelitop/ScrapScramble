@@ -353,6 +353,31 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
+    //[UpgradeAttribute]
+    //[Set(UpgradeSet.ScholomanceAcademy)]
+    //public class SpellTransformer : Upgrade
+    //{
+    //    public SpellTransformer()
+    //    {
+    //        this.rarity = Rarity.Epic;
+    //        this.name = "Spell Transformer";
+    //        this.cardText = this.writtenEffect = "Upgrades in your Shop also count as Spells.";
+    //        this.showEffectInCombat = false;
+    //    }
+
+    //    public override async void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
+    //    {
+    //        for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
+    //        {
+    //            await gameHandler.players[curPlayer].attachedMechs[i].OnSpellCast(this, gameHandler, curPlayer, enemy);
+    //        }
+    //        foreach (var extraEffect in gameHandler.players[curPlayer].extraUpgradeEffects)
+    //        {
+    //            await extraEffect.OnSpellCast(this, gameHandler, curPlayer, enemy);
+    //        }
+    //    }
+    //}
+
     [UpgradeAttribute]
     [Set(UpgradeSet.ScholomanceAcademy)]
     public class SpellPrinter : Upgrade

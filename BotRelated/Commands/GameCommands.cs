@@ -30,7 +30,7 @@ namespace ScrapScramble.BotRelated.Commands
                 return false;
             }
 
-            string allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890+-/!#$%^&()? ";
+            string allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890+-/!#$%^&()? .,";
 
             for (int i=0; i<name.Count(); i++)
             {
@@ -51,6 +51,14 @@ namespace ScrapScramble.BotRelated.Commands
         public async Task SignUp(CommandContext ctx, [Description("The name of your Mech")][RemainingText]string mechName)
         {
             string retMsg;
+
+            while (mechName[0] == ' ') mechName.Remove(0, 1);
+
+            for (int i=1; i<mechName.Length; i++)
+            {
+
+            }
+
             bool validName = IsMechNameValid(mechName, out retMsg);
 
             if (!validName)
@@ -692,6 +700,73 @@ namespace ScrapScramble.BotRelated.Commands
             embed.Footer.IconUrl = "https://cdn.discordapp.com/emojis/808012999021035530.png?v=1";
 
             await ctx.RespondAsync(embed: embed).ConfigureAwait(false);
+        }
+
+        [Command("keywordcards")]
+        public async Task KeywordCards(CommandContext ctx, string keyword)
+        {
+            StaticKeyword checkKw = new StaticKeyword();
+            bool exists = false;
+            foreach (var kw in Enum.GetValues(typeof(StaticKeyword)))
+            {
+                if (keyword.Equals(kw.ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    exists = true;
+                    checkKw = (StaticKeyword)kw;
+                    break;
+                }
+            }
+
+            if (!exists) return;
+
+            string output = string.Empty;
+            int results = 0;
+
+            foreach (var u in BotInfoHandler.gameHandler.pool.upgrades)
+            {
+                if (u.creatureData.staticKeywords[checkKw] > 0 && Attribute.IsDefined(u.GetType(), typeof(SetAttribute)))
+                {                    
+                    results++;
+                    output += $"{u.name}";
+
+                    output += $" ({((SetAttribute)Attribute.GetCustomAttribute(u.GetType(), typeof(SetAttribute))).Set})\n";                    
+                }
+            }
+
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                Title = $"{results} Upgrades Found With The Keyword {checkKw}",
+                Description = output,
+                Color = DiscordColor.Azure
+            }).ConfigureAwait(false);
+        }
+
+        [Command("keywordcards")]
+        public async Task KeywordCards(CommandContext ctx)
+        {
+            string output = string.Empty;
+
+            foreach (var kw in Enum.GetValues(typeof(StaticKeyword)))
+            {
+                int counter = 0;
+                
+                foreach (var u in BotInfoHandler.gameHandler.pool.upgrades)
+                {
+                    if (u.creatureData.staticKeywords[(StaticKeyword)kw] > 0 && Attribute.IsDefined(u.GetType(), typeof(SetAttribute)))
+                    {
+                        counter++;
+                    }
+                }
+
+                output += $"{kw}: {counter}\n";
+            }           
+
+
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = $"Number of Upgrades Containing Each Keyword",
+                Description = output,
+                Color = DiscordColor.Azure
+            }).ConfigureAwait(false);
         }
     }
 }

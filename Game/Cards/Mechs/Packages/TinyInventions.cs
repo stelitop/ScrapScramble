@@ -347,10 +347,10 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             }
             foreach (var card in gameHandler.players[curPlayer].pool.tokens)
             {
-                if (card.GetType().IsSubclassOf(typeof(Upgrade)) || card.GetType() == typeof(Upgrade) || card.Cost == 1)
+                if (card is Upgrade u && card.Cost == 1)
                 {
-                    ((Upgrade)card).creatureData.attack++;
-                    ((Upgrade)card).creatureData.health++;
+                    u.creatureData.attack++;
+                    u.creatureData.health++;
                 }
             }
 

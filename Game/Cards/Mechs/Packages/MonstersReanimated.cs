@@ -260,6 +260,38 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Set(UpgradeSet.MonstersReanimated)]
+    public class AugmentedSpirit : Upgrade
+    {
+        public AugmentedSpirit()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Augmented Spirit";
+            this.cardText = "Echo. Choose One - Gain +2 Attack; or +2 Health.";
+            this.SetStats(3, 2, 2);
+            this.creatureData.staticKeywords[StaticKeyword.Echo] = 1;
+        }       
+
+        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            PlayerInteraction chooseOne = new PlayerInteraction("Choose One", "1) Gain +2 Attack\n2) Gain +2 Health", "Write the corresponding number", AnswerType.IntAnswer);
+            string defaultAns = GameHandler.randomGenerator.Next(1, 3).ToString();
+
+            string ret = await chooseOne.SendInteractionAsync(curPlayer, (x, y, z) => GeneralFunctions.Within(x, 1, 2), defaultAns);
+
+            if (int.Parse(ret) == 1)
+            {
+                gameHandler.players[curPlayer].creatureData.attack += 2;
+            }
+            else if (int.Parse(ret) == 2)
+            {
+                gameHandler.players[curPlayer].creatureData.health += 2;
+            }
+        }
+    }
+
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.MonstersReanimated)]
     public class MkIVSuperCobra : Upgrade
     {
         public MkIVSuperCobra()
