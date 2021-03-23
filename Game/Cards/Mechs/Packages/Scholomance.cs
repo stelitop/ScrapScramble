@@ -162,7 +162,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(2, 1, 3);
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
             {
@@ -173,6 +173,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             {
                 extraEffect.OnSpellCast(this, gameHandler, curPlayer, enemy);
             }
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
     }
 
@@ -326,10 +328,12 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.Cost = 0;
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].curMana += 2;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload] += 2;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
     }
 
@@ -407,7 +411,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
     }
 
     //[UpgradeAttribute]
-    [Set(UpgradeSet.ScholomanceAcademy)]
+    //[Set(UpgradeSet.ScholomanceAcademy)]
     public class ShiningStudent : Upgrade
     {
         public ShiningStudent()
@@ -422,6 +426,35 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         public override Task OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
         {
             spell.OnPlay(gameHandler, curPlayer, enemy);
+
+            return base.OnSpellCast(spell, gameHandler, curPlayer, enemy);
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.ScholomanceAcademy)]
+    public class EnchantedVendingMachine : Upgrade
+    {
+        private bool spellburst = true;
+
+        public EnchantedVendingMachine()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Enchanted Vending Machine";
+            this.cardText = this.writtenEffect = "Spellburst: Refresh your shop.";
+            this.SetStats(3, 3, 3);
+            this.showEffectInCombat = false;
+        }
+
+        public override Task OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (spellburst)
+            {
+                spellburst = false;
+                this.writtenEffect = string.Empty;
+
+                gameHandler.players[curPlayer].shop.Refresh(gameHandler, gameHandler.players[curPlayer].pool, gameHandler.players[curPlayer].maxMana, false);
+            }
 
             return base.OnSpellCast(spell, gameHandler, curPlayer, enemy);
         }

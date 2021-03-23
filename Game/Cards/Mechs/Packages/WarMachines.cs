@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScrapScramble.Game.Effects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -204,7 +205,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Rare;
             this.name = "Copperplated Prince";
             this.cardText = this.writtenEffect = "Start of Combat: Gain +2 Health for each unspent Mana you have.";
-            this.SetStats(3, 3, 1);
+            this.SetStats(3, 4, 1);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
@@ -224,7 +225,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Rare;
             this.name = "Copperplated Princess";
             this.cardText = this.writtenEffect = "Start of Combat: Gain +2 Attack for each unspent Mana you have.";
-            this.SetStats(3, 1, 3);
+            this.SetStats(3, 1, 4);
         }
 
         public override void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy)
@@ -337,6 +338,30 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Set(UpgradeSet.WarMachines)]
+    public class PowerProwler : Upgrade
+    {
+        public PowerProwler()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Power Prowler";
+            this.cardText = this.writtenEffect = "Whenever a Start of Combat triggers, gain +2/+2.";
+            this.SetStats(3, 3, 2);
+        }
+
+        public override void OnStartOfCombatTrigger(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.attack += 2;
+            gameHandler.players[curPlayer].creatureData.health += 2;
+
+            gameHandler.combatOutputCollector.preCombatHeader.Add(
+                $"{gameHandler.players[curPlayer].name}'s Power Prowler triggers, giving it +2/+2, leaving it as a {gameHandler.players[curPlayer].creatureData.Stats()}");
+
+            base.OnStartOfCombatTrigger(gameHandler, curPlayer, enemy);
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.WarMachines)]
     public class CopperCommander : Upgrade
     {
         public CopperCommander()
@@ -347,14 +372,16 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(4, 3, 3);
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.multiplierStartOfCombat = 2;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
     }
 
-    [UpgradeAttribute]
-    [Set(UpgradeSet.WarMachines)]
+    //[UpgradeAttribute]
+    //[Set(UpgradeSet.WarMachines)]
     public class DeflectOShield : Upgrade
     {
         public DeflectOShield()
@@ -377,6 +404,72 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Set(UpgradeSet.WarMachines)]
+    public class PartAssembler : Upgrade
+    {
+        public PartAssembler()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Part Assembler";
+            this.cardText = "Costs (2) less while you have Spikes. Costs (2) less while you have Shields.";
+            this.SetStats(4, 3, 3);
+        }
+        public override bool CanBeBought(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (shopPos >= gameHandler.players[curPlayer].shop.LastIndex) return false;
+            if (this.name == BlankUpgrade.name) return false;
+            if (this.creatureData.staticKeywords[StaticKeyword.Freeze] > 0) return false;
+            if (this.inLimbo) return false;
+
+            int red = 0;
+            if (gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] > 0) red += 2;
+            if (gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] > 0) red += 2;
+
+            if (this.Cost - red > gameHandler.players[curPlayer].curMana) return false;
+
+            return true;
+        }
+
+        public override async Task<bool> BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            if (gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] > 0) this.Cost -= 2;
+            if (gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] > 0) this.Cost -= 2;
+
+            gameHandler.players[curPlayer].curMana -= this.Cost;
+
+            for (int i = 0; i < gameHandler.players[curPlayer].attachedMechs.Count(); i++)
+            {
+                gameHandler.players[curPlayer].attachedMechs[i].OnBuyingAMech(this, gameHandler, curPlayer, enemy);
+            }
+
+            foreach (var extraEffect in gameHandler.players[curPlayer].extraUpgradeEffects)
+            {
+                extraEffect.OnBuyingAMech(this, gameHandler, curPlayer, enemy);
+            }
+
+            await gameHandler.players[curPlayer].AttachMech(this, gameHandler, curPlayer, enemy);
+            return true;
+        }
+
+        public override string GetInfo(GameHandler gameHandler, int player)
+        {
+            int red = 0;
+
+            if (gameHandler.players[player].creatureData.staticKeywords[StaticKeyword.Shields] > 0) red += 2;
+            if (gameHandler.players[player].creatureData.staticKeywords[StaticKeyword.Spikes] > 0) red += 2;
+
+            int oldCost = this.Cost;
+            this.Cost -= red;
+
+            string ret = base.GetInfo(gameHandler, player);
+
+            this.Cost = oldCost;
+
+            return ret;
+        }
+    }
+
+    //[UpgradeAttribute]
+    //[Set(UpgradeSet.WarMachines)]
     public class PlatedBeetleDrone : Upgrade
     {
         private int attacks;

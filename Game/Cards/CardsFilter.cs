@@ -8,9 +8,9 @@ namespace ScrapScramble.Game.Cards
 {
     public class CardsFilter
     {
-        public delegate bool Criteria<T>(T card) where T: Card;
+        public delegate bool Criteria<T>(T card);
 
-        public static List<T> FilterList<T>(List<T> cards, Criteria<T> criteria) where T: Card
+        public static List<T> FilterList<T>(List<T> cards, Criteria<T> criteria) 
         {
             List<T> ret = new List<T>();
             for (int i=0; i<cards.Count(); i++)
@@ -23,7 +23,7 @@ namespace ScrapScramble.Game.Cards
             return ret;
         }
 
-        public static List<T> FilterList<T>(List<List<T> > cards, Criteria<T> criteria) where T : Card
+        public static List<T> FilterList<T>(List<List<T> > cards, Criteria<T> criteria)
         {
             List<T> ret = new List<T>();
             for (int i = 0; i < cards.Count(); i++)

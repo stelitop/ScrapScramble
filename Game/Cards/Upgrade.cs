@@ -83,7 +83,7 @@ namespace ScrapScramble.Game.Cards
             return true;
         }
 
-        public async Task<bool> BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
+        public virtual async Task<bool> BuyCard(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].curMana -= this.Cost;
 
@@ -134,6 +134,7 @@ namespace ScrapScramble.Game.Cards
         public virtual void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void StartOfCombat(GameHandler gameHandler, int curPlayer, int enemy) { }
+        public virtual void OnStartOfCombatTrigger(GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy) { }
         public virtual Task OnSpellCast(Card spell, GameHandler gameHandler, int curPlayer, int enemy) {
             return Task.CompletedTask;

@@ -201,9 +201,11 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(4, 1, 1);
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.invertAttackPriority = true;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
     }
 
@@ -466,13 +468,15 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.Cost = 0;
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int amountOfTickets = CardsFilter.FilterList<Card>(gameHandler.players[curPlayer].hand.GetAllCards(), x => x.name == this.name).Count();
 
             gameHandler.players[curPlayer].creatureData.attack += amountOfTickets+1;
             gameHandler.players[curPlayer].creatureData.health += amountOfTickets+1;
             gameHandler.players[curPlayer].curMana += amountOfTickets+1;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
 
         public override string GetInfo(GameHandler gameHandler, int player)

@@ -24,6 +24,11 @@ namespace ScrapScramble.BotRelated.Commands
         [Command("startgame")]
         [Description("Starts a new game.")]
         [RequireGuild]
+        public async Task StartGameCommand(CommandContext ctx)
+        {
+            await StartGame(ctx);
+        }
+
         public async Task<bool> StartGame(CommandContext ctx)
         {
             const int minPlayers = 1;

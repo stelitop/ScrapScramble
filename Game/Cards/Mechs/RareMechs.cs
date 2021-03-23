@@ -260,9 +260,11 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(5, 3, 4);
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.ignoreSpikes = true;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
     }
 
@@ -277,9 +279,11 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.SetStats(5, 4, 3);
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].specificEffects.ignoreShields = true;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
     }   
 

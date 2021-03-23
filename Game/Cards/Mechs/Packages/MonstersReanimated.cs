@@ -229,10 +229,12 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.SetStats(5, 2, 5);
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int index = Mechathun.FindInShop(gameHandler, curPlayer);
             if (index == -1) index = Mechathun.AddMechaThun(gameHandler, curPlayer);
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
 
         private bool Criteria(Upgrade mech)
@@ -308,6 +310,60 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                 x => x.creatureData.staticKeywords[StaticKeyword.Rush] > 0 && x.name != this.name);
 
             await PlayerInteraction.DiscoverACardAsync<Upgrade>(gameHandler, curPlayer, enemy, "Discover a Rush Upgrade", rushUpgrades);
+        }
+    }
+
+    [TokenAttribute]
+    public class LeftModuleHead : Upgrade
+    {
+        public LeftModuleHead()
+        {
+            this.rarity = Rarity.Token;
+            this.name = "Left Module Head";
+            this.SetStats(1, 1, 1);
+        }
+    }
+    [TokenAttribute]
+    public class RightModuleHead : Upgrade
+    {
+        public RightModuleHead()
+        {
+            this.rarity = Rarity.Token;
+            this.name = "Right Module Head";
+            this.SetStats(2, 2, 2);
+        }
+    }
+    [TokenAttribute]
+    public class CenterModuleHead : Upgrade
+    {
+        public CenterModuleHead()
+        {
+            this.rarity = Rarity.Token;
+            this.name = "Center Module Head";
+            this.SetStats(3, 3, 3);
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.MonstersReanimated)]
+    public class ThreeModuleHydra : Upgrade
+    {
+        public ThreeModuleHydra()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Three-Module Hydra";
+            this.cardText = this.writtenEffect = "Aftermath: Add a 1/1, 2/2 and 3/3 Head Module to your hand.";
+            this.SetStats(6, 6, 6);
+        }
+
+        public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].hand.AddCard(new LeftModuleHead());
+            gameHandler.players[curPlayer].hand.AddCard(new CenterModuleHead());
+            gameHandler.players[curPlayer].hand.AddCard(new RightModuleHead());
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your {this.name} adds a 1/1, 2/2 and 3/3 Head Module to your hand.");
         }
     }
 
@@ -398,7 +454,55 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             if (damage < 0) damage = 0;
             msg += $"reduced to {damage} by Dungeon Dragonling(rolled {red}), ";
         }
-    }    
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.MonstersReanimated)]
+    public class BeastInTheIce : Upgrade
+    {
+        public BeastInTheIce()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Beast in the Ice";
+            this.cardText = "Starts Frozen for 2 turns.";
+            this.SetStats(4, 8, 8);
+            this.creatureData.staticKeywords[StaticKeyword.Freeze] = 2;
+        }
+
+        public override Upgrade BasicCopy(MinionPool pool)
+        {
+            Upgrade ret = base.BasicCopy(pool);
+            ret.creatureData.staticKeywords[StaticKeyword.Freeze] = 0;
+            return ret;
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.MonstersReanimated)]
+    public class MorphmetalWorgen : Upgrade
+    {
+        public MorphmetalWorgen()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Morphmetal Worgen";
+            this.cardText = "Battlecry: Swap the Attack and Health of all Upgrades in your shop.";
+            this.SetStats(3, 3, 3);
+        }
+
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            var shop = gameHandler.players[curPlayer].shop.GetAllUpgrades();
+
+            foreach (var upgrade in shop)
+            {
+                int x = upgrade.creatureData.attack;
+                upgrade.creatureData.attack = upgrade.creatureData.health;
+                upgrade.creatureData.health = x;
+            }
+
+            return base.Battlecry(gameHandler, curPlayer, enemy);
+        }
+    }
 
 
     [TokenAttribute]
@@ -483,7 +587,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Legendary;
             this.name = "Lady in Byte";
             this.cardText = this.writtenEffect = "Aftermath: Set your Mech's Attack equal to its Health.";
-            this.SetStats(6, 5, 5);
+            this.SetStats(7, 5, 5);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)

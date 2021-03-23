@@ -83,6 +83,19 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
     [UpgradeAttribute]
     [Set(UpgradeSet.EdgeOfScience)]
+    public class StasisCrystal : Upgrade
+    {
+        public StasisCrystal()
+        {
+            this.rarity = Rarity.Common;
+            this.name = "Stasis Crystal";
+            this.cardText = "Battlecry: Increase your Maximum Mana by 1.";
+            this.SetStats(2, 0, 2);
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.EdgeOfScience)]
     public class IndecisiveAutoshopper : Upgrade
     {
         public IndecisiveAutoshopper()
@@ -177,6 +190,64 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
                 gameHandler.players[curPlayer].overloaded + gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Overload];
 
             return base.Battlecry(gameHandler, curPlayer, enemy);
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.EdgeOfScience)]
+    public class EvolveOMatic : Upgrade
+    {
+        public EvolveOMatic()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Evolve-o-Matic";
+            this.cardText = "Battlecry: Choose an Upgrade in your shop. Discover an Upgrade that costs (1) more to replace it with.";
+            this.SetStats(5, 4, 6);
+        }
+
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            int chosenIndex = await PlayerInteraction.ChooseUpgradeInShopAsync(gameHandler, curPlayer, enemy);
+            if (chosenIndex == -1) return;
+
+            int newCost = gameHandler.players[curPlayer].shop.At(chosenIndex).Cost+1;
+
+            List<Upgrade> pool = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.Cost == newCost);
+
+            if (pool.Count > 0)
+            {
+                Upgrade x = (Upgrade)(await PlayerInteraction.DiscoverACardAsync<Upgrade>(gameHandler, curPlayer, enemy, "Discover an Upgrade to replace with", pool, false));
+                gameHandler.players[curPlayer].shop.TransformUpgrade(chosenIndex, x);                
+            }
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.EdgeOfScience)]
+    public class DevolveOMatic : Upgrade
+    {
+        public DevolveOMatic()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Devolve-o-Matic";
+            this.cardText = "Battlecry: Choose an Upgrade in your shop. Discover an Upgrade that costs (1) less to replace it with.";
+            this.SetStats(5, 6, 4);
+        }
+
+        public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            int chosenIndex = await PlayerInteraction.ChooseUpgradeInShopAsync(gameHandler, curPlayer, enemy);
+            if (chosenIndex == -1) return;
+
+            int newCost = gameHandler.players[curPlayer].shop.At(chosenIndex).Cost - 1;
+
+            List<Upgrade> pool = CardsFilter.FilterList<Upgrade>(gameHandler.players[curPlayer].pool.upgrades, x => x.Cost == newCost);
+
+            if (pool.Count > 0)
+            {
+                Upgrade x = (Upgrade)(await PlayerInteraction.DiscoverACardAsync<Upgrade>(gameHandler, curPlayer, enemy, "Discover an Upgrade to replace with", pool, false));
+                gameHandler.players[curPlayer].shop.TransformUpgrade(chosenIndex, x);
+            }
         }
     }
 
@@ -332,7 +403,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Epic;
             this.name = "Hyper-Magnetic Cloud";
             this.cardText = this.writtenEffect = "Aftermath: If you're Overloaded for at least 7 Mana, add all 7 Spare Parts to your hand.";
-            this.SetStats(7, 7, 5);
+            this.SetStats(7, 7, 6);
         }
 
         public override void AftermathMe(GameHandler gameHandler, int curPlayer, int enemy)

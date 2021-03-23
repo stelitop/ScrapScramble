@@ -3,6 +3,7 @@ using ScrapScramble.Game.Cards.Mechs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,7 +39,7 @@ namespace ScrapScramble.Game
         public int currentRound = 1;
         public int startingLives = 4;
         public int maxManaCap = 30;
-        public int setsAmount = -1;
+        public int setsAmount = 5;
 
         public RarityBreakdown shopRarities;
 
@@ -194,11 +195,42 @@ namespace ScrapScramble.Game
                 for (int i = 0; i < gameHandler.players[mech1].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
                     gameHandler.players[mech1].attachedMechs[i].StartOfCombat(gameHandler, mech1, mech2);
+
+                    //gameHandler.players[mech1].attachedMechs[i].GetType().GetMethod("StartOfCombat").DeclaringType
+
+                    //var m = gameHandler.players[mech1].attachedMechs[i].S.GetType();
+
+
+                    //m.DeclaringType                    
+
+                    if (gameHandler.players[mech1].attachedMechs[i].GetType().GetMethod("StartOfCombat").DeclaringType != typeof(Upgrade).GetMethod("StartOfCombat").DeclaringType)
+                    {
+                        for (int j=0; j<gameHandler.players[mech1].attachedMechs.Count(); j++)
+                        {
+                            
+                            gameHandler.players[mech1].attachedMechs[j].OnStartOfCombatTrigger(gameHandler, mech1, mech2);
+                        }
+                        foreach (var extraEffect in gameHandler.players[mech1].extraUpgradeEffects)
+                        {
+                            extraEffect.OnStartOfCombatTrigger(gameHandler, mech1, mech2);
+                        }
+                    }
                 }
 
                 foreach (var extraEffect in gameHandler.players[mech1].extraUpgradeEffects)
                 {
                     extraEffect.StartOfCombat(gameHandler, mech1, mech2);
+                    if (extraEffect.GetType().GetMethod("StartOfCombat").DeclaringType != typeof(Upgrade).GetMethod("StartOfCombat").DeclaringType)
+                    {
+                        for (int j = 0; j < gameHandler.players[mech1].attachedMechs.Count(); j++)
+                        {
+                            gameHandler.players[mech1].attachedMechs[j].OnStartOfCombatTrigger(gameHandler, mech1, mech2);
+                        }
+                        foreach (var extraEffect2 in gameHandler.players[mech1].extraUpgradeEffects)
+                        {
+                            extraEffect2.OnStartOfCombatTrigger(gameHandler, mech1, mech2);
+                        }
+                    }
                 }
             }
 
@@ -206,12 +238,35 @@ namespace ScrapScramble.Game
             {
                 for (int i = 0; i < gameHandler.players[mech2].attachedMechs.Count() && gameHandler.players[mech1].IsAlive() && gameHandler.players[mech2].IsAlive(); i++)
                 {
-                    gameHandler.players[mech2].attachedMechs[i].StartOfCombat(gameHandler, mech2, mech1);                    
+                    gameHandler.players[mech2].attachedMechs[i].StartOfCombat(gameHandler, mech2, mech1);
+                    if (gameHandler.players[mech2].attachedMechs[i].GetType().GetMethod("StartOfCombat").DeclaringType != typeof(Upgrade).GetMethod("StartOfCombat").DeclaringType)
+                    {
+                        for (int j = 0; j < gameHandler.players[mech2].attachedMechs.Count(); j++)
+                        {
+                            gameHandler.players[mech2].attachedMechs[j].OnStartOfCombatTrigger(gameHandler, mech2, mech2);
+                        }
+                        foreach (var extraEffect in gameHandler.players[mech2].extraUpgradeEffects)
+                        {
+                            extraEffect.OnStartOfCombatTrigger(gameHandler, mech2, mech1);
+                        }
+                    }
                 }
 
                 foreach (var extraEffect in gameHandler.players[mech2].extraUpgradeEffects)
                 {
                     extraEffect.StartOfCombat(gameHandler, mech2, mech1);
+
+                    if (extraEffect.GetType().GetMethod("StartOfCombat").DeclaringType != typeof(Upgrade).GetMethod("StartOfCombat").DeclaringType)
+                    {
+                        for (int j = 0; j < gameHandler.players[mech2].attachedMechs.Count(); j++)
+                        {
+                            gameHandler.players[mech2].attachedMechs[j].OnStartOfCombatTrigger(gameHandler, mech2, mech1);
+                        }
+                        foreach (var extraEffect2 in gameHandler.players[mech2].extraUpgradeEffects)
+                        {
+                            extraEffect2.OnStartOfCombatTrigger(gameHandler, mech2, mech1);
+                        }
+                    }
                 }
             }
             //-preCombat header

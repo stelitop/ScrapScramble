@@ -13,14 +13,16 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.Cost = 1;
             this.name = "Whirling Blades";
-            this.cardText = "Give your Upgrade +2 Attack and +4 Spikes.";
+            this.cardText = "Give your Mech +2 Attack and +4 Spikes.";
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.attack += 2;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 4;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
 
         public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
@@ -38,14 +40,16 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.Cost = 1;
             this.name = "Armor Plating";
-            this.cardText = "Give your Upgrade +2 Health and +4 Shields.";
+            this.cardText = "Give your Mech +2 Health and +4 Shields.";
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.health += 2;
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 4;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
 
         public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
@@ -63,15 +67,17 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.Cost = 1;
             this.name = "Reversing Switch";
-            this.cardText = "Swap your Upgrade's Attack and Health.";
+            this.cardText = "Swap your Mech's Attack and Health.";
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             int mid = gameHandler.players[curPlayer].creatureData.attack;
             gameHandler.players[curPlayer].creatureData.attack = gameHandler.players[curPlayer].creatureData.health;
             gameHandler.players[curPlayer].creatureData.health = mid;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
 
         public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
@@ -88,13 +94,15 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.Cost = 1;
             this.name = "Time Accelerator";
-            this.cardText = "Give your Upgrade Rush.";
+            this.cardText = "Give your Mech Rush.";
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Rush]++;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
 
         public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
@@ -111,15 +119,17 @@ namespace ScrapScramble.Game.Cards.Mechs
         {
             this.Cost = 1;
             this.name = "Rusty Horn";
-            this.cardText = "Give your Upgrade +3/+3 and Taunt.";
+            this.cardText = "Give your Mech +3/+3 and Taunt.";
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Taunt]++;
             gameHandler.players[curPlayer].creatureData.attack += 3;
             gameHandler.players[curPlayer].creatureData.health += 3;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
 
         public override void CastOnUpgradeInShop(int shopPos, GameHandler gameHandler, int curPlayer, int enemy)
@@ -142,9 +152,11 @@ namespace ScrapScramble.Game.Cards.Mechs
             this.rarity = SpellRarity.Spare_Part;
         }
 
-        public override async Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
+        public override Task OnPlay(GameHandler gameHandler, int curPlayer, int enemy)
         {
             gameHandler.players[curPlayer].curMana += 2;
+
+            return base.OnPlay(gameHandler, curPlayer, enemy);
         }
     }
 

@@ -283,6 +283,28 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
+    [UpgradeAttribute]
+    [Set(UpgradeSet.JunkAndTreasures)]
+    public class EngineersToolbox : Upgrade
+    {
+        public EngineersToolbox()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Engineer's Toolbox";
+            this.cardText = this.writtenEffect = "After you buy an Upgrade, gain +2 Spikes and +2 Shields.";
+            this.SetStats(4, 2, 2);
+            this.showEffectInCombat = false;
+        }
+
+        public override void OnBuyingAMech(Upgrade m, GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Spikes] += 2;
+            gameHandler.players[curPlayer].creatureData.staticKeywords[StaticKeyword.Shields] += 2;
+
+            base.OnBuyingAMech(m, gameHandler, curPlayer, enemy);
+        }
+    }
+
     //[UpgradeAttribute]
     //[Set(UpgradeSet.JunkAndTreasures)]
     public class GemRefiner : Upgrade
@@ -297,7 +319,8 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
 
         public override async Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            Upgrade chosen = await PlayerInteraction.ChooseUpgradeInShopAsync(gameHandler, curPlayer, enemy);
+            int chosenIndex = await PlayerInteraction.ChooseUpgradeInShopAsync(gameHandler, curPlayer, enemy);
+            Upgrade chosen = gameHandler.players[curPlayer].shop.At(chosenIndex);
 
             chosen.Cost = 1;
             chosen.creatureData.health = 1;
@@ -415,6 +438,31 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
+    [UpgradeAttribute]
+    [Set(UpgradeSet.JunkAndTreasures)]
+    public class LivingIncinerator : Upgrade
+    {
+        public LivingIncinerator()
+        {
+            this.rarity = Rarity.Rare;
+            this.name = "Living Incinerator";
+            this.cardText = "Battlecry: Destroy all remaining Upgrades in your shop. Gain +1/+1 for each.";
+            this.SetStats(12, 8, 8);
+        }
+
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            var shopIndexes = gameHandler.players[curPlayer].shop.GetAllUpgradeIndexes();
+
+            gameHandler.players[curPlayer].creatureData.attack += shopIndexes.Count;
+            gameHandler.players[curPlayer].creatureData.health += shopIndexes.Count;
+
+            gameHandler.players[curPlayer].shop.Clear();
+
+            return base.Battlecry(gameHandler, curPlayer, enemy);
+        }
+    }
+
 
     public class GrandVaultEffect : Upgrade
     {
@@ -448,6 +496,38 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.cardText = "Permanent Aftermath: Add 3 random Upgrades to your shop.";
             this.SetStats(8, 7, 7);
             this.extraUpgradeEffects.Add(new GrandVaultEffect());
+        }
+    }
+
+    [UpgradeAttribute]
+    [Set(UpgradeSet.JunkAndTreasures)]
+    public class GarbageGrabber : Upgrade
+    {
+        public GarbageGrabber()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Garbage Grabber";
+            this.cardText = this.writtenEffect = "Aftermath: Steal a random Common Upgrade from your opponent's shop and add it to yours.";
+            this.SetStats(5, 4, 4);
+        }
+
+        public override void AftermathEnemy(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            var enemyShopIndexes = gameHandler.players[enemy].shop.GetAllUpgradeIndexes();
+
+            var commonIndexes = CardsFilter.FilterList<int>(enemyShopIndexes, x => gameHandler.players[enemy].shop.At(x).rarity == Rarity.Common);
+
+            int stolen = GameHandler.randomGenerator.Next(commonIndexes.Count);            
+
+            gameHandler.players[curPlayer].aftermathMessages.Add(
+                $"Your Garbage Grabber stole a {gameHandler.players[enemy].shop.At(stolen).name} from your opponent's shop.");
+            gameHandler.players[enemy].aftermathMessages.Add(
+                $"{gameHandler.players[curPlayer].name}'s Garbage Grabber stole a Common Upgrade from your shop.");
+
+            gameHandler.players[curPlayer].shop.AddUpgrade(gameHandler.players[enemy].shop.At(stolen));
+            gameHandler.players[enemy].shop.RemoveUpgrade(stolen);
+
+            base.AftermathEnemy(gameHandler, curPlayer, enemy);
         }
     }
 
@@ -554,7 +634,7 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
             this.rarity = Rarity.Legendary;
             this.name = "Mr. Scrap-4-Cash";
             this.cardText = "Permanent Aftermath: Add a Receipt to your hand. It can refund your Upgrade's stats for Mana.";
-            this.SetStats(5, 5, 5);
+            this.SetStats(6, 6, 6);
             this.extraUpgradeEffects.Add(new Scrap4CashEffect());
         }
     }

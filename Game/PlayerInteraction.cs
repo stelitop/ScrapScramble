@@ -144,21 +144,22 @@ namespace ScrapScramble.Game
             else return false;
         }
 
-        public static async Task<Upgrade> ChooseUpgradeInShopAsync(GameHandler gameHandler, int curPlayer, int enemy)
+        public static async Task<int> ChooseUpgradeInShopAsync(GameHandler gameHandler, int curPlayer, int enemy)
         {
-            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return new BlankUpgrade();
+            if (gameHandler.players[curPlayer].shop.OptionsCount() == 0) return -1;
             
             string defaultAns = (gameHandler.players[curPlayer].shop.GetRandomUpgradeIndex() + 1).ToString();
 
             PlayerInteraction interaction = new PlayerInteraction("Choose an Upgrade in your shop", string.Empty, "Write the corresponding index", AnswerType.IntAnswer);
 
             string ret = await interaction.SendInteractionAsync(curPlayer, PlayerInteraction.CheckValidShopUpgradeIndex, defaultAns);
-            if (ret == string.Empty) return new BlankUpgrade();
+            if (ret == string.Empty) return -1;
 
             int pos = int.Parse(ret)-1;
-            Upgrade chosen = gameHandler.players[curPlayer].shop.At(pos);
+            //Upgrade chosen = gameHandler.players[curPlayer].shop.At(pos);
 
-            return chosen;
+            //return chosen;
+            return pos;
         }        
 
         public static async Task<Upgrade> FreezeUpgradeInShopAsync(GameHandler gameHandler, int curPlayer, int enemy, int freezeAmount = 1)

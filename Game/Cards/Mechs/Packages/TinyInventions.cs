@@ -244,6 +244,35 @@ namespace ScrapScramble.Game.Cards.Mechs.Packages
         }
     }
 
+    [UpgradeAttribute]
+    [Set(UpgradeSet.TinyInventions)]
+    public class FreezerHeater : Upgrade
+    {
+        public FreezerHeater()
+        {
+            this.rarity = Rarity.Epic;
+            this.name = "Freezer Heater";
+            this.cardText = "Battlecry: Unfreeze all minions in the shop by 1 turn. Gain +1/+1 for each.";
+            this.SetStats(3, 1, 4);
+        }
+
+        public override Task Battlecry(GameHandler gameHandler, int curPlayer, int enemy)
+        {
+            var shop = gameHandler.players[curPlayer].shop.GetAllUpgrades();
+
+            foreach (var upgrade in shop)
+            {
+                if (upgrade.creatureData.staticKeywords[StaticKeyword.Freeze] > 0)
+                {
+                    upgrade.creatureData.staticKeywords[StaticKeyword.Freeze]--;
+                    gameHandler.players[curPlayer].creatureData.attack++;
+                    gameHandler.players[curPlayer].creatureData.health++;
+                }
+            }
+
+            return base.Battlecry(gameHandler, curPlayer, enemy);
+        }
+    }
 
     [TokenAttribute]
     public class AbsoluteZero : Spell
